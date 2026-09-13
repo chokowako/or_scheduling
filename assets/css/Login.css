@@ -1,0 +1,262 @@
+/* =========================================================
+   OR SCHEDULING SYSTEM
+   LOGIN PAGE - HOSPITAL GREEN THEME
+   ========================================================= */
+
+:root {
+    --hospital-green: #79bfa3;
+    --hospital-green-dark: #4f9b7d;
+    --hospital-green-deep: #397c63;
+    --hospital-green-light: #eaf6f1;
+
+    --page-background: #f4f8f6;
+    --text-dark: #263b34;
+    --text-muted: #71817b;
+    --border-color: #dce9e4;
+}
+
+
+/* =========================================================
+   PAGE
+   ========================================================= */
+
+body {
+    min-height: 100vh;
+
+    margin: 0;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f4f8f6 0%,
+            #eaf6f1 100%
+        );
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-family: "Segoe UI", Arial, sans-serif;
+
+    color: var(--text-dark);
+}
+
+
+/* =========================================================
+   LOGIN CONTAINER
+   ========================================================= */
+
+.login-container {
+    width: 100%;
+    max-width: 430px;
+
+    padding: 20px;
+}
+
+
+/* =========================================================
+   LOGIN CARD
+   ========================================================= */
+
+.login-card {
+    border: 1px solid var(--border-color);
+
+    border-radius: 20px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 15px 40px rgba(50, 100, 80, 0.10);
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   CARD BODY
+   ========================================================= */
+
+.login-card .card-body {
+    padding: 45px !important;
+}
+
+
+/* =========================================================
+   SYSTEM ICON
+   ========================================================= */
+
+.system-icon {
+    width: 76px;
+    height: 76px;
+
+    border-radius: 18px;
+
+    background: var(--hospital-green-light);
+
+    color: var(--hospital-green-deep);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 34px;
+
+    margin: 0 auto 22px;
+
+    box-shadow:
+        0 6px 18px rgba(79, 155, 125, 0.12);
+}
+
+
+/* =========================================================
+   TITLE
+   ========================================================= */
+
+.login-card h3 {
+    color: var(--text-dark);
+
+    font-size: 24px;
+
+    letter-spacing: -0.3px;
+}
+
+
+/* =========================================================
+   SUBTITLE
+   ========================================================= */
+
+.login-card p {
+    color: var(--text-muted) !important;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   FORM LABELS
+   ========================================================= */
+
+.form-label {
+    color: #53665e;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    margin-bottom: 7px;
+}
+
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
+
+.form-control {
+    border: 1px solid var(--border-color);
+
+    border-radius: 10px;
+
+    color: var(--text-dark);
+
+    background: #ffffff;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.form-control::placeholder {
+    color: #a2afaa;
+}
+
+.form-control:hover {
+    border-color: #bfd8ce;
+}
+
+.form-control:focus {
+    border-color: var(--hospital-green);
+
+    box-shadow:
+        0 0 0 0.20rem rgba(121, 191, 163, 0.20);
+}
+
+
+/* =========================================================
+   SIGN IN BUTTON
+   ========================================================= */
+
+.btn-primary {
+    border: none;
+
+    border-radius: 10px;
+
+    background: var(--hospital-green-dark);
+
+    font-weight: 600;
+
+    letter-spacing: 0.2px;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.btn-primary:hover {
+    background: var(--hospital-green-deep);
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 6px 15px rgba(57, 124, 99, 0.20);
+}
+
+.btn-primary:focus {
+    background: var(--hospital-green-deep);
+
+    box-shadow:
+        0 0 0 0.20rem rgba(121, 191, 163, 0.30);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+
+/* =========================================================
+   FOOTER TEXT
+   ========================================================= */
+
+.login-card small {
+    color: #9aa9a3 !important;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 576px) {
+
+    .login-container {
+        padding: 15px;
+    }
+
+    .login-card .card-body {
+        padding: 30px !important;
+    }
+
+    .system-icon {
+        width: 68px;
+        height: 68px;
+
+        font-size: 30px;
+    }
+
+    .login-card h3 {
+        font-size: 21px;
+    }
+
+}
