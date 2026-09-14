@@ -680,7 +680,7 @@ function dashboard_room_status_icon($status)
             <div class="stat-top">
 
                 <div class="stat-icon green">
-                    <i class="bi bi-calendar2-check"></i>
+                    <i class="bi bi-heart-pulse-fill"></i>
                 </div>
 
                 <span class="stat-badge positive">
@@ -712,7 +712,7 @@ function dashboard_room_status_icon($status)
             <div class="stat-top">
 
                 <div class="stat-icon blue">
-                    <i class="bi bi-door-open"></i>
+                    <i class="bi bi-door-open-fill"></i>
                 </div>
 
                 <span class="stat-badge available">
@@ -745,12 +745,14 @@ function dashboard_room_status_icon($status)
 
 
 
+
+
         <div class="stat-card">
 
             <div class="stat-top">
 
                 <div class="stat-icon orange">
-                    <i class="bi bi-activity"></i>
+                    <i class="bi bi-door-closed-fill"></i>
                 </div>
 
                 <span class="stat-badge pending">
@@ -782,7 +784,7 @@ function dashboard_room_status_icon($status)
             <div class="stat-top">
 
                 <div class="stat-icon purple">
-                    <i class="bi bi-hospital"></i>
+                    <i class="bi bi-hospital-fill"></i>
                 </div>
 
                 <span class="stat-badge registered">
