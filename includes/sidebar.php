@@ -1,3 +1,4 @@
+```php
 <?php
 
 $current_page = basename($_SERVER['PHP_SELF']);
@@ -31,6 +32,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
     <!-- NAVIGATION -->
     <nav class="sidebar-menu">
 
+        <!-- MAIN -->
         <div class="menu-label">
             MAIN
         </div>
@@ -39,11 +41,15 @@ $current_page = basename($_SERVER['PHP_SELF']);
             href="/or_scheduling/dashboard.php"
             class="<?= $current_page === 'dashboard.php' ? 'active' : '' ?>"
         >
-            <i class="bi bi-grid-1x2-fill"></i>
+            <span class="nav-icon">
+                <i class="bi bi-grid-1x2-fill"></i>
+            </span>
+
             <span>Dashboard</span>
         </a>
 
 
+        <!-- MANAGEMENT -->
         <div class="menu-label">
             MANAGEMENT
         </div>
@@ -52,56 +58,70 @@ $current_page = basename($_SERVER['PHP_SELF']);
             href="/or_scheduling/pages/patients.php"
             class="<?= $current_page === 'patients.php' ? 'active' : '' ?>"
         >
-            <i class="bi bi-people-fill"></i>
+            <span class="nav-icon">
+                <i class="bi bi-people-fill"></i>
+            </span>
+
             <span>Patients</span>
         </a>
+
 
         <a
             href="/or_scheduling/pages/surgeons.php"
             class="<?= $current_page === 'surgeons.php' ? 'active' : '' ?>"
         >
-            <i class="bi bi-person-badge-fill"></i>
+            <span class="nav-icon">
+                <i class="bi bi-person-badge-fill"></i>
+            </span>
+
             <span>Surgeons</span>
         </a>
 
-        <a
-            href="/or_scheduling/pages/anesthesiologists.php"
-            class="<?= $current_page === 'anesthesiologists.php' ? 'active' : '' ?>"
-        >
-            <i class="bi bi-person-vcard-fill"></i>
-            <span>Anesthesiologists</span>
-        </a>
 
         <a
             href="/or_scheduling/pages/rooms.php"
             class="<?= $current_page === 'rooms.php' ? 'active' : '' ?>"
         >
-            <i class="bi bi-building-fill"></i>
+            <span class="nav-icon">
+                <i class="bi bi-door-open-fill"></i>
+            </span>
+
             <span>Operating Rooms</span>
         </a>
+
 
         <a
             href="/or_scheduling/pages/procedures.php"
             class="<?= $current_page === 'procedures.php' ? 'active' : '' ?>"
         >
-            <i class="bi bi-clipboard2-pulse-fill"></i>
+            <span class="nav-icon">
+                <i class="bi bi-clipboard2-pulse-fill"></i>
+            </span>
+
             <span>Procedures</span>
         </a>
 
 
+        <!-- SCHEDULING -->
         <div class="menu-label">
             SCHEDULING
         </div>
 
-        <a
-            href="/or_scheduling/pages/schedules.php"
-            class="<?= $current_page === 'schedules.php' ? 'active' : '' ?>"
-        >
-            <i class="bi bi-calendar3"></i>
-            <span>OR Scheduling</span>
-        </a>
+      <a
+		href="/or_scheduling/pages/ORschedules.php"
+		target="_blank"
+		rel="noopener noreferrer"
+		class="<?= $current_page === 'schedules.php' ? 'active' : '' ?>"
+	>
+		<span class="nav-icon">
+			<i class="bi bi-calendar3"></i>
+		</span>
+
+		<span>OR Scheduling</span>
+	</a>
 
 
+        <!-- SYSTEM -->
         <div class="menu-label">
             SYSTEM
         </div>
@@ -110,33 +130,42 @@ $current_page = basename($_SERVER['PHP_SELF']);
             href="/or_scheduling/pages/reports.php"
             class="<?= $current_page === 'reports.php' ? 'active' : '' ?>"
         >
-            <i class="bi bi-bar-chart-fill"></i>
+            <span class="nav-icon">
+                <i class="bi bi-bar-chart-fill"></i>
+            </span>
+
             <span>Reports</span>
         </a>
+
 
         <a
             href="/or_scheduling/pages/settings.php"
             class="<?= $current_page === 'settings.php' ? 'active' : '' ?>"
         >
-            <i class="bi bi-gear-fill"></i>
+            <span class="nav-icon">
+                <i class="bi bi-gear-fill"></i>
+            </span>
+
             <span>Settings</span>
         </a>
 
 
+        <!-- ACCOUNT -->
         <div class="menu-label">
             ACCOUNT
         </div>
 
         <a href="/or_scheduling/logout.php">
 
-            <i class="bi bi-box-arrow-right"></i>
-
-            <span>
-                Logout
+            <span class="nav-icon logout-icon">
+                <i class="bi bi-box-arrow-right"></i>
             </span>
+
+            <span>Logout</span>
 
         </a>
 
     </nav>
 
 </aside>
+```

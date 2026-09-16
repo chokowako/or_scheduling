@@ -247,7 +247,7 @@ img {
 
     border-radius: 11px;
 
-    color: var(--text-600);
+    color: #000000;
 
     text-decoration: none;
 
@@ -2442,6 +2442,140 @@ margin-left: 2px;
 }
 
 
+
+
+
+
+/* Patients sidebar icon — match KPI icon style */
+.sidebar-menu a[href="/or_scheduling/pages/patients.php"] .nav-icon {
+    width: 52px;
+    height: 52px;
+    flex: 0 0 52px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    background: #e2f4ec;
+    color: #358e6c;
+
+    font-size: 22px;
+}
+
+
+/* =========================================================
+   SIDEBAR ICONS — KPI STYLE
+   ========================================================= */
+
+/* Common KPI-style icon box */
+.sidebar-menu a .nav-icon {
+    width: 52px;
+    height: 52px;
+    flex: 0 0 52px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    font-size: 22px;
+}
+
+
+
+/* PATIENTS — GREEN */
+.sidebar-menu a[href="/or_scheduling/pages/patients.php"] .nav-icon {
+    background: #e2f4ec;
+    color: #358e6c;
+}
+
+
+/* SURGEONS — BLUE */
+.sidebar-menu a[href="/or_scheduling/pages/surgeons.php"] .nav-icon {
+    background: #e8f0f7;
+    color: #52758f;
+}
+
+/* OPERATING ROOMS — ORANGE */
+.sidebar-menu a[href="/or_scheduling/pages/rooms.php"] .nav-icon {
+    background: #fff3dc;
+    color: #c58624;
+}
+
+
+/* PROCEDURES — PURPLE */
+.sidebar-menu a[href="/or_scheduling/pages/procedures.php"] .nav-icon {
+    background: #f0eafa;
+    color: #8064a2;
+}
+
+
+/* OR SCHEDULING — GREEN */
+.sidebar-menu a[href="/or_scheduling/pages/schedules.php"] .nav-icon {
+    background: #e2f4ec;
+    color: #358e6c;
+}
+
+
+/* REPORTS — BLUE */
+.sidebar-menu a[href="/or_scheduling/pages/reports.php"] .nav-icon {
+    background: #e8f0f7;
+    color: #52758f;
+}
+
+
+/* SETTINGS — GRAY */
+.sidebar-menu a[href="/or_scheduling/pages/settings.php"] .nav-icon {
+    background: #f1f3f3;
+    color: #60716b;
+}
+
+
+/* LOGOUT */
+.sidebar-menu a[href="/or_scheduling/logout.php"] .nav-icon {
+    background: #f1f3f3;
+    color: #84938d;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* =========================================================
    DESKTOP PANEL ALIGNMENT
    ========================================================= */
@@ -3045,6 +3179,10 @@ button:focus-visible {
     outline: 3px solid rgba(77, 169, 133, 0.3);
     outline-offset: 2px;
 }
+
+
+
+
 
 
 

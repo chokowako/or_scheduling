@@ -1,12 +1,30 @@
 /* ============================================================
    OR SCHEDULING SYSTEM
-   Schedules Page — Modern Clinical Workspace
+   SCHEDULES PAGE
+   Modern Clinical Workspace
    Soft Sage / Clean Hospital UI
+
+   CSS ORGANIZATION
+   01. Page
+   02. Page Header
+   03. Alerts
+   04. Schedule Workspace
+   05. Workspace Header
+   06. Patient Information
+   07. Schedule Details
+   08. Surgical Team
+   09. Procedure & Anesthesia
+   10. Additional Information
+   11. Submit / Save Area
+   12. Existing Schedules
+   13. Table
+   14. Accessibility
+   15. Responsive
    ============================================================ */
 
 
 /* ============================================================
-   PAGE
+   01. PAGE
    ============================================================ */
 
 .schedule-main-content {
@@ -51,7 +69,7 @@
 
 
 /* ============================================================
-   PAGE HEADER
+   02. PAGE HEADER
    ============================================================ */
 
 .schedule-page-header {
@@ -78,7 +96,7 @@
 
     color: #34795d;
 
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 850;
 
     letter-spacing: .16em;
@@ -158,7 +176,7 @@
 
     color: #657d72;
 
-    font-size: 12px;
+    font-size: 13px;
 
     line-height: 1.6;
 }
@@ -179,7 +197,7 @@
 
     color: #426d5b;
 
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 800;
 
     white-space: nowrap;
@@ -202,7 +220,7 @@
 
 
 /* ============================================================
-   ALERT
+   03. ALERTS
    ============================================================ */
 
 .schedule-alert {
@@ -217,14 +235,16 @@
 
     border-radius: 12px;
 
-    font-size: 12px;
+    font-size: 13px;
+
+    line-height: 1.5;
 
     box-shadow:
         0 6px 18px rgba(39, 72, 57, .055);
 }
 
 .schedule-alert-icon {
-    font-size: 17px;
+    font-size: 18px;
 }
 
 .schedule-alert-success {
@@ -245,7 +265,7 @@
 
 
 /* ============================================================
-   WORKSPACE
+   04. SCHEDULE WORKSPACE
    ============================================================ */
 
 .schedule-workspace,
@@ -267,7 +287,7 @@
 
 
 /* ============================================================
-   WORKSPACE HEADER
+   05. WORKSPACE HEADER
    ============================================================ */
 
 .workspace-header {
@@ -350,7 +370,7 @@
 
     color: #438568;
 
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 850;
 
     letter-spacing: .12em;
@@ -363,7 +383,7 @@
 
     color: #203b2f;
 
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 850;
 
     letter-spacing: -.025em;
@@ -374,13 +394,15 @@
 
     color: #71877d;
 
-    font-size: 11px;
+    font-size: 12px;
+
+    line-height: 1.5;
 }
 
 .workspace-required {
     color: #71847b;
 
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
 
     white-space: nowrap;
@@ -393,7 +415,7 @@
 
 
 /* ============================================================
-   CLINICAL SECTIONS
+   COMMON CLINICAL SECTION
    ============================================================ */
 
 .clinical-section {
@@ -459,7 +481,7 @@
 
     color: #327b5d;
 
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 850;
 
     box-shadow:
@@ -484,31 +506,33 @@
 
     color: #428b69;
 
-    font-size: 15px;
+    font-size: 16px;
 }
 
 .section-heading h3 {
     margin: 0;
 
-    color: #293f36;
+    color: #263f34;
 
-    font-size: 14px;
-    font-weight: 850;
+    font-size: 1.20rem;
+    font-weight: 750;
+
+    line-height: 1.3;
 }
 
 .section-heading p {
     margin: 4px 0 0;
 
-    color: #758980;
+    color: #4f6259;
 
-    font-size: 10px;
+    font-size: 13px;
 
-    line-height: 1.5;
+    line-height: 1.55;
 }
 
 
 /* ============================================================
-   LABELS
+   COMMON FORM LABELS
    ============================================================ */
 
 .form-label {
@@ -518,29 +542,28 @@
 
     color: #365247;
 
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 850;
+
+    line-height: 1.4;
 }
 
 
 /* ============================================================
-   FORM CONTROLS
+   COMMON FORM CONTROLS
    ============================================================ */
 
 .schedule-main-content .form-control,
 .schedule-main-content .form-select {
     min-height: 43px;
-
     border: 1px solid #c5dbd1;
-
     border-radius: 9px;
-
     background: #ffffff;
-
-    color: #294439;
-
-    font-size: 11px;
-
+    color: #000000;
+    font-size: 13px;
+	font-weight: 700;
+	font-family: Arial, sans-serif;
+    line-height: 1.45;
     box-shadow:
         0 1px 2px rgba(31, 58, 47, .025);
 
@@ -591,31 +614,24 @@
 
 
 /* ============================================================
-   PATIENT
+   06. PATIENT INFORMATION
    ============================================================ */
 
 .patient-selection-card {
     display: grid;
-
     grid-template-columns:
         minmax(300px, 1.15fr)
         minmax(400px, 1fr);
-
     gap: 18px;
-
     padding: 18px;
-
     border: 1px solid #c8e0d5;
-
     border-radius: 15px;
-
     background:
         linear-gradient(
             145deg,
             #eaf7f1,
             #f8fcfa
         );
-
     box-shadow:
         inset 0 1px 0 rgba(255,255,255,.8);
 }
@@ -633,14 +649,10 @@
 
     left: 13px;
     top: 50%;
-
     transform: translateY(-50%);
-
     z-index: 2;
-
     color: #59977b;
-
-    font-size: 13px;
+    font-size: 15px;
 }
 
 .input-icon-wrapper .form-select {
@@ -670,38 +682,33 @@
 
 .patient-info-label {
     display: block;
-
     margin-bottom: 4px;
-
     color: #7d9188;
-
-    font-size: 8px;
+    font-size: 10px;
     font-weight: 850;
-
     letter-spacing: .08em;
-
     text-transform: uppercase;
 }
 
 .patient-info-item strong {
     display: block;
-
     overflow: hidden;
-
-    color: #3b554a;
-
-    font-size: 10px;
+    color: #000000;
+    font-size: 12px;
     font-weight: 800;
-
+    line-height: 1.4;
     text-overflow: ellipsis;
-
     white-space: nowrap;
 }
 
 
 /* ============================================================
-   SCHEDULING PLANNING
+   07. SCHEDULE DETAILS
    ============================================================ */
+
+/* ------------------------------------------------------------
+   Surgery Date / End Date / Time
+   ------------------------------------------------------------ */
 
 .schedule-planning-grid {
     display: grid;
@@ -754,7 +761,7 @@
 
     color: #438a68;
 
-    font-size: 15px;
+    font-size: 16px;
 }
 
 .planning-card-content {
@@ -770,7 +777,7 @@
 
     color: #6c8278;
 
-    font-size: 8px;
+    font-size: 11px;
     font-weight: 850;
 
     letter-spacing: .09em;
@@ -808,7 +815,9 @@
 
     color: #91a29b;
 
-    font-size: 8px;
+    font-size: 10px;
+
+    line-height: 1.4;
 }
 
 .time-separator {
@@ -816,13 +825,13 @@
 
     color: #78978a;
 
-    font-size: 12px;
+    font-size: 13px;
 }
 
 
-/* ============================================================
-   ROOM / PRIORITY
-   ============================================================ */
+/* ------------------------------------------------------------
+   Operating Room / Priority / STAT
+   ------------------------------------------------------------ */
 
 .room-priority-grid {
     display: grid;
@@ -890,7 +899,7 @@
 
     color: #448b69;
 
-    font-size: 15px;
+    font-size: 16px;
 }
 
 .panel-eyebrow {
@@ -898,7 +907,7 @@
 
     color: #80938a;
 
-    font-size: 7px;
+    font-size: 9px;
 }
 
 .room-panel-header h4,
@@ -908,8 +917,10 @@
 
     color: #344c42;
 
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 850;
+
+    line-height: 1.35;
 }
 
 .room-select {
@@ -929,7 +940,7 @@
 
     color: #7d9188;
 
-    font-size: 8px;
+    font-size: 10px;
 
     line-height: 1.5;
 }
@@ -954,7 +965,7 @@
 
     color: #466859;
 
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .stat-control > div > span {
@@ -964,13 +975,15 @@
 
     color: #879992;
 
-    font-size: 8px;
+    font-size: 10px;
+
+    line-height: 1.4;
 }
 
 
-/* ============================================================
+/* ------------------------------------------------------------
    STAT SWITCH
-   ============================================================ */
+   ------------------------------------------------------------ */
 
 .stat-switch {
     position: relative;
@@ -1043,8 +1056,12 @@
 
 
 /* ============================================================
-   SURGICAL TEAM
+   08. SURGICAL TEAM
    ============================================================ */
+
+/* ------------------------------------------------------------
+   Primary Surgeon / Anesthesiologist
+   ------------------------------------------------------------ */
 
 .team-primary-grid {
     display: grid;
@@ -1100,7 +1117,7 @@
 
     border-radius: 14px;
 
-    font-size: 18px;
+    font-size: 19px;
 }
 
 .surgeon-avatar {
@@ -1132,16 +1149,18 @@
 
     color: #668578;
 
-    font-size: 7px;
+    font-size: 10px;
     font-weight: 850;
 
     letter-spacing: .12em;
+
+    line-height: 1.3;
 }
 
 
-/* ============================================================
-   ASSISTANTS
-   ============================================================ */
+/* ------------------------------------------------------------
+   Assistant Surgeons
+   ------------------------------------------------------------ */
 
 .assistants-workspace {
     padding: 16px;
@@ -1193,7 +1212,7 @@
 
     color: #448a69;
 
-    font-size: 14px;
+    font-size: 15px;
 }
 
 .assistant-heading h4 {
@@ -1201,8 +1220,10 @@
 
     color: #3d574b;
 
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 850;
+
+    line-height: 1.35;
 }
 
 .assistant-heading p {
@@ -1210,7 +1231,9 @@
 
     color: #81938b;
 
-    font-size: 8px;
+    font-size: 10px;
+
+    line-height: 1.45;
 }
 
 .btn-add-assistant {
@@ -1232,7 +1255,7 @@
 
     color: #317557;
 
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 850;
 
     transition:
@@ -1280,7 +1303,7 @@
 
     color: #3a7f63;
 
-    font-size: 8px;
+    font-size: 10px;
     font-weight: 850;
 }
 
@@ -1300,7 +1323,7 @@
 
     color: #468969;
 
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .assistant-select-wrapper {
@@ -1340,8 +1363,12 @@
 
 
 /* ============================================================
-   PROCEDURE / ANESTHESIA
+   09. PROCEDURE & ANESTHESIA
    ============================================================ */
+
+/* ------------------------------------------------------------
+   Main Procedure / Anesthetic
+   ------------------------------------------------------------ */
 
 .procedure-main-grid {
     display: grid;
@@ -1402,7 +1429,7 @@
 
     color: #408563;
 
-    font-size: 17px;
+    font-size: 18px;
 }
 
 .anesthetic-card-icon {
@@ -1425,8 +1452,13 @@
 
     color: #718c80;
 
-    font-size: 7px;
+    font-size: 10px;
 }
+
+
+/* ------------------------------------------------------------
+   Clinical Details
+   ------------------------------------------------------------ */
 
 .clinical-details-grid {
     display: grid;
@@ -1439,7 +1471,7 @@
 
 
 /* ============================================================
-   NOTES
+   10. ADDITIONAL INFORMATION
    ============================================================ */
 
 .notes-grid {
@@ -1502,7 +1534,7 @@
 
     color: #458a69;
 
-    font-size: 14px;
+    font-size: 15px;
 }
 
 .infection-note .note-icon {
@@ -1518,8 +1550,10 @@
 
     color: #3e574c;
 
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 850;
+
+    line-height: 1.35;
 }
 
 .note-card-header span {
@@ -1529,12 +1563,14 @@
 
     color: #879992;
 
-    font-size: 8px;
+    font-size: 10px;
+
+    line-height: 1.45;
 }
 
 
 /* ============================================================
-   SUBMIT AREA
+   11. SUBMIT / SAVE AREA
    ============================================================ */
 
 .schedule-submit-area {
@@ -1581,7 +1617,7 @@
 
     color: #468b69;
 
-    font-size: 15px;
+    font-size: 16px;
 }
 
 .submit-information strong {
@@ -1589,7 +1625,7 @@
 
     color: #3a5649;
 
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 850;
 }
 
@@ -1600,7 +1636,9 @@
 
     color: #7e9188;
 
-    font-size: 8px;
+    font-size: 10px;
+
+    line-height: 1.45;
 }
 
 .schedule-form-actions {
@@ -1624,7 +1662,7 @@
 
     border-radius: 9px;
 
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 850;
 
     transition:
@@ -1681,7 +1719,7 @@
 
 
 /* ============================================================
-   EXISTING SCHEDULES
+   12. EXISTING SCHEDULES
    ============================================================ */
 
 .schedule-list-card {
@@ -1754,7 +1792,7 @@
 
     color: #397e63;
 
-    font-size: 18px;
+    font-size: 19px;
 }
 
 .schedule-list-heading h2 {
@@ -1762,7 +1800,7 @@
 
     color: #20382d;
 
-    font-size: 17px;
+    font-size: 19px;
     font-weight: 850;
 
     letter-spacing: -.025em;
@@ -1773,7 +1811,9 @@
 
     color: #758a81;
 
-    font-size: 9px;
+    font-size: 11px;
+
+    line-height: 1.45;
 }
 
 .schedule-count {
@@ -1798,7 +1838,7 @@
 
     color: #34785d;
 
-    font-size: 19px;
+    font-size: 20px;
     font-weight: 850;
 
     line-height: 1.1;
@@ -1811,7 +1851,7 @@
 
     color: #758a81;
 
-    font-size: 8px;
+    font-size: 10px;
     font-weight: 800;
 
     letter-spacing: .05em;
@@ -1821,7 +1861,7 @@
 
 
 /* ============================================================
-   EMPTY STATE
+   EMPTY SCHEDULE STATE
    ============================================================ */
 
 .schedule-empty {
@@ -1868,7 +1908,7 @@
 
     color: #579779;
 
-    font-size: 25px;
+    font-size: 26px;
 
     box-shadow:
         0 10px 23px rgba(54,118,91,.10);
@@ -1924,7 +1964,7 @@
 
     color: #293f35;
 
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 850;
 }
 
@@ -1935,7 +1975,7 @@
 
     color: #758981;
 
-    font-size: 10px;
+    font-size: 11px;
 
     line-height: 1.65;
 }
@@ -1950,13 +1990,13 @@
 
     color: #478d6c;
 
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 800;
 }
 
 
 /* ============================================================
-   TABLE
+   13. EXISTING SCHEDULE TABLE
    ============================================================ */
 
 .schedule-table-wrapper {
@@ -1992,7 +2032,7 @@
 
     color: #4d655b;
 
-    font-size: 8px;
+    font-size: 10px;
     font-weight: 850;
 
     letter-spacing: .07em;
@@ -2011,7 +2051,9 @@
 
     color: #40544b;
 
-    font-size: 9px;
+    font-size: 11px;
+
+    line-height: 1.45;
 
     vertical-align: middle;
 
@@ -2036,16 +2078,16 @@
 }
 
 
-/* ============================================================
-   TABLE DATE
-   ============================================================ */
+/* ------------------------------------------------------------
+   Date / Time
+   ------------------------------------------------------------ */
 
 .schedule-date-cell strong {
     display: block;
 
     color: #263d34;
 
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 850;
 }
 
@@ -2056,7 +2098,7 @@
 
     color: #398064;
 
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 800;
 }
 
@@ -2067,13 +2109,13 @@
 
     color: #82938c;
 
-    font-size: 8px;
+    font-size: 9px;
 }
 
 
-/* ============================================================
-   PATIENT
-   ============================================================ */
+/* ------------------------------------------------------------
+   Patient
+   ------------------------------------------------------------ */
 
 .patient-cell strong {
     display: block;
@@ -2084,8 +2126,10 @@
 
     color: #2d453b;
 
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 850;
+
+    line-height: 1.4;
 
     text-overflow: ellipsis;
 
@@ -2099,13 +2143,13 @@
 
     color: #768a82;
 
-    font-size: 8px;
+    font-size: 9px;
 }
 
 
-/* ============================================================
-   DOCTOR TABLE CELL
-   ============================================================ */
+/* ------------------------------------------------------------
+   Doctor
+   ------------------------------------------------------------ */
 
 .doctor-table-cell {
     display: flex;
@@ -2119,7 +2163,7 @@
 .doctor-table-cell > span {
     color: #52655d;
 
-    font-size: 9px;
+    font-size: 10px;
 
     white-space: nowrap;
 }
@@ -2142,7 +2186,7 @@
 
     color: #438665;
 
-    font-size: 11px;
+    font-size: 12px;
 }
 
 .anesthesia-table-avatar {
@@ -2154,9 +2198,9 @@
 }
 
 
-/* ============================================================
-   ROOM
-   ============================================================ */
+/* ------------------------------------------------------------
+   Operating Room
+   ------------------------------------------------------------ */
 
 .room-badge {
     display: inline-flex;
@@ -2179,32 +2223,32 @@
 
     color: #34765b;
 
-    font-size: 8px;
+    font-size: 10px;
     font-weight: 850;
 
     white-space: nowrap;
 }
 
 
-/* ============================================================
-   PROCEDURE
-   ============================================================ */
+/* ------------------------------------------------------------
+   Procedure
+   ------------------------------------------------------------ */
 
 .procedure-cell {
     max-width: 220px;
 
     color: #344a41;
 
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 750;
 
     line-height: 1.5;
 }
 
 
-/* ============================================================
-   ASSISTANTS
-   ============================================================ */
+/* ------------------------------------------------------------
+   Assistants
+   ------------------------------------------------------------ */
 
 .assistant-list {
     display: flex;
@@ -2218,7 +2262,7 @@
 .assistant-list span {
     color: #52655d;
 
-    font-size: 8px;
+    font-size: 9px;
 
     white-space: nowrap;
 }
@@ -2230,13 +2274,13 @@
 .muted-text {
     color: #98a6a0;
 
-    font-size: 8px;
+    font-size: 9px;
 }
 
 
-/* ============================================================
-   PRIORITY
-   ============================================================ */
+/* ------------------------------------------------------------
+   Priority
+   ------------------------------------------------------------ */
 
 .priority-badge {
     display: inline-flex;
@@ -2248,7 +2292,7 @@
 
     border-radius: 7px;
 
-    font-size: 7px;
+    font-size: 9px;
     font-weight: 850;
 
     white-space: nowrap;
@@ -2289,9 +2333,9 @@
 }
 
 
-/* ============================================================
-   STATUS
-   ============================================================ */
+/* ------------------------------------------------------------
+   Status
+   ------------------------------------------------------------ */
 
 .status-badge {
     display: inline-flex;
@@ -2303,7 +2347,7 @@
 
     border-radius: 7px;
 
-    font-size: 7px;
+    font-size: 9px;
     font-weight: 850;
 
     white-space: nowrap;
@@ -2362,7 +2406,7 @@
 
 
 /* ============================================================
-   SCROLLBAR
+   TABLE SCROLLBAR
    ============================================================ */
 
 .schedule-table-wrapper::-webkit-scrollbar {
@@ -2385,7 +2429,7 @@
 
 
 /* ============================================================
-   ACCESSIBILITY
+   14. ACCESSIBILITY
    ============================================================ */
 
 .schedule-main-content button:focus-visible,
@@ -2400,7 +2444,12 @@
 
 
 /* ============================================================
-   RESPONSIVE — 1200
+   15. RESPONSIVE
+   ============================================================ */
+
+
+/* ============================================================
+   RESPONSIVE — 1200px
    ============================================================ */
 
 @media (max-width: 1200px) {
@@ -2433,7 +2482,7 @@
 
 
 /* ============================================================
-   RESPONSIVE — 1100
+   RESPONSIVE — 1100px
    ============================================================ */
 
 @media (max-width: 1100px) {
@@ -2470,7 +2519,7 @@
 
 
 /* ============================================================
-   RESPONSIVE — 900
+   RESPONSIVE — 900px
    ============================================================ */
 
 @media (max-width: 900px) {
@@ -2529,7 +2578,7 @@
 
 
 /* ============================================================
-   RESPONSIVE — 768
+   RESPONSIVE — 768px
    ============================================================ */
 
 @media (max-width: 768px) {
@@ -2548,6 +2597,10 @@
 
     .schedule-page-header h1 {
         font-size: 27px;
+    }
+
+    .schedule-page-header p {
+        font-size: 12px;
     }
 
     .clinical-section {
@@ -2581,7 +2634,7 @@
 
 
 /* ============================================================
-   RESPONSIVE — 600
+   RESPONSIVE — 600px
    ============================================================ */
 
 @media (max-width: 600px) {

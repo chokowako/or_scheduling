@@ -1,0 +1,2285 @@
+/* ============================================================
+   OR SCHEDULING SYSTEM
+   SURGEONS PAGE
+   Matched to PATIENTS PAGE
+   Soft Sage / Clean Hospital UI
+   ============================================================ */
+
+
+/* ============================================================
+   PAGE
+   ============================================================ */
+
+.surgeons-page {
+    width: calc(100% - 260px);
+    margin-left: 260px;
+    min-height: 100vh;
+
+    padding: 34px 38px 60px;
+
+    box-sizing: border-box;
+
+    background:
+        radial-gradient(
+            circle at 92% 0%,
+            rgba(73, 153, 115, 0.16),
+            transparent 27%
+        ),
+        radial-gradient(
+            circle at 4% 30%,
+            rgba(105, 177, 143, 0.10),
+            transparent 25%
+        ),
+        linear-gradient(
+            180deg,
+            #e4f2ec 0%,
+            #eef7f3 42%,
+            #e7f3ed 100%
+        );
+
+    font-family: Arial, sans-serif;
+}
+
+
+/* ============================================================
+   CENTER MAIN CONTENT
+   ============================================================ */
+
+.surgeons-page > .surgeon-alert,
+.surgeons-page > .surgeon-form-card,
+.surgeons-page > .surgeon-list-card {
+    width: 100%;
+    max-width: 1380px;
+
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+/* ============================================================
+   ALERT
+   ============================================================ */
+
+.surgeon-alert {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+
+    padding: 13px 16px;
+    margin-bottom: 20px;
+
+    border-radius: 11px;
+
+    font-size: 13px;
+    line-height: 1.5;
+
+    box-shadow:
+        0 6px 18px rgba(39, 72, 57, .055);
+}
+
+.surgeon-alert i {
+    font-size: 17px;
+}
+
+
+/* ============================================================
+   FORM CARD / LIST CARD
+   ============================================================ */
+
+.surgeon-form-card,
+.surgeon-list-card {
+    overflow: hidden;
+
+    border: 1px solid #cbded5;
+    border-radius: 20px;
+
+    background: rgba(255,255,255,.96);
+
+    box-shadow:
+        0 18px 42px rgba(39, 78, 61, .085),
+        0 3px 8px rgba(39, 78, 61, .035);
+}
+
+
+/* ============================================================
+   FORM CARD
+   ============================================================ */
+
+.surgeon-form-card {
+    padding: 0;
+    margin-bottom: 27px;
+}
+
+
+/* ============================================================
+   FORM HEADER
+   ============================================================ */
+
+.surgeon-form-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    gap: 13px;
+
+    padding: 22px 27px;
+
+    margin: 0;
+
+    background:
+        linear-gradient(
+            135deg,
+            #d9eee3 0%,
+            #eaf6f1 52%,
+            #f7fbf9 100%
+        );
+
+    border-bottom: 1px solid #c9ded4;
+}
+
+
+.surgeon-form-icon {
+    width: 45px;
+    height: 45px;
+
+    flex: 0 0 45px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 13px;
+
+    background: rgba(255,255,255,.88);
+
+    border: 1px solid #bdd9cc;
+
+    color: #337e60;
+
+    font-size: 19px;
+}
+
+
+.surgeon-form-eyebrow {
+    display: block;
+
+    color: #438568;
+
+    font-size: 10px;
+    font-weight: 850;
+
+    letter-spacing: .12em;
+
+    text-transform: uppercase;
+
+    margin-bottom: 0;
+}
+
+
+.surgeon-form-heading {
+    margin: 3px 0 0;
+
+    color: #203b2f;
+
+    font-size: 20px;
+    font-weight: 850;
+
+    letter-spacing: -.025em;
+}
+
+
+.surgeon-form-description {
+    margin: 4px 0 0;
+
+    color: #71877d;
+
+    font-size: 12px;
+
+    line-height: 1.5;
+}
+
+
+/* ============================================================
+   SECTION
+   ============================================================ */
+
+.surgeon-section-title {
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    margin: 0;
+
+    padding: 25px 27px 16px;
+
+    box-sizing: border-box;
+
+    border-top: 1px solid #dce9e4;
+
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff 0%,
+            #fbfdfc 100%
+        );
+}
+
+.surgeon-section-title:first-of-type {
+    border-top: 0;
+}
+
+
+.surgeon-section-spacing {
+    margin-top: 0;
+    padding-top: 25px;
+}
+
+
+.surgeon-section-number {
+    width: 34px;
+    height: 34px;
+
+    flex: 0 0 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #cfe9dc,
+            #eff8f4
+        );
+
+    border: 1px solid #b9daca;
+
+    color: #327b5d;
+
+    font-size: 11px;
+    font-weight: 850;
+}
+
+
+.surgeon-section-title strong {
+    display: block;
+
+    margin: 0;
+
+    color: #263f34;
+
+    font-size: 17px;
+    font-weight: 800;
+
+    line-height: 1.3;
+}
+
+
+.surgeon-section-title small {
+    display: block;
+
+    margin: 3px 0 0;
+
+    color: #61756c;
+
+    font-size: 12px;
+
+    line-height: 1.5;
+}
+
+
+/* ============================================================
+   FORM GRID
+   ============================================================ */
+
+.surgeon-form-grid {
+    display: grid;
+
+    gap: 13px;
+
+    padding: 0 27px 25px;
+
+    box-sizing: border-box;
+
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff 0%,
+            #fbfdfc 100%
+        );
+}
+
+
+.surgeon-form-grid-4 {
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+}
+
+
+.surgeon-form-grid-3 {
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+}
+
+
+/* ============================================================
+   FORM FIELD
+   ============================================================ */
+
+.surgeon-field {
+    min-width: 0;
+}
+
+
+.surgeon-field label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #365247;
+
+    font-size: 12px;
+    font-weight: 850;
+
+    line-height: 1.4;
+}
+
+
+.surgeon-field label span {
+    color: #c05d5d;
+}
+
+
+.surgeon-field input,
+.surgeon-field select {
+    width: 100%;
+
+    min-height: 43px;
+    height: auto;
+
+    padding: 9px 12px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #c5dbd1;
+
+    border-radius: 9px;
+
+    background: #ffffff;
+
+    color: #000000;
+
+    font-family: Arial, sans-serif;
+
+    font-size: 13px;
+
+    line-height: 1.45;
+
+    outline: none;
+
+    box-shadow:
+        0 1px 2px rgba(31,58,47,.025);
+
+    transition:
+        border-color .18s ease,
+        box-shadow .18s ease,
+        background-color .18s ease;
+}
+
+
+.surgeon-field select {
+    padding: 9px 35px 9px 12px;
+}
+
+
+.surgeon-field input:hover,
+.surgeon-field select:hover {
+    border-color: #91bfae;
+
+    background: #fcfefd;
+}
+
+
+.surgeon-field input:focus,
+.surgeon-field select:focus {
+    border-color: #4e9b77;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 0 0 3px rgba(78,155,119,.13),
+        0 5px 13px rgba(46,103,78,.055);
+
+    outline: none;
+}
+
+
+.surgeon-field input::placeholder {
+    color: #98aaa2;
+}
+
+
+/* ============================================================
+   FORM ACTIONS
+   ============================================================ */
+
+.surgeon-form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 9px;
+
+    margin-top: 0;
+
+    padding: 18px 27px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #edf7f2,
+            #e3f1eb
+        );
+
+    border-top: 1px solid #cddfd7;
+}
+
+
+.surgeon-form-note {
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    margin-right: auto;
+
+    color: #758981;
+
+    font-size: 10px;
+}
+
+
+.surgeon-form-note i {
+    color: #528e71;
+
+    font-size: 14px;
+
+    margin-right: 0;
+}
+
+
+.surgeon-form-note strong {
+    color: #c05d5d;
+}
+
+
+.surgeon-form-buttons {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+}
+
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+
+.btn-surgeon-primary,
+.btn-surgeon-secondary,
+.btn-surgeon-search,
+.btn-surgeon-clear {
+    min-height: 41px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    padding: 8px 16px;
+
+    border-radius: 9px;
+
+    font-family: Arial, sans-serif;
+
+    font-size: 12px;
+    font-weight: 850;
+
+    text-decoration: none;
+
+    transition: .16s ease;
+
+    cursor: pointer;
+}
+
+
+/* PRIMARY */
+
+.btn-surgeon-primary {
+    border: 1px solid #367b5d;
+
+    background:
+        linear-gradient(
+            135deg,
+            #448f6e,
+            #33775b
+        );
+
+    color: #ffffff;
+
+    box-shadow:
+        0 7px 16px rgba(55,121,94,.18);
+}
+
+
+.btn-surgeon-primary:hover {
+    background:
+        linear-gradient(
+            135deg,
+            #397f63,
+            #2e6b52
+        );
+
+    border-color: #2e6b52;
+
+    color: #ffffff;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 9px 20px rgba(55,121,94,.23);
+}
+
+
+/* SECONDARY */
+
+.btn-surgeon-secondary {
+    border: 1px solid #c5d9d0;
+
+    background: #ffffff;
+
+    color: #5d7168;
+}
+
+
+.btn-surgeon-secondary:hover {
+    background: #f7faf8;
+
+    border-color: #aec8bc;
+
+    color: #344940;
+}
+
+
+/* SEARCH */
+
+.btn-surgeon-search {
+    min-height: 42px;
+
+    border: 1px solid #367b5d;
+
+    background: #3f8969;
+
+    color: #ffffff;
+}
+
+
+.btn-surgeon-search:hover {
+    background: #33775b;
+
+    border-color: #33775b;
+
+    color: #ffffff;
+
+    transform: translateY(-1px);
+}
+
+
+/* CLEAR */
+
+.btn-surgeon-clear {
+    min-height: 42px;
+
+    border: 1px solid #cbded5;
+
+    background: #ffffff;
+
+    color: #61766d;
+}
+
+
+.btn-surgeon-clear:hover {
+    background: #f1f7f4;
+
+    color: #385448;
+}
+
+
+/* ============================================================
+   LIST CARD
+   ============================================================ */
+
+.surgeon-list-card {
+    margin-top: 0;
+
+    overflow: hidden;
+}
+
+
+/* ============================================================
+   LIST HEADER
+   ============================================================ */
+
+.surgeon-list-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 22px 27px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #d9eee3,
+            #f3f9f6
+        );
+
+    border-bottom: 1px solid #cbded5;
+}
+
+
+.surgeon-list-heading-area {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+.surgeon-list-icon {
+    width: 44px;
+    height: 44px;
+
+    flex: 0 0 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background: rgba(255,255,255,.88);
+
+    border: 1px solid #c4dcd1;
+
+    color: #397e63;
+
+    font-size: 19px;
+}
+
+
+.surgeon-list-eyebrow {
+    display: block;
+
+    color: #438568;
+
+    font-size: 10px;
+    font-weight: 850;
+
+    letter-spacing: .12em;
+
+    text-transform: uppercase;
+}
+
+
+.surgeon-list-heading {
+    margin: 2px 0 0;
+
+    color: #20382d;
+
+    font-size: 19px;
+    font-weight: 850;
+
+    letter-spacing: -.025em;
+}
+
+
+.surgeon-list-count {
+    min-width: 50px;
+
+    padding: 8px 12px;
+
+    text-align: center;
+
+    border-radius: 10px;
+
+    background: #ffffff;
+
+    border: 1px solid #c5dbd1;
+
+    color: #34785d;
+
+    font-size: 17px;
+    font-weight: 850;
+
+    box-shadow:
+        0 5px 13px rgba(42,86,68,.06);
+}
+
+
+.surgeon-list-count strong {
+    color: #34785d;
+
+    font-size: 17px;
+
+    font-weight: 850;
+}
+
+
+/* ============================================================
+   SEARCH
+   ============================================================ */
+
+.surgeon-search-area {
+    padding: 16px 27px;
+
+    background: #f7fbf9;
+
+    border-bottom: 1px solid #dce9e4;
+}
+
+
+.surgeon-search-form {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+}
+
+
+.surgeon-search-input {
+    position: relative;
+
+    flex: 1;
+
+    min-width: 0;
+}
+
+
+.surgeon-search-input i {
+    position: absolute;
+
+    left: 13px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: #6b9783;
+
+    font-size: 15px;
+}
+
+
+.surgeon-search-input input {
+    width: 100%;
+
+    min-height: 42px;
+
+    padding: 9px 12px 9px 38px;
+
+    border: 1px solid #c5dbd1;
+
+    border-radius: 9px;
+
+    background: #ffffff;
+
+    color: #000000;
+
+    font-family: Arial, sans-serif;
+
+    font-size: 13px;
+
+    outline: none;
+
+    box-sizing: border-box;
+
+    transition: .18s ease;
+}
+
+
+.surgeon-search-input input::placeholder {
+    color: #98aaa2;
+}
+
+
+.surgeon-search-input input:focus {
+    border-color: #4e9b77;
+
+    box-shadow:
+        0 0 0 3px rgba(78,155,119,.13);
+}
+
+
+/* ============================================================
+   TABLE WRAPPER
+   ============================================================ */
+
+.surgeon-table-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+
+    background: #ffffff;
+
+    scrollbar-width: thin;
+}
+
+
+/* ============================================================
+   TABLE
+   ============================================================ */
+
+.surgeon-table {
+    width: 100%;
+
+    min-width: 1150px;
+
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+
+.surgeon-table thead th {
+    padding: 13px 14px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #e3f0ea,
+            #dbeae3
+        );
+
+    border-bottom: 1px solid #c5d9d0;
+
+    color: #4d655b;
+
+    font-size: 10px;
+    font-weight: 850;
+
+    letter-spacing: .07em;
+
+    text-align: left;
+
+    text-transform: uppercase;
+
+    white-space: nowrap;
+}
+
+
+.surgeon-table tbody td {
+    padding: 13px 14px;
+
+    border-bottom: 1px solid #dfeae5;
+
+    color: #000000;
+
+    font-family: Arial, sans-serif;
+
+    font-size: 12px;
+
+    line-height: 1.45;
+
+    vertical-align: middle;
+
+    background: #ffffff;
+}
+
+
+.surgeon-table tbody tr {
+    transition: background-color .14s ease;
+}
+
+
+.surgeon-table tbody tr:nth-child(even) td {
+    background: #f7fbf9;
+}
+
+
+.surgeon-table tbody tr:hover td {
+    background: #eaf6f0;
+}
+
+
+.surgeon-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+
+/* ============================================================
+   ID
+   ============================================================ */
+
+.surgeon-id-cell {
+    min-width: 125px;
+
+    color: #2d453b !important;
+
+    font-size: 12px;
+
+    font-weight: 850;
+
+    white-space: nowrap;
+}
+
+
+.surgeon-id-icon {
+    width: 28px;
+    height: 28px;
+
+    flex: 0 0 28px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-right: 6px;
+
+    border-radius: 8px;
+
+    background: #e3f2ea;
+
+    border: 1px solid #c8e1d3;
+
+    color: #438665;
+
+    font-size: 12px;
+}
+
+
+/* ============================================================
+   NAME
+   ============================================================ */
+
+.surgeon-name-cell {
+    min-width: 190px;
+}
+
+
+.surgeon-name-cell strong {
+    display: block;
+
+    color: #000000;
+
+    font-size: 12px;
+    font-weight: 850;
+
+    line-height: 1.4;
+}
+
+
+.surgeon-name-cell small {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #768a82;
+
+    font-size: 9px;
+
+    line-height: 1.4;
+}
+
+
+/* ============================================================
+   SEX
+   ============================================================ */
+
+.surgeon-sex-badge {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 5px 8px;
+
+    border-radius: 7px;
+
+    background: #eaf6f0;
+
+    border: 1px solid #cde3d8;
+
+    color: #397b60;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+/* ============================================================
+   SPECIALIZATION
+   ============================================================ */
+
+.surgeon-specialization {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 6px;
+
+    color: #425b50;
+
+    font-size: 10px;
+}
+
+
+.surgeon-specialization i {
+    color: #579478;
+}
+
+
+.muted-text {
+    color: #98a6a0;
+
+    font-size: 10px;
+}
+
+
+/* ============================================================
+   STATUS
+   ============================================================ */
+
+.surgeon-status-badge {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 5px 8px;
+
+    border-radius: 7px;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+
+    flex: 0 0 6px;
+
+    border-radius: 50%;
+
+    display: inline-block;
+}
+
+
+.status-active {
+    background: #eaf6f0;
+
+    border: 1px solid #cde3d8;
+
+    color: #397b60;
+}
+
+
+.status-active .status-dot {
+    background: #4f9b7d;
+}
+
+
+.status-inactive {
+    background: #f5f1f1;
+
+    border: 1px solid #eadada;
+
+    color: #9a6b6b;
+}
+
+
+.status-inactive .status-dot {
+    background: #b78383;
+}
+
+
+/* ============================================================
+   ACTIONS
+   ============================================================ */
+
+.surgeon-actions {
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+}
+
+
+.surgeon-actions form {
+    margin: 0;
+}
+
+
+.surgeon-action-edit,
+.surgeon-action-delete {
+    width: 34px;
+    height: 34px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+
+    text-decoration: none;
+
+    transition: .16s ease;
+}
+
+/* ============================================================
+   EDIT ACTION
+   ============================================================ */
+
+.surgeon-action-edit {
+    border: 1px solid #c5ddd1;
+    background: #eaf6f0;
+    color: #418365;
+}
+
+
+.surgeon-action-edit:hover {
+    background: #eaf6f1;
+    border-color: #a9cdbd;
+    color: #2e7058;
+    transform: translateY(-1px);
+}
+
+
+/* ============================================================
+   DELETE ACTION
+   ============================================================ */
+
+.surgeon-action-delete {
+    border: 1px solid #e1caca;
+      background: #fde8e8;
+    color: #ff0000;
+
+}
+
+
+.surgeon-action-delete:hover {
+    background: #fff0f0;
+    border-color: #d9b6b6;
+    color: #9c4949;
+    transform: translateY(-1px);
+}
+
+
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
+
+.surgeon-empty {
+    min-height: 260px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 45px 25px;
+
+    text-align: center;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #e5f4ec 0%,
+            #f4faf7 38%,
+            #ffffff 72%
+        );
+}
+
+
+.surgeon-empty-icon {
+    width: 60px;
+    height: 60px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 15px;
+
+    border: 1px solid #bddbcb;
+
+    border-radius: 15px;
+
+    background: #ffffff;
+
+    color: #579779;
+
+    font-size: 24px;
+
+    box-shadow:
+        0 10px 23px rgba(54,118,91,.10);
+}
+
+
+.surgeon-empty h3 {
+    margin: 0 0 6px;
+
+    color: #293f35;
+
+    font-size: 16px;
+    font-weight: 850;
+}
+
+
+.surgeon-empty p {
+    margin: 0;
+
+    color: #758981;
+
+    font-size: 11px;
+
+    line-height: 1.6;
+}
+
+
+/* ============================================================
+   TABLE SCROLLBAR
+   ============================================================ */
+
+.surgeon-table-wrapper::-webkit-scrollbar {
+    height: 8px;
+}
+
+
+.surgeon-table-wrapper::-webkit-scrollbar-track {
+    background: #e0ebe6;
+}
+
+
+.surgeon-table-wrapper::-webkit-scrollbar-thumb {
+    background: #aec9bd;
+
+    border-radius: 10px;
+}
+
+
+.surgeon-table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #91b8a6;
+}
+
+
+/* ============================================================
+   EDIT SURGEON MODAL
+   ============================================================ */
+
+.surgeon-edit-dialog {
+    max-width: 1120px;
+
+    width: calc(100% - 30px);
+}
+
+
+.surgeon-edit-modal {
+    border: 1px solid #cbded5;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 24px 65px rgba(38, 59, 52, 0.18),
+        0 8px 25px rgba(79, 155, 125, 0.10);
+}
+
+
+/* ============================================================
+   MODAL HEADER
+   ============================================================ */
+
+.surgeon-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 22px 27px;
+
+    border-bottom: 1px solid #cfe2d9;
+
+    background:
+        linear-gradient(
+            135deg,
+            #d9eee3 0%,
+            #eaf6f1 52%,
+            #f7fbf9 100%
+        );
+}
+
+
+.surgeon-modal-header-main {
+    display: flex;
+    align-items: center;
+
+    gap: 15px;
+
+    min-width: 0;
+}
+
+
+.surgeon-modal-icon {
+    width: 50px;
+    height: 50px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 50px;
+
+    border-radius: 14px;
+
+    background: rgba(255,255,255,.78);
+
+    border: 1px solid #b9d8ca;
+
+    color: #397c63;
+
+    font-size: 22px;
+
+    box-shadow:
+        0 5px 15px rgba(57,124,99,.08);
+}
+
+
+.surgeon-modal-eyebrow {
+    margin-bottom: 3px;
+
+    color: #4f9b7d;
+
+    font-size: 10px;
+    font-weight: 850;
+
+    letter-spacing: 1.1px;
+
+    text-transform: uppercase;
+}
+
+
+.surgeon-modal-heading {
+    margin: 0;
+
+    color: #263b34;
+
+    font-size: 22px;
+    font-weight: 850;
+
+    line-height: 1.2;
+}
+
+
+.surgeon-modal-subtitle {
+    margin: 5px 0 0;
+
+    color: #71827b;
+
+    font-size: 12px;
+    font-weight: 500;
+
+    line-height: 1.5;
+}
+
+
+.surgeon-modal-close {
+    width: 36px;
+    height: 36px;
+
+    margin-left: 15px;
+
+    flex: 0 0 36px;
+
+    padding: 0;
+
+    border-radius: 50%;
+
+    opacity: 1;
+
+    background-color: rgba(255,255,255,.72);
+
+    border: 1px solid #c5ddd2;
+
+    box-shadow: none;
+
+    transition:
+        background-color .18s ease,
+        border-color .18s ease,
+        transform .18s ease;
+}
+
+
+.surgeon-modal-close:hover {
+    background-color: #ffffff;
+
+    border-color: #a9cdbd;
+
+    transform: rotate(90deg);
+}
+
+
+/* ============================================================
+   MODAL BODY
+   ============================================================ */
+
+.surgeon-modal-body {
+    max-height: calc(100vh - 250px);
+
+    overflow-y: auto;
+
+    background: #ffffff;
+}
+
+
+/* ============================================================
+   MODAL SECTIONS
+   ============================================================ */
+
+.surgeon-modal-section {
+    padding: 25px 27px 27px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff 0%,
+            #fbfdfc 100%
+        );
+}
+
+
+.surgeon-modal-section-professional {
+    border-top: 1px solid #e2eee8;
+
+    background:
+        linear-gradient(
+            180deg,
+            #fbfdfc 0%,
+            #f7fbf9 100%
+        );
+}
+
+
+/* ============================================================
+   MODAL SECTION HEADING
+   ============================================================ */
+
+.surgeon-modal-section-heading {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    margin-bottom: 21px;
+}
+
+
+.surgeon-modal-section-number {
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 36px;
+
+    border-radius: 11px;
+
+    background: #eaf6f1;
+
+    border: 1px solid #cce4d9;
+
+    color: #397c63;
+
+    font-size: 11px;
+    font-weight: 850;
+
+    letter-spacing: .4px;
+}
+
+
+.surgeon-modal-section-copy {
+    min-width: 0;
+}
+
+
+.surgeon-modal-section-title {
+    color: #263b34;
+
+    font-size: 14px;
+    font-weight: 850;
+
+    line-height: 1.25;
+}
+
+
+.surgeon-modal-section-subtitle {
+    margin-top: 3px;
+
+    color: #8a9892;
+
+    font-size: 11px;
+    font-weight: 500;
+}
+
+
+/* ============================================================
+   MODAL FORM GRID
+   ============================================================ */
+
+.surgeon-modal-grid {
+    display: grid;
+
+    gap: 16px;
+}
+
+
+.surgeon-modal-grid-4 {
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+}
+
+
+.surgeon-modal-grid-3 {
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+}
+
+
+/* ============================================================
+   MODAL FORM FIELDS
+   ============================================================ */
+
+.surgeon-edit-modal .surgeon-field {
+    min-width: 0;
+}
+
+
+.surgeon-edit-modal .surgeon-field label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #42544d;
+
+    font-size: 11px;
+    font-weight: 750;
+
+    line-height: 1.4;
+}
+
+
+.surgeon-edit-modal .surgeon-field label span {
+    color: #d65c5c;
+}
+
+
+.surgeon-edit-modal .form-control,
+.surgeon-edit-modal .form-select {
+    width: 100%;
+
+    min-height: 42px;
+
+    padding: 9px 12px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #d7e6df;
+
+    border-radius: 10px;
+
+    background: #ffffff;
+
+    color: #263b34;
+
+    font-family: Arial, sans-serif;
+
+    font-size: 12px;
+    font-weight: 500;
+
+    line-height: 1.45;
+
+    box-shadow: none;
+
+    outline: none;
+
+    transition:
+        border-color .18s ease,
+        box-shadow .18s ease,
+        background-color .18s ease;
+}
+
+
+.surgeon-edit-modal .form-control::placeholder {
+    color: #a6b2ad;
+}
+
+
+.surgeon-edit-modal .form-control:hover,
+.surgeon-edit-modal .form-select:hover {
+    border-color: #b9d8ca;
+
+    background: #fcfefd;
+}
+
+
+.surgeon-edit-modal .form-control:focus,
+.surgeon-edit-modal .form-select:focus {
+    border-color: #79bfa3;
+
+    background: #fbfefc;
+
+    box-shadow:
+        0 0 0 3px rgba(121,191,163,.14);
+
+    outline: none;
+}
+
+
+.surgeon-edit-modal .form-select {
+    cursor: pointer;
+}
+
+
+/* ============================================================
+   MODAL FOOTER / ACTIONS
+   ============================================================ */
+
+.surgeon-modal-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 16px 27px;
+
+    border-top: 1px solid #cfe2d9;
+
+    background:
+        linear-gradient(
+            135deg,
+            #edf7f2 0%,
+            #e3f1eb 100%
+        );
+}
+
+
+.surgeon-modal-note {
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    color: #71827b;
+
+    font-size: 11px;
+    font-weight: 500;
+}
+
+
+.surgeon-modal-note i {
+    color: #4f9b7d;
+
+    font-size: 14px;
+}
+
+
+.surgeon-modal-note strong {
+    color: #397c63;
+
+    font-weight: 800;
+}
+
+
+.surgeon-modal-buttons {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    flex: 0 0 auto;
+}
+
+
+/* ============================================================
+   MODAL SECONDARY BUTTON
+   ============================================================ */
+
+.surgeon-modal-actions .btn-surgeon-secondary {
+    min-height: 40px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    padding: 0 16px;
+
+    border: 1px solid #cbded5;
+
+    border-radius: 10px;
+
+    background: #ffffff;
+
+    color: #596a63;
+
+    font-family: Arial, sans-serif;
+
+    font-size: 12px;
+    font-weight: 750;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition:
+        background-color .18s ease,
+        border-color .18s ease,
+        color .18s ease,
+        transform .18s ease;
+}
+
+
+.surgeon-modal-actions .btn-surgeon-secondary:hover {
+    background: #f6faf8;
+
+    border-color: #afcdbf;
+
+    color: #397c63;
+
+    transform: translateY(-1px);
+}
+
+
+.surgeon-modal-actions .btn-surgeon-secondary i {
+    font-size: 11px;
+}
+
+
+/* ============================================================
+   MODAL PRIMARY BUTTON
+   ============================================================ */
+
+.surgeon-modal-actions .btn-surgeon-primary {
+    min-height: 40px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    padding: 0 18px;
+
+    border: 1px solid #4f9b7d;
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #5eaa8a 0%,
+            #4f9b7d 100%
+        );
+
+    color: #ffffff;
+
+    font-family: Arial, sans-serif;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 5px 13px rgba(79,155,125,.18);
+
+    transition:
+        background .18s ease,
+        box-shadow .18s ease,
+        transform .18s ease;
+}
+
+
+.surgeon-modal-actions .btn-surgeon-primary:hover {
+    background:
+        linear-gradient(
+            135deg,
+            #4f9b7d 0%,
+            #397c63 100%
+        );
+
+    color: #ffffff;
+
+    box-shadow:
+        0 7px 17px rgba(79,155,125,.25);
+
+    transform: translateY(-1px);
+}
+
+
+.surgeon-modal-actions .btn-surgeon-primary i {
+    font-size: 14px;
+}
+
+
+/* ============================================================
+   MODAL SCROLLBAR
+   ============================================================ */
+
+.surgeon-modal-body::-webkit-scrollbar {
+    width: 7px;
+}
+
+
+.surgeon-modal-body::-webkit-scrollbar-track {
+    background: #f4f8f6;
+}
+
+
+.surgeon-modal-body::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+
+    background: #c4ddd2;
+}
+
+
+.surgeon-modal-body::-webkit-scrollbar-thumb:hover {
+    background: #a9cdbd;
+}
+
+
+/* ============================================================
+   OLD MODAL SUPPORT
+   ============================================================ */
+
+.surgeon-modal {
+    border: 0;
+
+    border-radius: 18px;
+
+    overflow: hidden;
+}
+
+
+.surgeon-modal .modal-header {
+    padding: 22px 24px;
+
+    border-bottom: 1px solid #e7efeb;
+
+    background: #ffffff;
+}
+
+
+.surgeon-modal .modal-title {
+    margin: 0;
+
+    color: #263b34;
+
+    font-size: 18px;
+    font-weight: 850;
+}
+
+
+.surgeon-modal .modal-subtitle {
+    margin: 4px 0 0;
+
+    color: #8a9892;
+
+    font-size: 12px;
+}
+
+
+.surgeon-modal .modal-body {
+    padding: 24px;
+
+    background: #ffffff;
+}
+
+
+.surgeon-modal .modal-footer {
+    padding: 16px 24px;
+
+    border-top: 1px solid #e7efeb;
+
+    background: #fbfdfc;
+}
+
+
+.modal-section-title {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 16px;
+
+    color: #397c63;
+
+    font-size: 13px;
+    font-weight: 800;
+}
+
+
+.modal-section-title i {
+    width: 28px;
+    height: 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background: #eaf6f1;
+}
+
+
+.modal-section-spacing {
+    margin-top: 28px;
+}
+
+
+/* ============================================================
+   ACCESSIBILITY
+   ============================================================ */
+
+.surgeons-page button:focus-visible,
+.surgeons-page a:focus-visible,
+.surgeons-page input:focus-visible,
+.surgeons-page select:focus-visible {
+    outline: 2px solid #55a181;
+
+    outline-offset: 2px;
+}
+
+
+/* ============================================================
+   RESPONSIVE — 1100
+   ============================================================ */
+
+@media (max-width: 1100px) {
+
+    .surgeons-page {
+        width: calc(100% - 220px);
+
+        margin-left: 220px;
+
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+
+
+    .surgeon-form-grid-4 {
+        grid-template-columns:
+            repeat(2, minmax(0,1fr));
+    }
+
+}
+
+
+/* ============================================================
+   RESPONSIVE — 900
+   ============================================================ */
+
+@media (max-width: 900px) {
+
+    .surgeon-form-grid-3 {
+        grid-template-columns:
+            repeat(2, minmax(0,1fr));
+    }
+
+
+    .surgeon-search-form {
+        flex-wrap: wrap;
+    }
+
+
+    .surgeon-search-input {
+        flex-basis: 100%;
+    }
+
+
+    .surgeon-form-header {
+        align-items: flex-start;
+    }
+
+
+    .surgeon-list-header {
+        align-items: flex-start;
+    }
+
+
+    .surgeon-modal-grid-4 {
+        grid-template-columns:
+            repeat(2, minmax(0,1fr));
+    }
+
+}
+
+
+/* ============================================================
+   RESPONSIVE — 768
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+    .surgeons-page {
+        width: 100%;
+
+        margin-left: 0;
+
+        padding: 22px 15px 35px;
+    }
+
+
+    .surgeon-form-header,
+    .surgeon-list-header {
+        padding: 20px 18px;
+    }
+
+
+    .surgeon-form-section {
+        padding: 21px 18px;
+    }
+
+
+    .surgeon-form-grid-3,
+    .surgeon-form-grid-4,
+    .surgeon-modal-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .surgeon-form-actions {
+        padding: 18px;
+
+        flex-wrap: wrap;
+    }
+
+
+    .surgeon-form-note {
+        flex-basis: 100%;
+
+        margin-right: 0;
+
+        margin-bottom: 4px;
+    }
+
+
+    .surgeon-form-buttons {
+        width: 100%;
+
+        justify-content: flex-end;
+    }
+
+
+    .surgeon-search-area {
+        padding: 15px 18px;
+    }
+
+
+    .surgeon-list-heading {
+        font-size: 17px;
+    }
+
+
+    /* MODAL */
+
+    .surgeon-edit-dialog {
+        width: calc(100% - 24px);
+
+        margin: 12px auto;
+    }
+
+
+    .surgeon-modal-header {
+        padding: 20px;
+    }
+
+
+    .surgeon-modal-section {
+        padding: 22px 20px 24px;
+    }
+
+
+    .surgeon-modal-actions {
+        padding: 15px 20px;
+    }
+
+}
+
+
+/* ============================================================
+   RESPONSIVE — 600
+   ============================================================ */
+
+@media (max-width: 600px) {
+
+    .surgeons-page {
+        padding: 18px 12px 30px;
+    }
+
+
+    .surgeon-form-header,
+    .surgeon-list-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+
+    .surgeon-form-actions {
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+
+    .surgeon-form-buttons {
+        width: 100%;
+
+        flex-direction: column;
+    }
+
+
+    .btn-surgeon-secondary,
+    .btn-surgeon-primary {
+        width: 100%;
+    }
+
+
+    .btn-surgeon-search,
+    .btn-surgeon-clear {
+        flex: 1;
+    }
+
+
+    /* ========================================================
+       SMALL SCREEN MODAL
+       ======================================================== */
+
+    .surgeon-edit-dialog {
+        width: calc(100% - 12px);
+
+        margin: 6px auto;
+    }
+
+
+    .surgeon-edit-modal {
+        border-radius: 16px;
+    }
+
+
+    .surgeon-modal-header {
+        padding: 17px;
+    }
+
+
+    .surgeon-modal-header-main {
+        gap: 11px;
+    }
+
+
+    .surgeon-modal-icon {
+        width: 42px;
+        height: 42px;
+
+        flex-basis: 42px;
+
+        border-radius: 11px;
+
+        font-size: 18px;
+    }
+
+
+    .surgeon-modal-heading {
+        font-size: 18px;
+    }
+
+
+    .surgeon-modal-subtitle {
+        font-size: 10px;
+    }
+
+
+    .surgeon-modal-close {
+        width: 32px;
+        height: 32px;
+
+        flex-basis: 32px;
+    }
+
+
+    .surgeon-modal-section {
+        padding: 20px 17px;
+    }
+
+
+    .surgeon-modal-grid-4,
+    .surgeon-modal-grid-3 {
+        grid-template-columns: 1fr;
+
+        gap: 13px;
+    }
+
+
+    .surgeon-modal-section-heading {
+        margin-bottom: 17px;
+    }
+
+
+    .surgeon-modal-actions {
+        align-items: stretch;
+
+        flex-direction: column;
+
+        gap: 12px;
+
+        padding: 15px 17px;
+    }
+
+
+    .surgeon-modal-note {
+        justify-content: center;
+
+        text-align: center;
+    }
+
+
+    .surgeon-modal-buttons {
+        width: 100%;
+    }
+
+
+    .surgeon-modal-actions .btn-surgeon-secondary,
+    .surgeon-modal-actions .btn-surgeon-primary {
+        flex: 1;
+    }
+
+}
