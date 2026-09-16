@@ -1,16 +1,13 @@
 <?php
 
 $page_title = "Dashboard";
-
 require_once "config/database.php";
-
 
 /* =========================================================
    TODAY'S DATE
    ========================================================= */
 
 $today_display = date("l, F j, Y");
-
 
 /* =========================================================
    OPERATING ROOMS
@@ -79,23 +76,19 @@ $scheduleStmt = $pdo->query("
 ");
 
 $today_schedules = $scheduleStmt->fetchAll(PDO::FETCH_ASSOC);
-
 $total_today_surgeries = count($today_schedules);
-
 
 /* =========================================================
    ROOM COUNTS
    ========================================================= */
 
 $total_rooms = count($rooms);
-
 $available_rooms = 0;
 $occupied_rooms = 0;
 $maintenance_rooms = 0;
 $inactive_rooms = 0;
 
 foreach ($rooms as $room) {
-
     $room_status = strtolower(
         trim($room['status'] ?? '')
     );
@@ -131,7 +124,6 @@ $orthopedic_count = 0;
 $other_surgery_count = 0;
 
 foreach ($today_schedules as $schedule) {
-
     $procedure_name = strtolower(
         trim($schedule['procedure_name'] ?? '')
     );
@@ -159,9 +151,7 @@ foreach ($today_schedules as $schedule) {
         || str_contains($procedure_name, 'delivery')
         || str_contains($procedure_name, 'maternity')
     ) {
-
         $obstetrics_count++;
-
     } elseif (
         str_contains($procedure_name, 'orthopedic')
         || str_contains($procedure_name, 'orthopaedic')
@@ -171,11 +161,8 @@ foreach ($today_schedules as $schedule) {
         || str_contains($procedure_name, 'bone')
         || str_contains($procedure_name, 'joint')
     ) {
-
         $orthopedic_count++;
-
     } else {
-
         $other_surgery_count++;
     }
 }
@@ -186,22 +173,18 @@ foreach ($today_schedules as $schedule) {
    ========================================================= */
 
 if ($total_today_surgeries > 0) {
-
     $general_percent =
         round(
             ($general_surgery_count / $total_today_surgeries) * 100
         );
-
     $obstetrics_percent =
         round(
             ($obstetrics_count / $total_today_surgeries) * 100
         );
-
     $orthopedic_percent =
         round(
             ($orthopedic_count / $total_today_surgeries) * 100
         );
-
     $other_percent =
         max(
             0,
@@ -210,9 +193,7 @@ if ($total_today_surgeries > 0) {
             - $obstetrics_percent
             - $orthopedic_percent
         );
-
 } else {
-
     $general_percent = 0;
     $obstetrics_percent = 0;
     $orthopedic_percent = 0;
@@ -226,26 +207,21 @@ if ($total_today_surgeries > 0) {
 
 $general_angle =
     ($general_percent / 100) * 360;
-
 $obstetrics_angle =
     $general_angle +
     (($obstetrics_percent / 100) * 360);
-
 $orthopedic_angle =
     $obstetrics_angle +
     (($orthopedic_percent / 100) * 360);
 
-
 /* =========================================================
    SCHEDULE HELPERS
    ========================================================= */
-
 function dashboard_format_time($time)
 {
     if (empty($time)) {
         return '--:--';
     }
-
     $timestamp = strtotime($time);
 
     if ($timestamp === false) {
@@ -823,371 +799,246 @@ function dashboard_room_status_icon($status)
         <!-- =============================================
              TODAY'S SCHEDULE
              ============================================= -->
-
         <section class="schedule-panel">
-
-
-            <div class="panel-header">
-
+           <div class="panel-header">
                 <div>
-
                     <span class="panel-kicker">
                         TODAY
                     </span>
-
                     <h3>
                         Today's Schedule
                     </h3>
-
                 </div>
 
-
                 <span class="period-label">
-
                     <?= $total_today_surgeries ?>
-
                     <?= $total_today_surgeries === 1
                         ? 'operation'
                         : 'operations'
                     ?>
-
                 </span>
-
             </div>
 
-
             <div class="schedule-list">
-
                 <?php if (!empty($today_schedules)): ?>
-
                     <?php foreach ($today_schedules as $schedule): ?>
-
                         <?php
-
                         $patient_name =
                             dashboard_patient_name(
                                 $schedule
                             );
-
                         $surgeon_name =
                             dashboard_doctor_name(
                                 $schedule['surgeon_first_name'],
                                 $schedule['surgeon_last_name']
                             );
-
                         $anesthesiologist_name =
                             dashboard_doctor_name(
                                 $schedule['anesthesiologist_first_name'],
                                 $schedule['anesthesiologist_last_name']
                             );
-
                         $display_time =
                             dashboard_format_time(
                                 $schedule['start_time']
                             );
-
                         $display_period =
                             dashboard_format_period(
                                 $schedule['start_time']
                             );
-
                         $duration_minutes =
                             dashboard_duration_minutes(
                                 $schedule['start_time'],
                                 $schedule['end_time']
                             );
-
                         $status =
                             trim(
                                 $schedule['status'] ?? ''
                             );
-
                         if ($status === '') {
                             $status = 'Scheduled';
                         }
-
                         $priority =
                             trim(
                                 $schedule['priority'] ?? ''
                             );
-
                         if ($priority === '') {
                             $priority = 'Elective';
                         }
-
                         $status_class =
                             dashboard_status_class(
                                 $status
                             );
-
                         $priority_class =
                             dashboard_priority_class(
                                 $priority
                             );
-
                         $priority_icon =
                             dashboard_priority_icon(
                                 $priority
                             );
-
                         $procedure_name =
                             trim(
                                 $schedule['procedure_name'] ?? ''
                             );
-
                         if ($procedure_name === '') {
                             $procedure_name =
                                 'Procedure not specified';
                         }
-
                         $room_name =
                             trim(
                                 $schedule['room_name'] ?? ''
                             );
-
                         if ($room_name === '') {
                             $room_name =
                                 'Room not assigned';
                         }
-
                         ?>
-
                         <article class="schedule-item">
 
-
                             <!-- TIME / ROOM / STATUS -->
-
                             <div class="schedule-card-top">
-
                                 <div class="schedule-time-block">
-
                                     <strong>
                                         <?= htmlspecialchars($display_time) ?>
                                     </strong>
-
                                     <span>
                                         <?= htmlspecialchars($display_period) ?>
                                     </span>
-
                                 </div>
 
-
                                 <div class="schedule-top-right">
-
                                     <span class="schedule-room">
-
                                         <i class="bi bi-door-open"></i>
-
                                         <?= htmlspecialchars($room_name) ?>
-
                                     </span>
-
 
                                     <span
                                         class="schedule-status <?= htmlspecialchars($status_class) ?>"
                                     >
-
                                         <span class="status-dot"></span>
-
                                         <?= htmlspecialchars($status) ?>
-
                                     </span>
-
                                 </div>
-
                             </div>
 
 
                             <!-- PATIENT -->
-
                             <div class="schedule-patient">
-
                                 <span class="schedule-section-label">
                                     PATIENT
                                 </span>
-
                                 <strong>
                                     <?= htmlspecialchars($patient_name) ?>
                                 </strong>
-
                             </div>
 
 
                             <!-- PROCEDURE -->
-
                             <div class="schedule-procedure">
-
                                 <div class="procedure-icon">
-
                                     <i class="bi bi-heart-pulse"></i>
-
                                 </div>
 
-
                                 <div class="procedure-content">
-
                                     <span>
                                         PROCEDURE
                                     </span>
-
                                     <strong>
                                         <?= htmlspecialchars($procedure_name) ?>
                                     </strong>
-
                                 </div>
-
                             </div>
 
 
                             <!-- TEAM -->
-
                             <div class="schedule-team-grid">
-
-
                                 <div class="schedule-team-member">
-
                                     <div class="team-icon">
-
                                         <i class="bi bi-person-badge"></i>
-
                                     </div>
-
                                     <div>
-
                                         <span>
                                             SURGEON
                                         </span>
-
                                         <strong>
                                             <?= htmlspecialchars($surgeon_name) ?>
                                         </strong>
-
                                     </div>
-
                                 </div>
 
-
                                 <div class="schedule-team-member">
-
                                     <div class="team-icon anesthesiologist-icon">
-
                                         <i class="bi bi-person-vcard"></i>
-
                                     </div>
 
                                     <div>
-
                                         <span>
                                             ANESTHESIOLOGIST
                                         </span>
-
                                         <strong>
                                             <?= htmlspecialchars($anesthesiologist_name) ?>
                                         </strong>
-
                                     </div>
-
                                 </div>
-
-
                             </div>
 
-
                             <!-- PRIORITY / DURATION -->
-
                             <div class="schedule-card-footer">
-
 
                                 <span
                                     class="schedule-priority <?= htmlspecialchars($priority_class) ?>"
                                 >
-
                                     <i class="bi <?= htmlspecialchars($priority_icon) ?>"></i>
-
                                     <?= htmlspecialchars($priority) ?>
-
                                 </span>
-
 
                                 <span class="schedule-duration">
-
                                     <i class="bi bi-clock"></i>
-
                                     <?php if ($duration_minutes > 0): ?>
-
                                         <?= htmlspecialchars($duration_minutes) ?>
                                         min
-
                                     <?php else: ?>
-
                                         Duration not set
-
                                     <?php endif; ?>
-
                                 </span>
-
-
                             </div>
-
-
                         </article>
-
                     <?php endforeach; ?>
 
                 <?php else: ?>
 
-
                     <div class="schedule-empty-state">
-
                         <div class="schedule-empty-icon">
-
                             <i class="bi bi-calendar-x"></i>
-
                         </div>
-
                         <strong>
                             No operations scheduled today
                         </strong>
-
                         <span>
                             There are currently no operating room
                             procedures scheduled for today.
                         </span>
-
                     </div>
-
-
                 <?php endif; ?>
-
             </div>
 
 
             <!-- FIXED ACTION -->
 
             <div class="schedule-footer">
-
                 <div class="schedule-action">
-
                     <a
                         href="pages/schedules.php"
                         class="schedule-action-link"
                     >
-
                         <i class="bi bi-plus-circle"></i>
-
                         <span>
                             Add Surgery Schedule
                         </span>
-
                         <i class="bi bi-arrow-right"></i>
-
                     </a>
-
                 </div>
-
             </div>
-
-
         </section>
 
 
@@ -1375,7 +1226,8 @@ function dashboard_room_status_icon($status)
         <!-- =============================================
              SURGERY OVERVIEW
              ============================================= -->
-
+			 
+		
         <section class="panel">
 
 

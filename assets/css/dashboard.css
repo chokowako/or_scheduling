@@ -1273,6 +1273,13 @@ img {
 }
 
 
+
+
+
+
+
+
+
 /* =========================================================
    SCHEDULE — TIME / ROOM
    ========================================================= */
@@ -1721,6 +1728,8 @@ img {
 .schedule-action-link:hover i:last-child {
     transform: translateX(4px);
 }
+
+
 
 
 /* =========================================================
@@ -3179,6 +3188,11 @@ button:focus-visible {
     outline: 3px solid rgba(77, 169, 133, 0.3);
     outline-offset: 2px;
 }
+
+
+
+
+
 
 
 

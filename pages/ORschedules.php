@@ -99,7 +99,7 @@ function formatTime($time) {
                 <i class="bi bi-hospital"></i>
             </div>
             <div>
-                <h1 class="header-title">Ciudad Medical Zamboanga</h1>
+                <h1 class="header-title">HOSPITAL NAME</h1>
                 <p class="header-subtitle">Operating Room Schedule Board</p>
             </div>
         </div>
@@ -348,22 +348,39 @@ function fetchScheduleData() {
 // Auto-Scroll Logic
 function initAutoScroll() {
     const scrollContainer = document.querySelector('.board-container');
-    let scrollSpeed = 1; 
-    let scrollInterval;
+    const scrollSpeed = 1;
+    const scrollIntervalTime = 50;   // Movement tick (ms)
+    const bottomPauseTime = 20000;   // Pause at bottom (20 seconds)
+    const topPauseTime = 20000;          // Set to > 0 if you want a pause at the top too
 
-    function startScroll() {
-        scrollInterval = setInterval(() => {
+    let scrollTimer = null;
+
+    function startScrolling() {
+        scrollTimer = setInterval(() => {
             if (!scrollContainer) return;
-            
+
+            // Check if reached the bottom
             if (scrollContainer.scrollTop + scrollContainer.clientHeight >= scrollContainer.scrollHeight - 5) {
-                setTimeout(() => { scrollContainer.scrollTop = 0; }, 2000);
+                // 1. Stop scrolling immediately
+                clearInterval(scrollTimer);
+
+                // 2. Wait 20 seconds at the bottom
+                setTimeout(() => {
+                    scrollContainer.scrollTop = 0; // Jump back to top
+
+                    // 3. Pause at top (if set), then resume scrolling
+                    setTimeout(() => {
+                        startScrolling();
+                    }, topPauseTime);
+
+                }, bottomPauseTime);
             } else {
                 scrollContainer.scrollTop += scrollSpeed;
             }
-        }, 50);
+        }, scrollIntervalTime);
     }
 
-    startScroll();
+    startScrolling();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
