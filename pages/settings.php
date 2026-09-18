@@ -1,3 +1,4 @@
+
 <?php
 
 session_start();
@@ -5,6 +6,13 @@ session_start();
 if (!isset($_SESSION['user_id'])) {
 
     header("Location: ../login.php");
+    exit;
+
+}
+
+if (($_SESSION['role'] ?? '') !== 'Administrator') {
+
+    header("Location: ../dashboard.php");
     exit;
 
 }
@@ -19,8 +27,470 @@ require_once "../includes/sidebar.php";
 <!-- Settings Page CSS -->
 <link
     rel="stylesheet"
-    href="../assets/css/settings.css?v=20260907"
+    href="../assets/css/settings.css?v=20260917"
 >
+
+
+<!-- =========================================================
+     SYSTEM INFORMATION MODAL CSS
+     ========================================================= -->
+
+<style>
+
+.system-information-modal .modal-dialog {
+
+    max-width: 720px;
+
+}
+
+
+.system-information-modal .modal-content {
+
+    border: 0;
+
+    border-radius: 18px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 24px 70px rgba(32, 53, 45, 0.22);
+
+}
+
+
+/* =====================================================
+   MODAL HEADER
+   ===================================================== */
+
+.system-information-modal .modal-header {
+
+    padding: 20px 24px;
+
+    border: 0;
+
+    background: linear-gradient(
+        135deg,
+        #4da985,
+        #358e6c
+    );
+
+    color: #ffffff;
+
+}
+
+
+.system-information-modal .modal-title {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    margin: 0;
+
+    font-size: 19px;
+
+    font-weight: 700;
+
+}
+
+
+.system-information-modal .modal-title-icon {
+
+    width: 42px;
+
+    height: 42px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background: rgba(255,255,255,0.16);
+
+    font-size: 19px;
+
+}
+
+
+.system-information-modal .modal-title-text {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 2px;
+
+}
+
+
+.system-information-modal .modal-title-subtitle {
+
+    font-size: 11px;
+
+    font-weight: 500;
+
+    opacity: 0.78;
+
+    letter-spacing: 0.02em;
+
+}
+
+
+.system-information-modal .btn-close {
+
+    filter: brightness(0) invert(1);
+
+    opacity: 0.85;
+
+}
+
+
+.system-information-modal .btn-close:hover {
+
+    opacity: 1;
+
+}
+
+
+/* =====================================================
+   MODAL BODY
+   ===================================================== */
+
+.system-information-modal .modal-body {
+
+    padding: 22px;
+
+    background: #f5f8f7;
+
+    max-height: 72vh;
+
+    overflow-y: auto;
+
+}
+
+
+/* =====================================================
+   INFORMATION GRID
+   ===================================================== */
+
+.system-info-container {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 14px;
+
+}
+
+
+/* =====================================================
+   INFORMATION CARD
+   ===================================================== */
+
+.system-info-section {
+
+    background: #ffffff;
+
+    border: 1px solid #e2ebe7;
+
+    border-radius: 13px;
+
+    overflow: hidden;
+
+}
+
+
+.system-info-section-header {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    padding: 11px 14px;
+
+    background: #f1faf6;
+
+    border-bottom: 1px solid #e2ebe7;
+
+    color: #287256;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.07em;
+
+    text-transform: uppercase;
+
+}
+
+
+.system-info-section-header i {
+
+    font-size: 14px;
+
+}
+
+
+/* =====================================================
+   INFORMATION ROW
+   ===================================================== */
+
+.system-info-row {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 10px 14px;
+
+    border-bottom: 1px solid #eef3f0;
+
+}
+
+
+.system-info-row:last-child {
+
+    border-bottom: 0;
+
+}
+
+
+.system-info-label {
+
+    color: #84938d;
+
+    font-size: 11px;
+
+    font-weight: 500;
+
+}
+
+
+.system-info-value {
+
+    color: #20352d;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    text-align: right;
+
+    word-break: break-word;
+
+}
+
+
+/* =====================================================
+   DATABASE STATUS
+   ===================================================== */
+
+.system-info-status {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    color: #358e6c;
+
+}
+
+
+.system-info-status-dot {
+
+    width: 7px;
+
+    height: 7px;
+
+    display: inline-block;
+
+    border-radius: 50%;
+
+    background: #4da985;
+
+    box-shadow: 0 0 0 3px #e2f4ec;
+
+}
+
+
+/* =====================================================
+   APPLICATION PATH
+   ===================================================== */
+
+.system-info-path-section {
+
+    grid-column: 1 / -1;
+
+}
+
+
+.system-info-path {
+
+    padding: 12px 14px;
+
+    color: #52665e;
+
+    background: #f8fbfa;
+
+    font-family: Consolas, "Courier New", monospace;
+
+    font-size: 11px;
+
+    line-height: 1.5;
+
+    word-break: break-all;
+
+}
+
+
+/* =====================================================
+   LOADING
+   ===================================================== */
+
+.system-information-loading {
+
+    min-height: 260px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+    color: #687a73;
+
+    font-size: 13px;
+
+}
+
+
+.system-information-loading .spinner-border {
+
+    width: 28px;
+
+    height: 28px;
+
+    color: #4da985;
+
+}
+
+
+/* =====================================================
+   ERROR
+   ===================================================== */
+
+.system-info-error {
+
+    padding: 18px;
+
+    border-radius: 10px;
+
+    background: #fff5f5;
+
+    border: 1px solid #f0d6d6;
+
+    color: #9b4545;
+
+    font-size: 13px;
+
+}
+
+
+/* =====================================================
+   MODAL FOOTER
+   ===================================================== */
+
+.system-information-modal .modal-footer {
+
+    padding: 14px 22px;
+
+    border-top: 1px solid #e2ebe7;
+
+    background: #ffffff;
+
+}
+
+
+.system-information-modal .modal-footer .btn {
+
+    min-width: 90px;
+
+    border-radius: 8px;
+
+    font-size: 12px;
+
+}
+
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+
+@media (max-width: 650px) {
+
+    .system-information-modal .modal-dialog {
+
+        margin: 12px;
+
+    }
+
+
+    .system-information-modal .modal-body {
+
+        padding: 15px;
+
+    }
+
+
+    .system-info-container {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .system-info-path-section {
+
+        grid-column: auto;
+
+    }
+
+
+    .system-info-row {
+
+        align-items: flex-start;
+
+    }
+
+
+    .system-info-value {
+
+        max-width: 55%;
+
+    }
+
+}
+
+</style>
 
 
 <div class="main-wrapper">
@@ -309,8 +779,9 @@ require_once "../includes/sidebar.php";
                  USER MANAGEMENT
                  ================================================= -->
 
-            <div
-                class="settings-card settings-card-purple settings-card-disabled"
+            <a
+                href="users.php"
+                class="settings-card settings-card-purple"
             >
 
                 <div class="card-top">
@@ -321,8 +792,8 @@ require_once "../includes/sidebar.php";
 
                     </div>
 
-                    <span class="module-status coming">
-                        COMING SOON
+                    <span class="module-status active">
+                        ACTIVE
                     </span>
 
                 </div>
@@ -349,18 +820,18 @@ require_once "../includes/sidebar.php";
                 <div class="card-footer">
 
                     <span class="card-action">
-                        Access management
+                        Open Management
                     </span>
 
                     <span class="card-arrow">
 
-                        <i class="bi bi-lock-fill"></i>
+                        <i class="bi bi-arrow-up-right"></i>
 
                     </span>
 
                 </div>
 
-            </div>
+            </a>
 
 
 
@@ -368,8 +839,10 @@ require_once "../includes/sidebar.php";
                  SYSTEM INFORMATION
                  ================================================= -->
 
-            <div
-                class="settings-card settings-card-orange settings-card-disabled"
+            <a
+                href="#"
+                class="settings-card settings-card-orange system-information-card"
+                id="systemInformationCard"
             >
 
                 <div class="card-top">
@@ -380,8 +853,8 @@ require_once "../includes/sidebar.php";
 
                     </div>
 
-                    <span class="module-status coming">
-                        COMING SOON
+                    <span class="module-status active">
+                        ACTIVE
                     </span>
 
                 </div>
@@ -408,19 +881,18 @@ require_once "../includes/sidebar.php";
                 <div class="card-footer">
 
                     <span class="card-action">
-                        System details
+                        View System Information
                     </span>
 
                     <span class="card-arrow">
 
-                        <i class="bi bi-lock-fill"></i>
+                        <i class="bi bi-arrow-up-right"></i>
 
                     </span>
 
                 </div>
 
-            </div>
-
+            </a>
 
         </div>
 
@@ -474,8 +946,253 @@ require_once "../includes/sidebar.php";
 </div>
 
 
+
+<!-- =========================================================
+     SYSTEM INFORMATION MODAL
+     ========================================================= -->
+
+<div
+    class="modal fade system-information-modal"
+    id="systemInformationModal"
+    tabindex="-1"
+    aria-labelledby="systemInformationModalLabel"
+    aria-hidden="true"
+>
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+
+            <!-- HEADER -->
+
+            <div class="modal-header">
+
+                <h5
+                    class="modal-title"
+                    id="systemInformationModalLabel"
+                >
+
+                    <span class="modal-title-icon">
+
+                        <i class="bi bi-info-circle-fill"></i>
+
+                    </span>
+
+
+                    <span class="modal-title-text">
+
+                        <span>
+                            System Information
+                        </span>
+
+                        <span class="modal-title-subtitle">
+                            OR Scheduling System
+                        </span>
+
+                    </span>
+
+                </h5>
+
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                ></button>
+
+            </div>
+
+
+            <!-- BODY -->
+
+            <div
+                class="modal-body"
+                id="systemInformationModalBody"
+            >
+
+                <div class="system-information-loading">
+
+                    <div
+                        class="spinner-border"
+                        role="status"
+                    >
+
+                        <span class="visually-hidden">
+                            Loading...
+                        </span>
+
+                    </div>
+
+                    <div>
+                        Loading system information...
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- FOOTER -->
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                >
+                    Close
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const card =
+            document.getElementById(
+                "systemInformationCard"
+            );
+
+        const modalElement =
+            document.getElementById(
+                "systemInformationModal"
+            );
+
+        const modalBody =
+            document.getElementById(
+                "systemInformationModalBody"
+            );
+
+
+        if (
+            !card ||
+            !modalElement ||
+            !modalBody
+        ) {
+
+            return;
+
+        }
+
+
+        const modal =
+            new bootstrap.Modal(
+                modalElement
+            );
+
+
+        card.addEventListener(
+            "click",
+            function (event) {
+
+                event.preventDefault();
+
+
+                modalBody.innerHTML = `
+
+                    <div class="system-information-loading">
+
+                        <div
+                            class="spinner-border"
+                            role="status"
+                        >
+
+                            <span class="visually-hidden">
+                                Loading...
+                            </span>
+
+                        </div>
+
+                        <div>
+                            Loading system information...
+                        </div>
+
+                    </div>
+
+                `;
+
+
+                modal.show();
+
+
+                fetch(
+                    "system_information.php?modal=1",
+                    {
+                        method: "GET",
+
+                        headers: {
+                            "X-Requested-With":
+                                "XMLHttpRequest"
+                        }
+                    }
+                )
+
+                .then(function (response) {
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            "Unable to load system information."
+                        );
+
+                    }
+
+                    return response.text();
+
+                })
+
+                .then(function (html) {
+
+                    modalBody.innerHTML = html;
+
+                })
+
+                .catch(function (error) {
+
+                    modalBody.innerHTML = `
+
+                        <div class="system-info-error">
+
+                            <strong>
+                                Unable to load system information.
+                            </strong>
+
+                            <div class="mt-1">
+                                ${error.message}
+                            </div>
+
+                        </div>
+
+                    `;
+
+                });
+
+            }
+        );
+
+    }
+);
+
+</script>
+
+
 <?php
 
 require_once "../includes/footer.php";
 
 ?>
+

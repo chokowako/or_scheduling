@@ -1,7 +1,169 @@
 <?php
 
 $page_title = "Dashboard";
+
+/* =========================================================
+   START SESSION
+   ========================================================= */
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once "config/database.php";
+
+
+
+	/* =========================================================
+   SCHEDULE ACTIONS
+   ========================================================= */
+
+		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+			$action = $_POST['schedule_action'] ?? '';
+			$schedule_id = (int)($_POST['schedule_id'] ?? 0);
+
+			$user_id = $_SESSION['user_id'] ?? null;
+
+
+			if ($schedule_id > 0 && $user_id) {
+
+				try {
+
+					/* Start transaction */
+					$pdo->beginTransaction();
+
+
+					/* -------------------------------------------------
+					   GET ROOM ASSIGNED TO THIS SCHEDULE
+					   ------------------------------------------------- */
+
+					$stmt = $pdo->prepare("
+						SELECT room_id
+						FROM or_schedules
+						WHERE schedule_id = ?
+					");
+
+					$stmt->execute([
+						$schedule_id
+					]);
+
+					$schedule = $stmt->fetch(PDO::FETCH_ASSOC);
+
+
+					if (!$schedule) {
+						throw new Exception('Schedule not found.');
+					}
+
+
+					$room_id = $schedule['room_id'];
+
+
+					/* -------------------------------------------------
+					   COMPLETE SCHEDULE
+					   ------------------------------------------------- */
+
+					if ($action === 'complete') {
+
+						$stmt = $pdo->prepare("
+							UPDATE or_schedules
+							SET
+								status = 'Completed',
+								completed_by = ?,
+								completed_at = NOW()
+							WHERE schedule_id = ?
+						");
+
+						$stmt->execute([
+							$user_id,
+							$schedule_id
+						]);
+
+
+						/* Make operating room available */
+
+						$stmt = $pdo->prepare("
+							UPDATE operating_rooms
+							SET
+								status = 'Available'
+							WHERE room_id = ?
+						");
+
+						$stmt->execute([
+							$room_id
+						]);
+					}
+
+
+					/* -------------------------------------------------
+					   CANCEL SCHEDULE
+					   ------------------------------------------------- */
+
+					elseif ($action === 'cancel') {
+
+						$cancel_reason =
+							trim($_POST['cancel_reason'] ?? '');
+
+
+						if ($cancel_reason === '') {
+							throw new Exception('Cancellation reason is required.');
+						}
+
+
+						$stmt = $pdo->prepare("
+							UPDATE or_schedules
+							SET
+								status = 'Cancelled',
+								cancel_reason = ?,
+								cancelled_by = ?,
+								cancelled_at = NOW()
+							WHERE schedule_id = ?
+						");
+
+						$stmt->execute([
+							$cancel_reason,
+							$user_id,
+							$schedule_id
+						]);
+
+
+						/* Make operating room available */
+
+						$stmt = $pdo->prepare("
+							UPDATE operating_rooms
+							SET
+								status = 'Available'
+							WHERE room_id = ?
+						");
+
+						$stmt->execute([
+							$room_id
+						]);
+					}
+
+
+					/* Save changes */
+					$pdo->commit();
+
+				} catch (Exception $e) {
+
+					/* Undo changes if something failed */
+
+					if ($pdo->inTransaction()) {
+						$pdo->rollBack();
+					}
+				}
+			}
+
+
+			/* Prevent form resubmission */
+			header("Location: dashboard.php");
+			exit;
+		}
+
+
+
+
 
 /* =========================================================
    TODAY'S DATE
@@ -70,7 +232,7 @@ $scheduleStmt = $pdo->query("
     LEFT JOIN procedures pr
         ON os.procedure_id = pr.procedure_id
 
-    WHERE os.surgery_date = CURDATE()
+    WHERE os.status NOT IN ('Completed', 'Cancelled')
 
     ORDER BY os.start_time ASC
 ");
@@ -893,7 +1055,8 @@ function dashboard_room_status_icon($status)
                                 'Room not assigned';
                         }
                         ?>
-                        <article class="schedule-item">
+                        <article class="schedule-item <?= htmlspecialchars($priority_class) ?>">
+
 
                             <!-- TIME / ROOM / STATUS -->
                             <div class="schedule-card-top">
@@ -983,26 +1146,55 @@ function dashboard_room_status_icon($status)
                             </div>
 
                             <!-- PRIORITY / DURATION -->
-                            <div class="schedule-card-footer">
+									<div class="schedule-card-footer">
+									<span
+										class="schedule-priority <?= htmlspecialchars($priority_class) ?>"
+									>
+										<i class="bi <?= htmlspecialchars($priority_icon) ?>"></i>
+										<?= htmlspecialchars($priority) ?>
+									</span>
 
-                                <span
-                                    class="schedule-priority <?= htmlspecialchars($priority_class) ?>"
-                                >
-                                    <i class="bi <?= htmlspecialchars($priority_icon) ?>"></i>
-                                    <?= htmlspecialchars($priority) ?>
-                                </span>
+									<span class="schedule-duration">
+										<i class="bi bi-clock"></i>
+										<?php if ($duration_minutes > 0): ?>
+											<?= htmlspecialchars($duration_minutes) ?>
+											min
+										<?php else: ?>
+											Duration not set
+										<?php endif; ?>
+									</span>
+									</div>
 
-                                <span class="schedule-duration">
-                                    <i class="bi bi-clock"></i>
-                                    <?php if ($duration_minutes > 0): ?>
-                                        <?= htmlspecialchars($duration_minutes) ?>
-                                        min
-                                    <?php else: ?>
-                                        Duration not set
-                                    <?php endif; ?>
-                                </span>
-                            </div>
+									<!-- MANAGE SCHEDULE -->
+									<div class="schedule-manage-row">
+									<button
+										type="button"
+										class="schedule-manage-btn"
+
+										data-bs-toggle="modal"
+										data-bs-target="#manageScheduleModal"
+
+										data-schedule-id="<?= (int)$schedule['schedule_id'] ?>"
+										data-patient="<?= htmlspecialchars($patient_name, ENT_QUOTES) ?>"
+										data-procedure="<?= htmlspecialchars($procedure_name, ENT_QUOTES) ?>"
+										data-room="<?= htmlspecialchars($room_name, ENT_QUOTES) ?>"
+										data-date="<?= htmlspecialchars($schedule['surgery_date'], ENT_QUOTES) ?>"
+										data-start-time="<?= htmlspecialchars($schedule['start_time'], ENT_QUOTES) ?>"
+										data-end-time="<?= htmlspecialchars($schedule['end_time'], ENT_QUOTES) ?>"
+										data-surgeon="<?= htmlspecialchars($surgeon_name, ENT_QUOTES) ?>"
+										data-anesthesiologist="<?= htmlspecialchars($anesthesiologist_name, ENT_QUOTES) ?>"
+										data-status="<?= htmlspecialchars($status, ENT_QUOTES) ?>"
+										data-priority="<?= htmlspecialchars($priority, ENT_QUOTES) ?>"
+									>
+
+										<i class="bi bi-sliders"></i>
+										<span>
+											Manage Schedule
+										</span>
+									</button>
+									</div>
                         </article>
+						
                     <?php endforeach; ?>
 
                 <?php else: ?>
@@ -1039,6 +1231,7 @@ function dashboard_room_status_icon($status)
                     </a>
                 </div>
             </div>
+			
         </section>
 
 
@@ -1526,8 +1719,617 @@ function dashboard_room_status_icon($status)
 
 
 </main>
+
+
+</div>
+
+<!-- =========================================================
+     MANAGE SCHEDULE MODAL
+     ========================================================= -->
+
+<div
+    class="modal fade"
+    id="manageScheduleModal"
+    tabindex="-1"
+    aria-labelledby="manageScheduleModalLabel"
+    aria-hidden="true"
+>
+
+<div class="modal-dialog modal-dialog-centered">
+
+    <div class="modal-content schedule-modal">
+
+        <!-- HEADER -->
+        <div class="modal-header schedule-modal-header">
+
+            <div>
+                <span class="schedule-modal-kicker">
+                    OR SCHEDULE
+                </span>
+
+                <h5
+                    class="modal-title"
+                    id="manageScheduleModalLabel"
+                >
+                    Manage Schedule
+                </h5>
+            </div>
+
+            <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+            ></button>
+
+        </div>
+
+
+        <!-- BODY -->
+        <div class="modal-body">
+
+            <!-- SCHEDULE INFORMATION -->
+            <div
+                id="scheduleDetailsSection"
+                class="schedule-details-section"
+            >
+
+                <div class="schedule-modal-status-row">
+
+                    <span class="schedule-modal-label">
+                        STATUS
+                    </span>
+
+                    <span
+                        id="modalScheduleStatus"
+                        class="schedule-modal-status"
+                    >
+                        Scheduled
+                    </span>
+
+                </div>
+
+
+                <div class="schedule-modal-patient">
+
+                    <span class="schedule-modal-label">
+                        PATIENT
+                    </span>
+
+                    <strong id="modalPatient">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="schedule-modal-grid">
+
+                    <div class="schedule-modal-info">
+
+                        <span>
+                            PROCEDURE
+                        </span>
+
+                        <strong id="modalProcedure">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="schedule-modal-info">
+
+                        <span>
+                            OPERATING ROOM
+                        </span>
+
+                        <strong id="modalRoom">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="schedule-modal-info">
+
+                        <span>
+                            SURGERY DATE
+                        </span>
+
+                        <strong id="modalDate">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="schedule-modal-info">
+
+                        <span>
+                            TIME
+                        </span>
+
+                        <strong id="modalTime">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="schedule-modal-info">
+
+                        <span>
+                            SURGEON
+                        </span>
+
+                        <strong id="modalSurgeon">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="schedule-modal-info">
+
+                        <span>
+                            ANESTHESIOLOGIST
+                        </span>
+
+                        <strong id="modalAnesthesiologist">
+                            —
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- CANCELLATION SECTION -->
+            <div
+                id="cancelSection"
+                class="cancel-section"
+                style="display: none;"
+            >
+
+                <div class="cancel-warning">
+
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+
+                    <div>
+                        <strong>
+                            Cancel this schedule?
+                        </strong>
+
+                        <span>
+                            Please provide a reason for cancellation.
+                        </span>
+                    </div>
+
+                </div>
+
+
+                <label
+                    for="cancelReason"
+                    class="cancel-reason-label"
+                >
+                    Cancellation Reason
+                </label>
+
+                <textarea
+                    id="cancelReason"
+                    class="form-control cancel-reason-input"
+                    rows="4"
+                    placeholder="Enter the reason for cancellation..."
+                ></textarea>
+
+                <div
+                    id="cancelReasonError"
+                    class="cancel-reason-error"
+                    style="display: none;"
+                >
+                    Please enter a cancellation reason.
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- FOOTER -->
+        <div class="modal-footer schedule-modal-footer">
+
+            <!-- NORMAL ACTIONS -->
+            <div
+                id="scheduleActionButtons"
+                class="schedule-action-buttons"
+            >
+
+                <button
+                    type="button"
+                    class="btn schedule-complete-btn"
+                    id="completeScheduleBtn"
+                >
+                    <i class="bi bi-check-circle-fill"></i>
+                    Complete Schedule
+                </button>
+
+                <button
+                    type="button"
+                    class="btn schedule-cancel-btn"
+                    id="showCancelBtn"
+                >
+                    <i class="bi bi-x-circle-fill"></i>
+                    Cancel Schedule
+                </button>
+
+            </div>
+
+
+            <!-- CANCELLATION ACTIONS -->
+            <div
+                id="cancelActionButtons"
+                class="schedule-action-buttons"
+                style="display: none;"
+            >
+
+                <button
+                    type="button"
+                    class="btn schedule-back-btn"
+                    id="backToScheduleBtn"
+                >
+                    <i class="bi bi-arrow-left"></i>
+                    Back
+                </button>
+
+                <button
+                    type="button"
+                    class="btn schedule-confirm-cancel-btn"
+                    id="confirmCancelBtn"
+                >
+                    <i class="bi bi-x-circle-fill"></i>
+                    Confirm Cancellation
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 ```
 
 </div>
+
+<!-- =========================================================
+     SCHEDULE ACTION FORM
+     ========================================================= -->
+
+<form
+    id="scheduleActionForm"
+    method="POST"
+    action="dashboard.php"
+    style="display: none;"
+>
+
+```
+<input
+    type="hidden"
+    name="schedule_action"
+    id="scheduleAction"
+>
+
+<input
+    type="hidden"
+    name="schedule_id"
+    id="scheduleId"
+>
+
+<input
+    type="hidden"
+    name="cancel_reason"
+    id="hiddenCancelReason"
+>
+```
+
+</form>
+
+<!-- =========================================================
+     MANAGE SCHEDULE JAVASCRIPT
+     ========================================================= -->
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const manageModal =
+        document.getElementById('manageScheduleModal');
+
+    const scheduleActionForm =
+        document.getElementById('scheduleActionForm');
+
+    const scheduleAction =
+        document.getElementById('scheduleAction');
+
+    const scheduleId =
+        document.getElementById('scheduleId');
+
+    const hiddenCancelReason =
+        document.getElementById('hiddenCancelReason');
+
+
+    const scheduleDetailsSection =
+        document.getElementById('scheduleDetailsSection');
+
+    const cancelSection =
+        document.getElementById('cancelSection');
+
+    const scheduleActionButtons =
+        document.getElementById('scheduleActionButtons');
+
+    const cancelActionButtons =
+        document.getElementById('cancelActionButtons');
+
+    const cancelReason =
+        document.getElementById('cancelReason');
+
+    const cancelReasonError =
+        document.getElementById('cancelReasonError');
+
+
+    /*
+     * OPEN MODAL
+     */
+    manageModal.addEventListener(
+        'show.bs.modal',
+        function (event) {
+
+            const button =
+                event.relatedTarget;
+
+            if (!button) {
+                return;
+            }
+
+
+            scheduleId.value =
+                button.dataset.scheduleId || '';
+
+
+            document.getElementById('modalPatient').textContent =
+                button.dataset.patient || '—';
+
+            document.getElementById('modalProcedure').textContent =
+                button.dataset.procedure || '—';
+
+            document.getElementById('modalRoom').textContent =
+                button.dataset.room || '—';
+
+            document.getElementById('modalDate').textContent =
+                button.dataset.date || '—';
+
+            document.getElementById('modalTime').textContent =
+                formatScheduleTime(
+                    button.dataset.startTime,
+                    button.dataset.endTime
+                );
+
+            document.getElementById('modalSurgeon').textContent =
+                button.dataset.surgeon || '—';
+
+            document.getElementById('modalAnesthesiologist').textContent =
+                button.dataset.anesthesiologist || '—';
+
+            document.getElementById('modalScheduleStatus').textContent =
+                button.dataset.status || 'Scheduled';
+
+
+            /*
+             * Reset cancellation section
+             */
+            scheduleDetailsSection.style.display =
+                '';
+
+            cancelSection.style.display =
+                'none';
+
+            scheduleActionButtons.style.display =
+                'flex';
+
+            cancelActionButtons.style.display =
+                'none';
+
+            cancelReason.value =
+                '';
+
+            cancelReasonError.style.display =
+                'none';
+
+        }
+    );
+
+
+    /*
+     * SHOW CANCEL FORM
+     */
+    document
+        .getElementById('showCancelBtn')
+        .addEventListener(
+            'click',
+            function () {
+
+                scheduleDetailsSection.style.display =
+                    'none';
+
+                cancelSection.style.display =
+                    'block';
+
+                scheduleActionButtons.style.display =
+                    'none';
+
+                cancelActionButtons.style.display =
+                    'flex';
+
+                cancelReason.focus();
+
+            }
+        );
+
+
+    /*
+     * BACK TO SCHEDULE DETAILS
+     */
+    document
+        .getElementById('backToScheduleBtn')
+        .addEventListener(
+            'click',
+            function () {
+
+                scheduleDetailsSection.style.display =
+                    '';
+
+                cancelSection.style.display =
+                    'none';
+
+                scheduleActionButtons.style.display =
+                    'flex';
+
+                cancelActionButtons.style.display =
+                    'none';
+
+                cancelReasonError.style.display =
+                    'none';
+
+            }
+        );
+
+
+    /*
+     * COMPLETE SCHEDULE
+     */
+    document
+        .getElementById('completeScheduleBtn')
+        .addEventListener(
+            'click',
+            function () {
+
+                if (!scheduleId.value) {
+                    return;
+                }
+
+                scheduleAction.value =
+                    'complete';
+
+                hiddenCancelReason.value =
+                    '';
+
+                scheduleActionForm.submit();
+
+            }
+        );
+
+
+    /*
+     * CONFIRM CANCELLATION
+     */
+    document
+        .getElementById('confirmCancelBtn')
+        .addEventListener(
+            'click',
+            function () {
+
+                const reason =
+                    cancelReason.value.trim();
+
+
+                if (reason === '') {
+
+                    cancelReasonError.style.display =
+                        'block';
+
+                    cancelReason.focus();
+
+                    return;
+                }
+
+
+                if (!scheduleId.value) {
+                    return;
+                }
+
+
+                scheduleAction.value =
+                    'cancel';
+
+                hiddenCancelReason.value =
+                    reason;
+
+                scheduleActionForm.submit();
+
+            }
+        );
+
+
+    /*
+     * FORMAT TIME
+     */
+    function formatScheduleTime(startTime, endTime) {
+
+        if (!startTime) {
+            return '—';
+        }
+
+
+        const start =
+            formatTime(startTime);
+
+        const end =
+            endTime
+                ? formatTime(endTime)
+                : '';
+
+
+        return end
+            ? start + ' - ' + end
+            : start;
+    }
+
+
+    function formatTime(time) {
+
+        const parts =
+            time.split(':');
+
+        if (parts.length < 2) {
+            return time;
+        }
+
+
+        let hour =
+            parseInt(parts[0], 10);
+
+        const minute =
+            parts[1];
+
+        const period =
+            hour >= 12
+                ? 'PM'
+                : 'AM';
+
+
+        hour =
+            hour % 12 || 12;
+
+
+        return hour + ':' + minute + ' ' + period;
+    }
+
+});
+
+</script>
+
 
 <?php require_once "includes/footer.php"; ?>

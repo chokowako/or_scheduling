@@ -36,20 +36,12 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === '1') {
         LEFT JOIN operating_rooms r ON r.room_id = s.room_id
         LEFT JOIN procedures pr ON pr.procedure_id = s.procedure_id
         LEFT JOIN DOCTORS surgeon ON surgeon.doctor_id = s.surgeon_doctor_id
-        WHERE (
-            s.surgery_date = :today
-            OR (s.surgery_date < :today_range AND s.date_end IS NOT NULL AND s.date_end >= :today_end)
-        )
-        AND (s.status IS NULL OR s.status <> 'Cancelled')
+        WHERE (s.status IS NULL OR s.status NOT IN ('Completed', 'Cancelled'))
         ORDER BY r.room_name ASC, s.surgery_date ASC, s.start_time ASC
     ";
 
-    $stmt = $conn->prepare($sql);
-    $stmt->execute([
-        ':today'       => $today,
-        ':today_range' => $today,
-        ':today_end'   => $today
-    ]);
+	$stmt = $conn->prepare($sql);
+    $stmt->execute();
 
     $schedules = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

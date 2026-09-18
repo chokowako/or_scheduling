@@ -25,6 +25,14 @@ if (!isset($_SESSION['user_id'])) {
 $message = "";
 $message_type = "";
 
+$role = $_SESSION['role'] ?? 'Staff';
+
+$can_manage_surgeons = in_array(
+    $role,
+    ['Administrator', 'Scheduler'],
+    true
+);
+
 $edit_doctor = null;
 
 
@@ -65,6 +73,14 @@ if (isset($_GET['success'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $action = $_POST['action'] ?? "";
+
+    if (
+        !$can_manage_surgeons &&
+        in_array($action, ['add', 'update', 'delete'], true)
+    ) {
+        header("Location: surgeons.php");
+        exit;
+    }
 
 
     /*
@@ -413,300 +429,303 @@ require_once "../includes/sidebar.php";
          SURGEON FORM
          ========================================================= -->
 
-    <section class="surgeon-form-card">
+    <?php if ($can_manage_surgeons): ?>
 
-        <div class="surgeon-form-header">
+        <section class="surgeon-form-card">
 
-            <div class="surgeon-form-icon">
-                <i class="bi bi-person-badge"></i>
-            </div>
+            <div class="surgeon-form-header">
 
-            <div>
-
-                <div class="surgeon-form-eyebrow">
-                    SURGEON MANAGEMENT
+                <div class="surgeon-form-icon">
+                    <i class="bi bi-person-badge"></i>
                 </div>
-
-                <h1 class="surgeon-form-heading">
-                    Add Surgeon
-                </h1>
-
-                <p class="surgeon-form-description">
-                    Register a surgeon for operating room scheduling.
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <form method="POST">
-
-            <input
-                type="hidden"
-                name="action"
-                value="add"
-            >
-
-
-            <!-- =================================================
-                 PERSONAL INFORMATION
-                 ================================================= -->
-
-            <div class="surgeon-section-title">
-
-                <span class="surgeon-section-number">
-                    01
-                </span>
 
                 <div>
-                    <strong>Personal Information</strong>
-                    <small>Basic surgeon information</small>
-                </div>
 
-            </div>
+                    <div class="surgeon-form-eyebrow">
+                        SURGEON MANAGEMENT
+                    </div>
 
-
-            <div class="surgeon-form-grid surgeon-form-grid-4">
-
-
-                <div class="surgeon-field">
-
-                    <label>
-                        Last Name
-                        <span>*</span>
-                    </label>
-
-                    <input
-                        type="text"
-                        name="last_name"
-                        placeholder="Enter last name"
-                        required
-                    >
-
-                </div>
-
-
-                <div class="surgeon-field">
-
-                    <label>
-                        First Name
-                        <span>*</span>
-                    </label>
-
-                    <input
-                        type="text"
-                        name="first_name"
-                        placeholder="Enter first name"
-                        required
-                    >
-
-                </div>
-
-
-                <div class="surgeon-field">
-
-                    <label>
-                        Middle Name
-                    </label>
-
-                    <input
-                        type="text"
-                        name="middle_name"
-                        placeholder="Enter middle name"
-                    >
-
-                </div>
-
-
-                <div class="surgeon-field">
-
-                    <label>
-                        Suffix
-                    </label>
-
-                    <input
-                        type="text"
-                        name="suffix_name"
-                        placeholder="Jr., Sr., III"
-                    >
-
-                </div>
-
-
-                <div class="surgeon-field">
-
-                    <label>
-                        Nickname
-                    </label>
-
-                    <input
-                        type="text"
-                        name="nick_name"
-                        placeholder="Preferred name"
-                    >
-
-                </div>
-
-
-                <div class="surgeon-field">
-
-                    <label>
-                        Birth Date
-                    </label>
-
-                    <input
-                        type="date"
-                        name="birth_date"
-                    >
-
-                </div>
-
-
-                <div class="surgeon-field">
-
-                    <label>
-                        Sex / Gender
-                    </label>
-
-                    <select name="sex_gender">
-
-                        <option value="">
-                            Select
-                        </option>
-
-                        <option value="Male">
-                            Male
-                        </option>
-
-                        <option value="Female">
-                            Female
-                        </option>
-
-                    </select>
-
-                </div>
-
-            </div>
-
-
-            <!-- =================================================
-                 PROFESSIONAL INFORMATION
-                 ================================================= -->
-
-            <div class="surgeon-section-title surgeon-section-spacing">
-
-                <span class="surgeon-section-number">
-                    02
-                </span>
-
-                <div>
-                    <strong>Professional Information</strong>
-                    <small>Service and specialization</small>
-                </div>
-
-            </div>
-
-
-            <div class="surgeon-form-grid surgeon-form-grid-3">
-
-
-                <div class="surgeon-field">
-
-                    <label>
-                        Service Class
-                    </label>
-
-                    <input
-                        type="text"
-                        name="service_class"
-                        placeholder="Example: General Surgery"
-                    >
-
-                </div>
-
-
-                <div class="surgeon-field">
-
-                    <label>
-                        Specialization
-                    </label>
-
-                    <input
-                        type="text"
-                        name="specialization"
-                        placeholder="Example: Orthopedic Surgery"
-                    >
-
-                </div>
-
-
-                <div class="surgeon-field">
-
-                    <label>
-                        Status
-                    </label>
-
-                    <select name="status">
-
-                        <option value="Active">
-                            Active
-                        </option>
-
-                        <option value="Inactive">
-                            Inactive
-                        </option>
-
-                    </select>
-
-                </div>
-
-            </div>
-
-
-            <!-- =================================================
-                 FORM ACTIONS
-                 ================================================= -->
-
-            <div class="surgeon-form-actions">
-
-                <div class="surgeon-form-note">
-
-                    <i class="bi bi-info-circle"></i>
-
-                    Fields marked with
-                    <strong>*</strong>
-                    are required.
-
-                </div>
-
-
-                <div class="surgeon-form-buttons">
-
-                    <button
-                        type="reset"
-                        class="btn-surgeon-secondary"
-                    >
-                        <i class="bi bi-arrow-counterclockwise"></i>
-                        Clear
-                    </button>
-
-                    <button
-                        type="submit"
-                        class="btn-surgeon-primary"
-                    >
-                        <i class="bi bi-person-plus"></i>
+                    <h1 class="surgeon-form-heading">
                         Add Surgeon
-                    </button>
+                    </h1>
+
+                    <p class="surgeon-form-description">
+                        Register a surgeon for operating room scheduling.
+                    </p>
 
                 </div>
 
             </div>
 
-        </form>
 
-    </section>
+            <form method="POST">
 
+                <input
+                    type="hidden"
+                    name="action"
+                    value="add"
+                >
+
+
+                <!-- =================================================
+                     PERSONAL INFORMATION
+                     ================================================= -->
+
+                <div class="surgeon-section-title">
+
+                    <span class="surgeon-section-number">
+                        01
+                    </span>
+
+                    <div>
+                        <strong>Personal Information</strong>
+                        <small>Basic surgeon information</small>
+                    </div>
+
+                </div>
+
+
+                <div class="surgeon-form-grid surgeon-form-grid-4">
+
+
+                    <div class="surgeon-field">
+
+                        <label>
+                            Last Name
+                            <span>*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            name="last_name"
+                            placeholder="Enter last name"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="surgeon-field">
+
+                        <label>
+                            First Name
+                            <span>*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            name="first_name"
+                            placeholder="Enter first name"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="surgeon-field">
+
+                        <label>
+                            Middle Name
+                        </label>
+
+                        <input
+                            type="text"
+                            name="middle_name"
+                            placeholder="Enter middle name"
+                        >
+
+                    </div>
+
+
+                    <div class="surgeon-field">
+
+                        <label>
+                            Suffix
+                        </label>
+
+                        <input
+                            type="text"
+                            name="suffix_name"
+                            placeholder="Jr., Sr., III"
+                        >
+
+                    </div>
+
+
+                    <div class="surgeon-field">
+
+                        <label>
+                            Nickname
+                        </label>
+
+                        <input
+                            type="text"
+                            name="nick_name"
+                            placeholder="Preferred name"
+                        >
+
+                    </div>
+
+
+                    <div class="surgeon-field">
+
+                        <label>
+                            Birth Date
+                        </label>
+
+                        <input
+                            type="date"
+                            name="birth_date"
+                        >
+
+                    </div>
+
+
+                    <div class="surgeon-field">
+
+                        <label>
+                            Sex / Gender
+                        </label>
+
+                        <select name="sex_gender">
+
+                            <option value="">
+                                Select
+                            </option>
+
+                            <option value="Male">
+                                Male
+                            </option>
+
+                            <option value="Female">
+                                Female
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     PROFESSIONAL INFORMATION
+                     ================================================= -->
+
+                <div class="surgeon-section-title surgeon-section-spacing">
+
+                    <span class="surgeon-section-number">
+                        02
+                    </span>
+
+                    <div>
+                        <strong>Professional Information</strong>
+                        <small>Service and specialization</small>
+                    </div>
+
+                </div>
+
+
+                <div class="surgeon-form-grid surgeon-form-grid-3">
+
+
+                    <div class="surgeon-field">
+
+                        <label>
+                            Service Class
+                        </label>
+
+                        <input
+                            type="text"
+                            name="service_class"
+                            placeholder="Example: General Surgery"
+                        >
+
+                    </div>
+
+
+                    <div class="surgeon-field">
+
+                        <label>
+                            Specialization
+                        </label>
+
+                        <input
+                            type="text"
+                            name="specialization"
+                            placeholder="Example: Orthopedic Surgery"
+                        >
+
+                    </div>
+
+
+                    <div class="surgeon-field">
+
+                        <label>
+                            Status
+                        </label>
+
+                        <select name="status">
+
+                            <option value="Active">
+                                Active
+                            </option>
+
+                            <option value="Inactive">
+                                Inactive
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     FORM ACTIONS
+                     ================================================= -->
+
+                <div class="surgeon-form-actions">
+
+                    <div class="surgeon-form-note">
+
+                        <i class="bi bi-info-circle"></i>
+
+                        Fields marked with
+                        <strong>*</strong>
+                        are required.
+
+                    </div>
+
+
+                    <div class="surgeon-form-buttons">
+
+                        <button
+                            type="reset"
+                            class="btn-surgeon-secondary"
+                        >
+                            <i class="bi bi-arrow-counterclockwise"></i>
+                            Clear
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="btn-surgeon-primary"
+                        >
+                            <i class="bi bi-person-plus"></i>
+                            Add Surgeon
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    <?php endif; ?>
 
 
     <!-- =========================================================
@@ -1023,60 +1042,63 @@ require_once "../includes/sidebar.php";
 
                             <td>
 
-                                <div class="surgeon-actions">
+                                <?php if ($can_manage_surgeons): ?>
 
-                                    <button
-                                        type="button"
-                                        class="surgeon-action-edit"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#editSurgeonModal"
-                                        data-id="<?= (int)$surgeon['doctor_id'] ?>"
-                                        data-last-name="<?= htmlspecialchars($surgeon['last_name'], ENT_QUOTES) ?>"
-                                        data-first-name="<?= htmlspecialchars($surgeon['first_name'], ENT_QUOTES) ?>"
-                                        data-middle-name="<?= htmlspecialchars($surgeon['middle_name'] ?? '', ENT_QUOTES) ?>"
-                                        data-suffix-name="<?= htmlspecialchars($surgeon['suffix_name'] ?? '', ENT_QUOTES) ?>"
-                                        data-birth-date="<?= htmlspecialchars($surgeon['birth_date'] ?? '', ENT_QUOTES) ?>"
-                                        data-nick-name="<?= htmlspecialchars($surgeon['nick_name'] ?? '', ENT_QUOTES) ?>"
-                                        data-sex-gender="<?= htmlspecialchars($surgeon['sex_gender'] ?? '', ENT_QUOTES) ?>"
-                                        data-service-class="<?= htmlspecialchars($surgeon['service_class'] ?? '', ENT_QUOTES) ?>"
-                                        data-specialization="<?= htmlspecialchars($surgeon['specialization'] ?? '', ENT_QUOTES) ?>"
-                                        data-status="<?= htmlspecialchars($surgeon['status'], ENT_QUOTES) ?>"
-                                    >
-
-                                        <i class="bi bi-pencil-fill"></i>
-
-                                    </button>
+                                    <div class="surgeon-actions">
 
 
-                                    <form
-                                        method="POST"
-                                        onsubmit="return confirm('Are you sure you want to delete this surgeon?');"
-                                    >
-
-                                        <input
-                                            type="hidden"
-                                            name="action"
-                                            value="delete"
-                                        >
-
-                                        <input
-                                            type="hidden"
-                                            name="doctor_id"
-                                            value="<?= (int)$surgeon['doctor_id'] ?>"
-                                        >
+                                        <!-- EDIT -->
 
                                         <button
-                                            type="submit"
-                                            class="surgeon-action-delete"
+                                            type="button"
+                                            class="surgeon-action-edit"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#editSurgeonModal"
+                                            data-id="<?= (int)$surgeon['doctor_id'] ?>"
+                                            data-last-name="<?= htmlspecialchars($surgeon['last_name'], ENT_QUOTES) ?>"
+                                            data-first-name="<?= htmlspecialchars($surgeon['first_name'], ENT_QUOTES) ?>"
+                                            data-middle-name="<?= htmlspecialchars($surgeon['middle_name'] ?? '', ENT_QUOTES) ?>"
+                                            data-suffix-name="<?= htmlspecialchars($surgeon['suffix_name'] ?? '', ENT_QUOTES) ?>"
+                                            data-birth-date="<?= htmlspecialchars($surgeon['birth_date'] ?? '', ENT_QUOTES) ?>"
+                                            data-nick-name="<?= htmlspecialchars($surgeon['nick_name'] ?? '', ENT_QUOTES) ?>"
+                                            data-sex-gender="<?= htmlspecialchars($surgeon['sex_gender'] ?? '', ENT_QUOTES) ?>"
+                                            data-service-class="<?= htmlspecialchars($surgeon['service_class'] ?? '', ENT_QUOTES) ?>"
+                                            data-specialization="<?= htmlspecialchars($surgeon['specialization'] ?? '', ENT_QUOTES) ?>"
+                                            data-status="<?= htmlspecialchars($surgeon['status'], ENT_QUOTES) ?>"
+                                            title="Edit surgeon"
                                         >
 
-                                            <i class="bi bi-trash3"></i>
+                                            <i class="bi bi-pencil-fill"></i>
 
                                         </button>
 
-                                    </form>
 
-                                </div>
+                                        <!-- DELETE -->
+
+                                        <button
+                                            type="button"
+                                            class="surgeon-action-delete"
+                                            title="Delete surgeon"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteSurgeonModal"
+                                            data-id="<?= (int)$surgeon['doctor_id'] ?>"
+                                            data-name="<?= htmlspecialchars($full_name, ENT_QUOTES) ?>"
+                                        >
+
+                                            <i class="bi bi-trash-fill"></i>
+
+                                        </button>
+
+
+                                    </div>
+
+                                <?php else: ?>
+
+                                    <span class="muted-text">
+                                        View only
+                                    </span>
+
+                                <?php endif; ?>
 
                             </td>
 
@@ -1103,409 +1125,613 @@ require_once "../includes/sidebar.php";
      EDIT SURGEON MODAL
      ============================================================ -->
 
-<div
-    class="modal fade"
-    id="editSurgeonModal"
-    tabindex="-1"
-    aria-labelledby="editSurgeonModalLabel"
-    aria-hidden="true"
->
-    <div class="modal-dialog modal-dialog-centered surgeon-edit-dialog">
+<?php if ($can_manage_surgeons): ?>
 
-        <div class="modal-content surgeon-edit-modal">
+    <div
+        class="modal fade"
+        id="editSurgeonModal"
+        tabindex="-1"
+        aria-labelledby="editSurgeonModalLabel"
+        aria-hidden="true"
+    >
 
-            <!-- HEADER -->
-            <div class="modal-header surgeon-modal-header">
+        <div class="modal-dialog modal-dialog-centered surgeon-edit-dialog">
 
-                <div class="surgeon-modal-header-main">
+            <div class="modal-content surgeon-edit-modal">
 
-                    <div class="surgeon-modal-icon">
-                        <i class="bi bi-person-badge-fill"></i>
-                    </div>
 
-                    <div>
+                <!-- HEADER -->
 
-                        <div class="surgeon-modal-eyebrow">
-                            SURGEON MANAGEMENT
+                <div class="modal-header surgeon-modal-header">
+
+                    <div class="surgeon-modal-header-main">
+
+                        <div class="surgeon-modal-icon">
+
+                            <i class="bi bi-person-badge-fill"></i>
+
                         </div>
 
-                        <h5
-                            class="surgeon-modal-heading"
-                            id="editSurgeonModalLabel"
-                        >
-                            Edit Surgeon
-                        </h5>
+                        <div>
 
-                        <p class="surgeon-modal-subtitle">
-                            Update the surgeon's personal and professional information.
-                        </p>
+                            <div class="surgeon-modal-eyebrow">
+                                SURGEON MANAGEMENT
+                            </div>
+
+                            <h5
+                                class="surgeon-modal-heading"
+                                id="editSurgeonModalLabel"
+                            >
+                                Edit Surgeon
+                            </h5>
+
+                            <p class="surgeon-modal-subtitle">
+                                Update the surgeon's personal and professional information.
+                            </p>
+
+                        </div>
 
                     </div>
+
+
+                    <button
+                        type="button"
+                        class="btn-close surgeon-modal-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                    ></button>
 
                 </div>
 
-                <button
-                    type="button"
-                    class="btn-close surgeon-modal-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                ></button>
+
+                <!-- FORM -->
+
+                <form method="POST">
+
+                    <input
+                        type="hidden"
+                        name="action"
+                        value="update"
+                    >
+
+                    <input
+                        type="hidden"
+                        name="doctor_id"
+                        id="edit_doctor_id"
+                    >
+
+
+                    <!-- BODY -->
+
+                    <div class="surgeon-modal-body">
+
+
+                        <!-- ====================================================
+                             PERSONAL INFORMATION
+                             ==================================================== -->
+
+                        <section class="surgeon-modal-section">
+
+                            <div class="surgeon-modal-section-heading">
+
+                                <span class="surgeon-modal-section-number">
+                                    01
+                                </span>
+
+                                <div class="surgeon-modal-section-copy">
+
+                                    <div class="surgeon-modal-section-title">
+                                        Personal Information
+                                    </div>
+
+                                    <div class="surgeon-modal-section-subtitle">
+                                        Basic information about the surgeon
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="surgeon-modal-grid surgeon-modal-grid-4">
+
+
+                                <!-- Last Name -->
+
+                                <div class="surgeon-field">
+
+                                    <label for="edit_last_name">
+                                        Last Name <span>*</span>
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        name="last_name"
+                                        id="edit_last_name"
+                                        class="form-control"
+                                        required
+                                    >
+
+                                </div>
+
+
+                                <!-- First Name -->
+
+                                <div class="surgeon-field">
+
+                                    <label for="edit_first_name">
+                                        First Name <span>*</span>
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        name="first_name"
+                                        id="edit_first_name"
+                                        class="form-control"
+                                        required
+                                    >
+
+                                </div>
+
+
+                                <!-- Middle Name -->
+
+                                <div class="surgeon-field">
+
+                                    <label for="edit_middle_name">
+                                        Middle Name
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        name="middle_name"
+                                        id="edit_middle_name"
+                                        class="form-control"
+                                    >
+
+                                </div>
+
+
+                                <!-- Suffix -->
+
+                                <div class="surgeon-field">
+
+                                    <label for="edit_suffix_name">
+                                        Suffix
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        name="suffix_name"
+                                        id="edit_suffix_name"
+                                        class="form-control"
+                                        placeholder="Jr., Sr., III"
+                                    >
+
+                                </div>
+
+
+                                <!-- Birth Date -->
+
+                                <div class="surgeon-field">
+
+                                    <label for="edit_birth_date">
+                                        Birth Date
+                                    </label>
+
+                                    <input
+                                        type="date"
+                                        name="birth_date"
+                                        id="edit_birth_date"
+                                        class="form-control"
+                                    >
+
+                                </div>
+
+
+                                <!-- Nickname -->
+
+                                <div class="surgeon-field">
+
+                                    <label for="edit_nick_name">
+                                        Nickname
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        name="nick_name"
+                                        id="edit_nick_name"
+                                        class="form-control"
+                                    >
+
+                                </div>
+
+
+                                <!-- Sex / Gender -->
+
+                                <div class="surgeon-field">
+
+                                    <label for="edit_sex_gender">
+                                        Sex / Gender <span>*</span>
+                                    </label>
+
+                                    <select
+                                        name="sex_gender"
+                                        id="edit_sex_gender"
+                                        class="form-select"
+                                        required
+                                    >
+
+                                        <option value="">
+                                            Select
+                                        </option>
+
+                                        <option value="Male">
+                                            Male
+                                        </option>
+
+                                        <option value="Female">
+                                            Female
+                                        </option>
+
+                                    </select>
+
+                                </div>
+
+
+                            </div>
+
+                        </section>
+
+
+                        <!-- ====================================================
+                             PROFESSIONAL INFORMATION
+                             ==================================================== -->
+
+                        <section class="surgeon-modal-section surgeon-modal-section-professional">
+
+                            <div class="surgeon-modal-section-heading">
+
+                                <span class="surgeon-modal-section-number">
+                                    02
+                                </span>
+
+                                <div class="surgeon-modal-section-copy">
+
+                                    <div class="surgeon-modal-section-title">
+                                        Professional Information
+                                    </div>
+
+                                    <div class="surgeon-modal-section-subtitle">
+                                        Service, specialization, and account status
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="surgeon-modal-grid surgeon-modal-grid-3">
+
+
+                                <!-- Service Class -->
+
+                                <div class="surgeon-field">
+
+                                    <label for="edit_service_class">
+                                        Service Class <span>*</span>
+                                    </label>
+
+                                    <select
+                                        name="service_class"
+                                        id="edit_service_class"
+                                        class="form-select"
+                                        required
+                                    >
+
+                                        <option value="">
+                                            Select service class
+                                        </option>
+
+                                        <option value="Regular">
+                                            Regular
+                                        </option>
+
+                                        <option value="Visiting">
+                                            Visiting
+                                        </option>
+
+                                    </select>
+
+                                </div>
+
+
+                                <!-- Specialization -->
+
+                                <div class="surgeon-field">
+
+                                    <label for="edit_specialization">
+                                        Specialization <span>*</span>
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        name="specialization"
+                                        id="edit_specialization"
+                                        class="form-control"
+                                        required
+                                    >
+
+                                </div>
+
+
+                                <!-- Status -->
+
+                                <div class="surgeon-field">
+
+                                    <label for="edit_status">
+                                        Status <span>*</span>
+                                    </label>
+
+                                    <select
+                                        name="status"
+                                        id="edit_status"
+                                        class="form-select"
+                                        required
+                                    >
+
+                                        <option value="Active">
+                                            Active
+                                        </option>
+
+                                        <option value="Inactive">
+                                            Inactive
+                                        </option>
+
+                                    </select>
+
+                                </div>
+
+
+                            </div>
+
+                        </section>
+
+                    </div>
+
+
+                    <!-- FOOTER -->
+
+                    <div class="modal-footer surgeon-modal-actions">
+
+                        <div class="surgeon-modal-note">
+
+                            <i class="bi bi-info-circle"></i>
+
+                            <span>
+                                Fields marked with <strong>*</strong> are required.
+                            </span>
+
+                        </div>
+
+
+                        <div class="surgeon-modal-buttons">
+
+                            <button
+                                type="button"
+                                class="btn-surgeon-secondary"
+                                data-bs-dismiss="modal"
+                            >
+                                <i class="bi bi-x-lg"></i>
+                                Cancel
+                            </button>
+
+
+                            <button
+                                type="submit"
+                                class="btn-surgeon-primary"
+                            >
+                                <i class="bi bi-check2"></i>
+                                Save Changes
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </form>
 
             </div>
 
+        </div>
 
-            <!-- FORM -->
-            <form method="POST">
+    </div>
 
-                <input
-                    type="hidden"
-                    name="action"
-                    value="update"
-                >
-
-                <input
-                    type="hidden"
-                    name="doctor_id"
-                    id="edit_doctor_id"
-                >
+<?php endif; ?>
 
 
-                <!-- BODY -->
-                <div class="surgeon-modal-body">
+
+<!-- ============================================================
+     DELETE SURGEON MODAL
+     ============================================================ -->
+
+<?php if ($can_manage_surgeons): ?>
+
+    <div
+        class="modal fade"
+        id="deleteSurgeonModal"
+        tabindex="-1"
+        aria-labelledby="deleteSurgeonModalLabel"
+        aria-hidden="true"
+    >
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content">
 
 
-                    <!-- ====================================================
-                         PERSONAL INFORMATION
-                         ==================================================== -->
+                <!-- HEADER -->
 
-                    <section class="surgeon-modal-section">
+                <div class="modal-header">
 
-                        <div class="surgeon-modal-section-heading">
+                    <div>
 
-                            <span class="surgeon-modal-section-number">
-                                01
-                            </span>
-
-                            <div class="surgeon-modal-section-copy">
-
-                                <div class="surgeon-modal-section-title">
-                                    Personal Information
-                                </div>
-
-                                <div class="surgeon-modal-section-subtitle">
-                                    Basic information about the surgeon
-                                </div>
-
-                            </div>
-
+                        <div
+                            style="
+                                font-size: 11px;
+                                font-weight: 700;
+                                letter-spacing: 1.2px;
+                                color: #4da985;
+                                margin-bottom: 4px;
+                            "
+                        >
+                            CONFIRM ACTION
                         </div>
 
-
-                        <div class="surgeon-modal-grid surgeon-modal-grid-4">
-
-
-                            <!-- Last Name -->
-                            <div class="surgeon-field">
-
-                                <label for="edit_last_name">
-                                    Last Name <span>*</span>
-                                </label>
-
-                                <input
-                                    type="text"
-                                    name="last_name"
-                                    id="edit_last_name"
-                                    class="form-control"
-                                    required
-                                >
-
-                            </div>
-
-
-                            <!-- First Name -->
-                            <div class="surgeon-field">
-
-                                <label for="edit_first_name">
-                                    First Name <span>*</span>
-                                </label>
-
-                                <input
-                                    type="text"
-                                    name="first_name"
-                                    id="edit_first_name"
-                                    class="form-control"
-                                    required
-                                >
-
-                            </div>
-
-
-                            <!-- Middle Name -->
-                            <div class="surgeon-field">
-
-                                <label for="edit_middle_name">
-                                    Middle Name
-                                </label>
-
-                                <input
-                                    type="text"
-                                    name="middle_name"
-                                    id="edit_middle_name"
-                                    class="form-control"
-                                >
-
-                            </div>
-
-
-                            <!-- Suffix -->
-                            <div class="surgeon-field">
-
-                                <label for="edit_suffix_name">
-                                    Suffix
-                                </label>
-
-                                <input
-                                    type="text"
-                                    name="suffix_name"
-                                    id="edit_suffix_name"
-                                    class="form-control"
-                                    placeholder="Jr., Sr., III"
-                                >
-
-                            </div>
-
-
-                            <!-- Birth Date -->
-                            <div class="surgeon-field">
-
-                                <label for="edit_birth_date">
-                                    Birth Date
-                                </label>
-
-                                <input
-                                    type="date"
-                                    name="birth_date"
-                                    id="edit_birth_date"
-                                    class="form-control"
-                                >
-
-                            </div>
-
-
-                            <!-- Nickname -->
-                            <div class="surgeon-field">
-
-                                <label for="edit_nick_name">
-                                    Nickname
-                                </label>
-
-                                <input
-                                    type="text"
-                                    name="nick_name"
-                                    id="edit_nick_name"
-                                    class="form-control"
-                                >
-
-                            </div>
-
-
-                            <!-- Sex / Gender -->
-                            <div class="surgeon-field">
-
-                                <label for="edit_sex_gender">
-                                    Sex / Gender <span>*</span>
-                                </label>
-
-                                <select
-                                    name="sex_gender"
-                                    id="edit_sex_gender"
-                                    class="form-select"
-                                    required
-                                >
-
-                                    <option value="">
-                                        Select
-                                    </option>
-
-                                    <option value="Male">
-                                        Male
-                                    </option>
-
-                                    <option value="Female">
-                                        Female
-                                    </option>
-
-                                </select>
-
-                            </div>
-
-                        </div>
-
-                    </section>
-
-
-                    <!-- ====================================================
-                         PROFESSIONAL INFORMATION
-                         ==================================================== -->
-
-                    <section class="surgeon-modal-section surgeon-modal-section-professional">
-
-                        <div class="surgeon-modal-section-heading">
-
-                            <span class="surgeon-modal-section-number">
-                                02
-                            </span>
-
-                            <div class="surgeon-modal-section-copy">
-
-                                <div class="surgeon-modal-section-title">
-                                    Professional Information
-                                </div>
-
-                                <div class="surgeon-modal-section-subtitle">
-                                    Service, specialization, and account status
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="surgeon-modal-grid surgeon-modal-grid-3">
-
-
-                            <!-- Service Class -->
-                            <div class="surgeon-field">
-
-                                <label for="edit_service_class">
-                                    Service Class <span>*</span>
-                                </label>
-
-                                <select
-                                    name="service_class"
-                                    id="edit_service_class"
-                                    class="form-select"
-                                    required
-                                >
-
-                                    <option value="">
-                                        Select service class
-                                    </option>
-
-                                    <option value="Regular">
-                                        Regular
-                                    </option>
-
-                                    <option value="Visiting">
-                                        Visiting
-                                    </option>
-
-                                </select>
-
-                            </div>
-
-
-                            <!-- Specialization -->
-                            <div class="surgeon-field">
-
-                                <label for="edit_specialization">
-                                    Specialization <span>*</span>
-                                </label>
-
-                                <input
-                                    type="text"
-                                    name="specialization"
-                                    id="edit_specialization"
-                                    class="form-control"
-                                    required
-                                >
-
-                            </div>
-
-
-                            <!-- Status -->
-                            <div class="surgeon-field">
-
-                                <label for="edit_status">
-                                    Status <span>*</span>
-                                </label>
-
-                                <select
-                                    name="status"
-                                    id="edit_status"
-                                    class="form-select"
-                                    required
-                                >
-
-                                    <option value="Active">
-                                        Active
-                                    </option>
-
-                                    <option value="Inactive">
-                                        Inactive
-                                    </option>
-
-                                </select>
-
-                            </div>
-
-                        </div>
-
-                    </section>
+                        <h5
+                            class="modal-title"
+                            id="deleteSurgeonModalLabel"
+                        >
+                            Delete Surgeon
+                        </h5>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                    ></button>
 
                 </div>
 
 
-                <!-- FOOTER -->
-                <div class="modal-footer surgeon-modal-actions">
+                <!-- DELETE FORM -->
 
-                    <div class="surgeon-modal-note">
+                <form
+                    method="POST"
+                    action="surgeons.php"
+                >
 
-                        <i class="bi bi-info-circle"></i>
+                    <input
+                        type="hidden"
+                        name="action"
+                        value="delete"
+                    >
 
-                        <span>
-                            Fields marked with <strong>*</strong> are required.
+                    <input
+                        type="hidden"
+                        name="doctor_id"
+                        id="delete_surgeon_id"
+                    >
+
+
+                    <!-- BODY -->
+
+                    <div
+                        class="modal-body"
+                        style="
+                            text-align: center;
+                            padding: 30px 25px;
+                        "
+                    >
+
+                        <div
+                            style="
+                                width: 58px;
+                                height: 58px;
+                                margin: 0 auto 18px;
+                                border-radius: 50%;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                background: #fdecec;
+                                color: #dc3545;
+                                font-size: 24px;
+                            "
+                        >
+
+                            <i class="bi bi-trash3"></i>
+
+                        </div>
+
+
+                        <p
+                            style="
+                                margin-bottom: 8px;
+                                font-size: 15px;
+                                color: #42544d;
+                            "
+                        >
+
+                            Are you sure you want to delete
+                            <strong id="delete_surgeon_name"></strong>?
+
+                        </p>
+
+
+                        <span
+                            style="
+                                font-size: 13px;
+                                color: #7b8b85;
+                            "
+                        >
+                            This action cannot be undone.
                         </span>
 
                     </div>
 
 
-                    <div class="surgeon-modal-buttons">
+                    <!-- FOOTER -->
+
+                    <div class="modal-footer">
 
                         <button
                             type="button"
-                            class="btn-surgeon-secondary"
+                            class="btn btn-secondary"
                             data-bs-dismiss="modal"
                         >
-                            <i class="bi bi-x-lg"></i>
                             Cancel
                         </button>
 
 
                         <button
                             type="submit"
-                            class="btn-surgeon-primary"
+                            class="btn btn-danger"
                         >
-                            <i class="bi bi-check2"></i>
-                            Save Changes
+
+                            <i class="bi bi-trash3"></i>
+
+                            Delete Surgeon
+
                         </button>
 
                     </div>
 
-                </div>
+                </form>
 
-            </form>
+            </div>
 
         </div>
 
     </div>
-</div>
+
+<?php endif; ?>
 
 
 
 <script>
 
 document.addEventListener("DOMContentLoaded", function () {
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | EDIT SURGEON
+    |--------------------------------------------------------------------------
+    */
 
     const editButtons =
         document.querySelectorAll(".surgeon-action-edit");
@@ -1547,6 +1773,41 @@ document.addEventListener("DOMContentLoaded", function () {
 
             document.getElementById("edit_status").value =
                 button.dataset.status;
+
+        });
+
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DELETE SURGEON
+    |--------------------------------------------------------------------------
+    */
+
+    const deleteSurgeonButtons =
+        document.querySelectorAll(".surgeon-action-delete");
+
+
+    deleteSurgeonButtons.forEach(function (button) {
+
+        button.addEventListener("click", function () {
+
+            const surgeonId =
+                this.dataset.id || "";
+
+            const surgeonName =
+                this.dataset.name || "this surgeon";
+
+
+            document.getElementById(
+                "delete_surgeon_id"
+            ).value = surgeonId;
+
+
+            document.getElementById(
+                "delete_surgeon_name"
+            ).textContent = surgeonName;
 
         });
 

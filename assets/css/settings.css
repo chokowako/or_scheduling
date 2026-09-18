@@ -1033,38 +1033,6 @@
 }
 
 
-/* =========================================================
-   DISABLED CARDS
-   ========================================================= */
-
-.settings-card-disabled {
-    cursor: default;
-
-    background:
-        linear-gradient(
-            145deg,
-            #ffffff,
-            #fafcfb
-        );
-}
-
-
-.settings-card-disabled:hover {
-    transform: translateY(-2px);
-
-    box-shadow:
-        0 9px 22px rgba(35,76,61,.065);
-}
-
-
-.settings-card-disabled .settings-card-icon {
-    filter: saturate(.75);
-}
-
-
-.settings-card-disabled .card-action {
-    opacity: .85;
-}
 
 
 /* =========================================================

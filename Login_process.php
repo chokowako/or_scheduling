@@ -1,3 +1,4 @@
+```php
 <?php
 
 session_start();
@@ -21,7 +22,7 @@ $stmt->execute([
 
 $user = $stmt->fetch();
 
-if ($user && $password === $user['password']) {
+if ($user && password_verify($password, $user['password'])) {
 
     $_SESSION['user_id'] = $user['user_id'];
     $_SESSION['username'] = $user['username'];
@@ -36,3 +37,4 @@ if ($user && $password === $user['password']) {
     die("Invalid username or password.");
 
 }
+

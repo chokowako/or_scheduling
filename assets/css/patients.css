@@ -992,9 +992,7 @@
 .patient-number-cell {
     display: flex;
     align-items: center;
-
     gap: 8px;
-
     min-width: 125px;
 }
 
@@ -1007,21 +1005,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-
     border-radius: 8px;
-
     background: #e3f2ea;
-
     border: 1px solid #c8e1d3;
-
     color: #438665;
-
     font-size: 12px;
 }
 
 .patient-number-cell strong {
     color: #2d453b;
-
     font-size: 12px;
     font-weight: 850;
 }
@@ -1037,22 +1029,16 @@
 
 .patient-name-cell strong {
     display: block;
-
     color: #000000;
-
     font-size: 12px;
     font-weight: 850;
-
     line-height: 1.4;
 }
 
 .patient-name-cell span {
     display: block;
-
     margin-top: 3px;
-
     color: #768a82;
-
     font-size: 9px;
 }
 
@@ -1063,20 +1049,15 @@
 
 .patient-registry-cell strong {
     display: block;
-
     color: #3d554b;
-
     font-size: 11px;
     font-weight: 800;
 }
 
 .patient-registry-cell span {
     display: block;
-
     margin-top: 3px;
-
     color: #398064;
-
     font-size: 10px;
     font-weight: 750;
 }
@@ -1089,17 +1070,11 @@
 .patient-sex-badge {
     display: inline-flex;
     align-items: center;
-
     padding: 5px 8px;
-
     border-radius: 7px;
-
     background: #eaf6f0;
-
     border: 1px solid #cde3d8;
-
     color: #397b60;
-
     font-size: 10px;
     font-weight: 800;
 }
@@ -1111,9 +1086,7 @@
 
 .patient-room-cell strong {
     display: block;
-
     color: #3b554a;
-
     font-size: 11px;
     font-weight: 800;
 }
@@ -1126,11 +1099,8 @@
 
 .patient-room-cell span {
     display: block;
-
     margin-top: 3px;
-
     color: #7a8e86;
-
     font-size: 10px;
 }
 
@@ -1142,16 +1112,11 @@
 .patient-contact {
     display: inline-flex;
     align-items: center;
-
     gap: 6px;
-
     color: #425b50;
-
     font-size: 10px;
-
     white-space: nowrap;
 }
-
 .patient-contact i {
     color: #579478;
 }
@@ -1160,31 +1125,17 @@
 /* ============================================================
    MUTED TEXT
    ============================================================ */
-
 .muted-text {
     color: #98a6a0;
-
     font-size: 10px;
 }
-
 
 /* ============================================================
    ACTIONS
    ============================================================ */
 
-.patient-actions {
-    display: flex;
-    align-items: center;
+.patient-action-btn {
 
-    gap: 6px;
-}
-
-.patient-actions form {
-    margin: 0;
-}
-
-.patient-action-edit,
-.patient-action-delete {
     width: 34px;
     height: 34px;
     display: inline-flex;
@@ -1193,35 +1144,42 @@
     border-radius: 8px;
     font-size: 14px;
     text-decoration: none;
-    transition: .16s ease;
+    cursor: pointer;
+    transition:
+        background 0.15s ease,
+        color 0.15s ease,
+        border-color 0.15s ease,
+        transform 0.15s ease;
 }
 
-.patient-action-edit {
-    border: 1px solid #c5ddd1;
+.patient-edit-btn {
+
+  border: 1px solid #c5ddd1;
     background: #eaf6f0;
     color: #418365;
 }
 
-.patient-action-edit:hover {
+.patient-edit-btn:hover {
     background: #d9eee3;
     border-color: #9fc7b4;
     color: #2f6f54;
     transform: translateY(-1px);
 }
 
-.patient-action-delete {
-    border: 1px solid #e1caca;
-     background: #fde8e8;
-    color: #ff0000;
 
+.patient-delete-btn {
+	border: 1px solid #e1caca;
+    background: #fde8e8;
+    color: #ff0000;
     cursor: pointer;
 }
 
-.patient-action-delete:hover {
+.patient-delete-btn:hover {
     background: #fff0f0;
     border-color: #d9b6b6;
     color: #9c4949;
     transform: translateY(-1px);
+
 }
 
 
@@ -1239,7 +1197,6 @@
 
 .patient-table-wrapper::-webkit-scrollbar-thumb {
     background: #aec9bd;
-
     border-radius: 10px;
 }
 
@@ -1296,9 +1253,7 @@
 
     border: 1px solid #bdd7ca;
     border-radius: 20px;
-
     background: #ffffff;
-
     box-shadow:
         0 28px 70px rgba(24, 61, 46, .24),
         0 8px 25px rgba(31, 73, 55, .12);
@@ -1313,19 +1268,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-
     gap: 20px;
-
     padding: 21px 27px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #d4ebdf 0%,
-            #eaf6f1 52%,
-            #f7fbf9 100%
-        );
-
+    background:linear-gradient( 135deg, #d4ebdf 0%,#eaf6f1 52%, #f7fbf9 100%);
     border-bottom: 1px solid #c7ddd3;
 }
 
@@ -1333,9 +1278,7 @@
 .patient-modal-heading {
     display: flex;
     align-items: center;
-
     gap: 13px;
-
     min-width: 0;
 }
 
@@ -1343,65 +1286,44 @@
 .patient-modal-icon {
     width: 46px;
     height: 46px;
-
     flex: 0 0 46px;
-
     display: flex;
     align-items: center;
     justify-content: center;
 
     border-radius: 13px;
-
     background: rgba(255,255,255,.90);
-
     border: 1px solid #b8d6c8;
-
     color: #337d5f;
-
     font-size: 19px;
-
-    box-shadow:
-        0 5px 14px rgba(49,106,80,.07);
+    box-shadow: 0 5px 14px rgba(49,106,80,.07);
 }
 
 
 .patient-modal-eyebrow {
     display: block;
-
     color: #438568;
-
     font-size: 10px;
-
     font-weight: 850;
-
     letter-spacing: .12em;
-
     text-transform: uppercase;
 }
 
 
 .patient-modal-heading h2 {
     margin: 3px 0 0;
-
     color: #203b2f;
-
     font-size: 21px;
-
     font-weight: 850;
-
     letter-spacing: -.025em;
-
     line-height: 1.2;
 }
 
 
 .patient-modal-heading p {
     margin: 4px 0 0;
-
     color: #71877d;
-
     font-size: 12px;
-
     line-height: 1.45;
 }
 
@@ -1413,36 +1335,24 @@
 .patient-modal-close {
     width: 37px;
     height: 37px;
-
     flex: 0 0 37px;
-
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
     border: 1px solid #c5dcd1;
-
     border-radius: 9px;
-
     background: rgba(255,255,255,.82);
-
     color: #668077;
-
     font-size: 13px;
-
     cursor: pointer;
-
     transition: .16s ease;
 }
 
 
 .patient-modal-close:hover {
     background: #ffffff;
-
     border-color: #a9c8b9;
-
     color: #36574a;
-
     transform: translateY(-1px);
 }
 
@@ -1453,15 +1363,8 @@
 
 .patient-modal-section {
     padding: 23px 27px 25px;
-
     border-bottom: 1px solid #dce9e4;
-
-    background:
-        linear-gradient(
-            180deg,
-            #ffffff 0%,
-            #fbfdfc 100%
-        );
+    background:linear-gradient(180deg,#ffffff 0%, #fbfdfc 100%);
 }
 
 
@@ -1492,18 +1395,9 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
-
     gap: 9px;
-
     padding: 17px 27px;
-
-    background:
-        linear-gradient(
-            180deg,
-            #edf7f2,
-            #e3f1eb
-        );
-
+    background:linear-gradient(180deg, #edf7f2,#e3f1eb );
     border-top: 1px solid #cddfd7;
 }
 
@@ -1592,7 +1486,6 @@
 
     .patient-edit-modal .modal-dialog {
         max-width: calc(100% - 20px);
-
         margin: 10px auto;
     }
 
@@ -1610,15 +1503,12 @@
 
     .patient-modal-actions {
         padding: 17px 18px;
-
         flex-wrap: wrap;
     }
 
     .patient-modal-actions .patient-form-note {
         flex-basis: 100%;
-
         margin-right: 0;
-
         margin-bottom: 3px;
     }
 
@@ -1633,19 +1523,16 @@
 
     .patient-edit-modal .modal-dialog {
         max-width: calc(100% - 12px);
-
         margin: 6px auto;
     }
 
     .patient-edit-modal .modal-dialog-scrollable .modal-content {
         max-height: calc(100vh - 12px);
-
         border-radius: 16px;
     }
 
     .patient-modal-header {
         align-items: flex-start;
-
         padding: 17px 15px;
     }
 
@@ -1656,11 +1543,8 @@
     .patient-modal-icon {
         width: 42px;
         height: 42px;
-
         flex-basis: 42px;
-
         border-radius: 11px;
-
         font-size: 17px;
     }
 
@@ -1678,9 +1562,7 @@
 
     .patient-modal-actions {
         flex-direction: column;
-
         align-items: stretch;
-
         padding: 16px 15px;
     }
 
@@ -1700,9 +1582,7 @@
 
     .patients-page {
         width: calc(100% - 220px);
-
         margin-left: 220px;
-
         padding-left: 24px;
         padding-right: 24px;
     }
@@ -1755,9 +1635,7 @@
 
     .patients-page {
         width: 100%;
-
         margin-left: 0;
-
         padding: 22px 15px 35px;
     }
 
@@ -1792,16 +1670,13 @@
 
     .patient-form-note {
         flex-basis: 100%;
-
         margin-right: 0;
-
         margin-bottom: 4px;
     }
 
     .patient-search-area {
         padding: 15px 18px;
     }
-
 }
 
 
@@ -1810,7 +1685,6 @@
    ============================================================ */
 
 @media (max-width: 600px) {
-
     .patients-page {
         padding: 18px 12px 30px;
     }
@@ -1822,11 +1696,8 @@
     .patients-title-icon {
         width: 49px;
         height: 49px;
-
         flex-basis: 49px;
-
         border-radius: 14px;
-
         font-size: 20px;
     }
 

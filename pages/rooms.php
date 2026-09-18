@@ -1,4 +1,3 @@
-```php
 <?php
 
 session_start();
@@ -22,11 +21,25 @@ $allowed_statuses = [
 $message = "";
 $message_type = "";
 
+$role = $_SESSION['role'] ?? 'Staff';
+
+$can_manage_rooms = in_array(
+    $role,
+    ['Administrator', 'Scheduler'],
+    true
+);
+
+
 /* =========================================================
    ADD ROOM
 ========================================================= */
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["add_room"])) {
+
+    if (!$can_manage_rooms) {
+        header("Location: rooms.php");
+        exit;
+    }
 
     $room_name = trim($_POST["room_name"] ?? "");
     $room_description = trim($_POST["room_description"] ?? "");
@@ -77,6 +90,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["add_room"])) {
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["update_room"])) {
 
+    if (!$can_manage_rooms) {
+        header("Location: rooms.php");
+        exit;
+    }
+
     $room_id = (int)($_POST["room_id"] ?? 0);
     $room_name = trim($_POST["room_name"] ?? "");
     $room_description = trim($_POST["room_description"] ?? "");
@@ -126,6 +144,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["update_room"])) {
 ========================================================= */
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["delete_room"])) {
+
+    if (!$can_manage_rooms) {
+        header("Location: rooms.php");
+        exit;
+    }
 
     $room_id = (int)($_POST["room_id"] ?? 0);
 
@@ -239,15 +262,19 @@ require_once "../includes/sidebar.php";
         </div>
 
 
-        <button
-            type="button"
-            class="rooms-add-btn"
-            data-bs-toggle="modal"
-            data-bs-target="#addRoomModal"
-        >
-            <i class="bi bi-plus-lg"></i>
-            Add Operating Room
-        </button>
+        <?php if ($can_manage_rooms): ?>
+
+            <button
+                type="button"
+                class="rooms-add-btn"
+                data-bs-toggle="modal"
+                data-bs-target="#addRoomModal"
+            >
+                <i class="bi bi-plus-lg"></i>
+                Add Operating Room
+            </button>
+
+        <?php endif; ?>
 
     </div>
 
@@ -648,51 +675,63 @@ require_once "../includes/sidebar.php";
                             </td>
 
 
-                            <!-- ACTION -->
+                            
+								<!-- ACTION -->
 
-                            <td>
+								<td class="text-end">
 
-                                <div class="room-actions">
+									<?php if ($can_manage_rooms): ?>
+
+										<div class="room-actions">
+
+											<!-- EDIT -->
+
+											<button
+												type="button"
+												class="room-action-btn room-action-edit"
+												title="Edit"
+												data-bs-toggle="modal"
+												data-bs-target="#editRoomModal"
+												data-id="<?= $room_id ?>"
+												data-name="<?= htmlspecialchars($room_name, ENT_QUOTES) ?>"
+												data-description="<?= htmlspecialchars($room_description, ENT_QUOTES) ?>"
+												data-status="<?= htmlspecialchars($room_status, ENT_QUOTES) ?>"
+											>
+
+												<i class="bi bi-pencil-fill"></i>
+
+											</button>
 
 
-                                    <!-- EDIT -->
+											<!-- DELETE -->
 
-                                    <button
-                                        type="button"
-                                        class="room-action-btn room-action-edit"
-                                        title="Edit"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#editRoomModal"
-                                        data-id="<?= $room_id ?>"
-                                        data-name="<?= htmlspecialchars($room_name, ENT_QUOTES) ?>"
-                                        data-description="<?= htmlspecialchars($room_description, ENT_QUOTES) ?>"
-                                        data-status="<?= htmlspecialchars($room_status, ENT_QUOTES) ?>"
-                                    >
+											<button
+												type="button"
+												class="room-action-btn room-action-delete"
+												title="Delete"
+												data-bs-toggle="modal"
+												data-bs-target="#deleteRoomModal"
+												data-id="<?= $room_id ?>"
+												data-name="<?= htmlspecialchars($room_name, ENT_QUOTES) ?>"
+											>
 
-                                        <i class="bi bi-pencil-fill"></i>
+												<i class="bi bi-trash-fill"></i>
 
-                                    </button>
+											</button>
+
+										</div>
+
+									<?php else: ?>
+
+										<span class="muted-text">
+											View only
+										</span>
+
+									<?php endif; ?>
+
+								</td>
 
 
-                                    <!-- DELETE -->
-
-                                    <button
-                                        type="button"
-                                        class="room-action-btn room-action-delete"
-                                        title="Delete"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#deleteRoomModal"
-                                        data-id="<?= $room_id ?>"
-                                        data-name="<?= htmlspecialchars($room_name, ENT_QUOTES) ?>"
-                                    >
-
-                                        <i class="bi bi-trash3"></i>
-
-                                    </button>
-
-                                </div>
-
-                            </td>
 
                         </tr>
 
@@ -717,6 +756,8 @@ require_once "../includes/sidebar.php";
 <!-- =========================================================
      ADD ROOM MODAL
 ========================================================= -->
+
+<?php if ($can_manage_rooms): ?>
 
 <div
     class="modal fade"
@@ -862,10 +903,14 @@ require_once "../includes/sidebar.php";
 
 </div>
 
+<?php endif; ?>
+
 
 <!-- =========================================================
      EDIT ROOM MODAL
 ========================================================= -->
+
+<?php if ($can_manage_rooms): ?>
 
 <div
     class="modal fade"
@@ -1013,10 +1058,14 @@ require_once "../includes/sidebar.php";
 
 </div>
 
+<?php endif; ?>
+
 
 <!-- =========================================================
      DELETE ROOM MODAL
 ========================================================= -->
+
+<?php if ($can_manage_rooms): ?>
 
 <div
     class="modal fade"
@@ -1111,6 +1160,8 @@ require_once "../includes/sidebar.php";
     </div>
 
 </div>
+
+<?php endif; ?>
 
 
 <script>
@@ -1225,4 +1276,3 @@ document.addEventListener("DOMContentLoaded", function () {
 require_once "../includes/footer.php";
 
 ?>
-```

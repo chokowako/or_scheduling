@@ -806,6 +806,8 @@
 }
 
 
+
+
 /* =========================================================
    ACTIONS
    ========================================================= */
@@ -821,74 +823,75 @@
 }
 
 
+/* =========================================================
+   ACTION BUTTON - COMMON
+   ========================================================= */
+
 .facility-action-btn {
 
     width: 34px;
-
     height: 34px;
-
     display: inline-flex;
-
     align-items: center;
-
     justify-content: center;
-
-    border: 1px solid var(--border-color);
-
     border-radius: 8px;
-
-    background: #ffffff;
-
-    font-size: 12px;
-
-    cursor: pointer;
-
-    transition:
-        background 0.15s ease,
-        color 0.15s ease,
-        border-color 0.15s ease,
-        transform 0.15s ease;
-
+    font-size: 14px;
+    text-decoration: none;
+    transition: .16s ease;
 }
 
 
-.facility-action-btn:hover {
+.edit-btn {
+  border: 1px solid #c5ddd1;
+    background: #eaf6f0;
+    color: #418365;
+}
 
+
+.edit-btn:hover {
+    background: #d9eee3;
+    border-color: #9fc7b4;
+    color: #2f6f54;
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   DELETE BUTTON
+   ========================================================= */
+
+
+.facility-action-btn delete-btn{
+	    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 14px;
+    text-decoration: none;
+    transition: .16s ease;
+}
+
+
+.delete-btn {
+ border: 1px solid #e1caca;
+    background: #fde8e8;
+    color: #ff0000;
+    cursor: pointer;
+
+}
+
+.delete-btn:hover {
+ background: #fff0f0;
+    border-color: #d9b6b6;
+    color: #9c4949;
     transform: translateY(-1px);
 
 }
 
 
-.edit-btn {
 
-    color: #5c8db9;
-
-}
-
-
-.edit-btn:hover {
-
-    background: var(--blue-light);
-
-    border-color: #c8dced;
-
-}
-
-
-.delete-btn {
-
-    color: #c56d6d;
-
-}
-
-
-.delete-btn:hover {
-
-    background: var(--red-light);
-
-    border-color: #eccaca;
-
-}
 
 
 /* =========================================================

@@ -1,4 +1,4 @@
-```php
+
 <?php
 
 $current_page = basename($_SERVER['PHP_SELF']);
@@ -138,16 +138,19 @@ $current_page = basename($_SERVER['PHP_SELF']);
         </a>
 
 
-        <a
-            href="/or_scheduling/pages/settings.php"
-            class="<?= $current_page === 'settings.php' ? 'active' : '' ?>"
-        >
-            <span class="nav-icon">
-                <i class="bi bi-gear-fill"></i>
-            </span>
+		<?php if (($_SESSION['role'] ?? '') === 'Administrator'): ?>
 
-            <span>Settings</span>
-        </a>
+			<a
+				href="/or_scheduling/pages/settings.php"
+				class="<?= $current_page === 'settings.php' ? 'active' : '' ?>"
+			>
+				<span class="nav-icon">
+					<i class="bi bi-gear-fill"></i>
+				</span>
+				<span>Settings</span>
+			</a>
+
+		<?php endif; ?>
 
 
         <!-- ACCOUNT -->
@@ -155,7 +158,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
             ACCOUNT
         </div>
 
-        <a href="/or_scheduling/logout.php">
+        <a href="/or_scheduling/pages/logout.php">
 
             <span class="nav-icon logout-icon">
                 <i class="bi bi-box-arrow-right"></i>
@@ -168,4 +171,4 @@ $current_page = basename($_SERVER['PHP_SELF']);
     </nav>
 
 </aside>
-```
+

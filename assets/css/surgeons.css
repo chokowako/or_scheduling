@@ -1106,12 +1106,14 @@
 }
 
 
+```css
 /* ============================================================
    ACTIONS
    ============================================================ */
 
 .surgeon-actions {
-    display: flex;
+
+    display: inline-flex;
     align-items: center;
 
     gap: 6px;
@@ -1125,6 +1127,7 @@
 
 .surgeon-action-edit,
 .surgeon-action-delete {
+
     width: 34px;
     height: 34px;
 
@@ -1135,14 +1138,20 @@
     border-radius: 8px;
 
     font-size: 14px;
-
     text-decoration: none;
 
-    transition: .16s ease;
+    cursor: pointer;
+
+    transition:
+        background 0.15s ease,
+        color 0.15s ease,
+        border-color 0.15s ease,
+        transform 0.15s ease;
 }
 
+
 /* ============================================================
-   EDIT ACTION
+   EDIT
    ============================================================ */
 
 .surgeon-action-edit {
@@ -1153,22 +1162,20 @@
 
 
 .surgeon-action-edit:hover {
-    background: #eaf6f1;
-    border-color: #a9cdbd;
-    color: #2e7058;
+    background: #d9eee3;
+    border-color: #9fc7b4;
+    color: #2f6f54;
     transform: translateY(-1px);
 }
 
 
-/* ============================================================
-   DELETE ACTION
-   ============================================================ */
 
 .surgeon-action-delete {
-    border: 1px solid #e1caca;
-      background: #fde8e8;
-    color: #ff0000;
 
+    border: 1px solid #e1caca;
+    background: #fde8e8;
+    color: #ff0000;
+    cursor: pointer;
 }
 
 
@@ -1178,6 +1185,7 @@
     color: #9c4949;
     transform: translateY(-1px);
 }
+
 
 
 /* ============================================================

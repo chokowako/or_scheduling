@@ -1,0 +1,708 @@
+/* =========================================================
+   OR SCHEDULING SYSTEM
+   USER MANAGEMENT
+   ========================================================= */
+
+
+/* =========================================================
+   1. PAGE CONTENT POSITION
+   MATCH FACILITIES PAGE
+   ========================================================= */
+
+.main-content {
+    margin-left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
+
+    min-height: 100vh;
+
+    padding: 32px 40px 50px;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   2. ALERT
+   ========================================================= */
+
+.user-alert {
+    margin-bottom: 25px;
+    border-radius: 10px;
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   3. SUMMARY CARDS
+   ========================================================= */
+
+.user-summary {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.user-summary-card {
+    min-height: 120px;
+
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    padding: 20px 22px;
+
+    background: var(--white);
+
+    border: 1px solid var(--border);
+    border-radius: 14px;
+
+    box-shadow:
+        0 2px 8px rgba(32, 53, 45, 0.03);
+}
+
+.user-summary-card .summary-icon {
+    width: 58px;
+    height: 58px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    font-size: 21px;
+}
+
+.summary-label {
+    margin-bottom: 5px;
+
+    color: var(--text-600);
+
+    font-size: 11px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.summary-number {
+    color: var(--text-900);
+
+    font-size: 26px;
+    font-weight: 750;
+
+    line-height: 1;
+}
+
+.summary-total .summary-icon {
+    background: var(--green-100);
+    color: var(--green-600);
+}
+
+.summary-administrator .summary-icon {
+    background: #eeeaf8;
+    color: #7055a5;
+}
+
+.summary-scheduler .summary-icon {
+    background: #eaf2f8;
+    color: #4e7c9d;
+}
+
+.summary-staff .summary-icon {
+    background: #f1f5ed;
+    color: #71875d;
+}
+
+
+/* =========================================================
+   4. USER MANAGEMENT PANEL
+   ========================================================= */
+
+.user-panel {
+    width: 100%;
+
+    background: var(--white);
+
+    border: 1px solid var(--border);
+    border-radius: 18px;
+
+    box-shadow:
+        0 3px 10px rgba(32, 53, 45, 0.035);
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   5. PANEL HEADER
+   ========================================================= */
+
+.user-panel-header {
+    min-height: 92px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 20px 24px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.user-panel-header h2 {
+    margin: 0;
+
+    color: var(--text-900);
+
+    font-size: 18px;
+    font-weight: 750;
+}
+
+.user-panel-header p {
+    margin: 5px 0 0;
+
+    color: var(--text-600);
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   6. ADD USER BUTTON
+   ========================================================= */
+
+.add-user-btn {
+    height: 40px;
+
+    padding: 0 15px;
+
+    border-radius: 8px;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   7. SEARCH TOOLBAR
+   ========================================================= */
+
+.user-toolbar {
+    display: flex;
+    align-items: center;
+
+    padding: 13px 24px;
+
+    border-bottom: 1px solid var(--border);
+
+    background: #fcfefd;
+}
+
+.user-search {
+    position: relative;
+
+    width: 280px;
+}
+
+.user-search > i {
+    position: absolute;
+
+    top: 50%;
+    left: 13px;
+
+    transform: translateY(-50%);
+
+    color: var(--text-500);
+
+    font-size: 13px;
+
+    pointer-events: none;
+
+    z-index: 2;
+}
+
+.user-search input {
+    width: 100%;
+    height: 42px;
+
+    padding-left: 36px;
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    background: var(--white);
+
+    color: var(--text-900);
+
+    font-size: 12px;
+}
+
+.user-search input::placeholder {
+    color: var(--text-500);
+}
+
+.user-search input:focus {
+    border-color: var(--green-300);
+
+    box-shadow:
+        0 0 0 3px rgba(77, 169, 133, 0.10);
+}
+
+
+/* =========================================================
+   8. USER TABLE
+   ========================================================= */
+
+.user-table {
+    width: 100%;
+
+    margin-bottom: 0;
+
+    min-width: 760px;
+}
+
+.user-table thead th {
+    padding: 14px 18px;
+
+    background: var(--green-50);
+
+    border-bottom: 1px solid var(--border);
+
+    color: var(--text-600);
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 0.06em;
+
+    text-transform: uppercase;
+
+    white-space: nowrap;
+}
+
+.user-table tbody td {
+    padding: 16px 18px;
+
+    border-bottom: 1px solid var(--border);
+
+    color: var(--text-800);
+
+    font-size: 12px;
+
+    vertical-align: middle;
+}
+
+.user-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.user-table tbody tr:hover {
+    background: var(--green-50);
+}
+
+
+/* =========================================================
+   9. USER INFORMATION
+   ========================================================= */
+
+.user-name-cell {
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: var(--green-100);
+
+    color: var(--green-600);
+
+    font-size: 15px;
+}
+
+.user-full-name {
+    color: var(--text-900);
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.user-id {
+    margin-top: 3px;
+
+    color: var(--text-500);
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   10. USERNAME
+   ========================================================= */
+
+.user-username {
+    color: var(--text-700);
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   11. ROLE BADGES
+   ========================================================= */
+
+.user-role {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 6px;
+
+    min-height: 27px;
+
+    padding: 0 9px;
+
+    border-radius: 7px;
+
+    font-size: 10px;
+    font-weight: 750;
+
+    white-space: nowrap;
+}
+
+.role-administrator {
+    background: #eeeaf8;
+    color: #7055a5;
+}
+
+.role-scheduler {
+    background: #eaf2f8;
+    color: #4e7c9d;
+}
+
+.role-staff {
+    background: var(--green-100);
+    color: var(--green-700);
+}
+
+
+/* =========================================================
+   12. CREATED DATE
+   ========================================================= */
+
+.user-date {
+    color: var(--text-600);
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   13. ACTION BUTTONS
+   ========================================================= */
+
+.user-actions {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 6px;
+}
+
+.user-action-btn {
+width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 14px;
+    text-decoration: none;
+    transition: .16s ease;
+}
+
+.edit-user-btn {
+     border: 1px solid #c5ddd1;
+    background: #eaf6f0;
+    color: #418365;
+}
+
+.edit-user-btn:hover {
+       background: #d9eee3;
+    border-color: #9fc7b4;
+    color: #2f6f54;
+    transform: translateY(-1px);
+}
+
+
+
+
+.delete-user-btn {
+    border: 1px solid #e1caca;
+    background: #fde8e8;
+    color: #ff0000;
+    cursor: pointer;
+
+}
+
+.delete-user-btn:hover {
+    background: #fff0f0;
+    border-color: #d9b6b6;
+    color: #9c4949;
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   14. EMPTY STATE
+   ========================================================= */
+
+.user-empty {
+    padding: 55px 20px !important;
+}
+
+.empty-icon {
+    width: 52px;
+    height: 52px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 14px;
+
+    border-radius: 13px;
+
+    background: var(--green-100);
+
+    color: var(--green-600);
+
+    font-size: 21px;
+}
+
+.empty-title {
+    color: var(--text-800);
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.empty-text {
+    margin-top: 5px;
+
+    color: var(--text-500);
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   15. ADD / EDIT MODALS
+   ========================================================= */
+
+.modal-content {
+    border: 1px solid var(--border);
+
+    border-radius: 14px;
+
+    overflow: hidden;
+}
+
+.modal-header {
+    padding: 18px 20px;
+
+    border-bottom: 1px solid var(--border);
+
+    background: var(--green-50);
+}
+
+.modal-title {
+    color: var(--text-900);
+
+    font-size: 17px;
+    font-weight: 750;
+}
+
+.modal-subtitle {
+    margin: 4px 0 0;
+
+    color: var(--text-600);
+
+    font-size: 12px;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-body .form-label {
+    margin-bottom: 6px;
+
+    color: var(--text-800);
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.modal-body .form-control,
+.modal-body .form-select {
+    min-height: 40px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 8px;
+
+    color: var(--text-900);
+
+    font-size: 12px;
+}
+
+.modal-body .form-control:focus,
+.modal-body .form-select:focus {
+    border-color: var(--green-300);
+
+    box-shadow:
+        0 0 0 3px rgba(77, 169, 133, 0.10);
+}
+
+.modal-body .form-text {
+    margin-top: 5px;
+
+    color: var(--text-500);
+
+    font-size: 10px;
+}
+
+.modal-footer {
+    padding: 14px 20px;
+
+    border-top: 1px solid var(--border);
+
+    background: #fcfefd;
+}
+
+
+/* =========================================================
+   16. DELETE MODAL
+   ========================================================= */
+
+.delete-icon {
+    width: 52px;
+    height: 52px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 4px auto 15px;
+
+    border-radius: 13px;
+
+    background: #fff0f0;
+
+    color: #c45c5c;
+
+    font-size: 20px;
+}
+
+.delete-title {
+    margin-bottom: 8px;
+
+    color: var(--text-900);
+
+    font-size: 17px;
+    font-weight: 750;
+}
+
+.delete-message {
+    margin-bottom: 20px;
+
+    color: var(--text-600);
+
+    font-size: 12px;
+
+    line-height: 1.6;
+}
+
+.delete-message strong {
+    color: var(--text-800);
+}
+
+.delete-actions {
+    display: flex;
+    justify-content: center;
+
+    gap: 8px;
+}
+
+
+/* =========================================================
+   17. RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    .user-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+@media (max-width: 991px) {
+
+    .main-content {
+        margin-left: 0;
+
+        width: 100%;
+
+        padding: 25px 20px 40px;
+    }
+
+}
+
+
+@media (max-width: 768px) {
+
+    .user-panel-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .add-user-btn {
+        width: 100%;
+    }
+
+    .user-search {
+        width: 100%;
+    }
+
+}
+
+
+@media (max-width: 576px) {
+
+    .user-summary {
+        grid-template-columns: 1fr;
+    }
+
+}

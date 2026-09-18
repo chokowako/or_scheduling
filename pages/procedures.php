@@ -16,6 +16,15 @@ $page_title = "Procedures";
 $message = "";
 $message_type = "";
 
+$role = $_SESSION['role'] ?? 'Staff';
+
+$can_manage_procedures = in_array(
+    $role,
+    ['Administrator', 'Scheduler'],
+    true
+);
+
+
 /* =========================================================
    ADD / UPDATE / DELETE
    ========================================================= */
@@ -23,6 +32,20 @@ $message_type = "";
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $action = $_POST["action"] ?? "";
+
+    /*
+     * STAFF IS VIEW-ONLY
+     * Prevent Add / Update / Delete through direct POST requests.
+     */
+
+    if (
+        !$can_manage_procedures &&
+        in_array($action, ['add', 'update', 'delete'], true)
+    ) {
+        header("Location: procedures.php");
+        exit;
+    }
+
 
     /* =========================
        ADD PROCEDURE
@@ -284,15 +307,20 @@ foreach ($procedures as $procedure) {
 
         </div>
 
-        <button
-            type="button"
-            class="btn-add-procedure"
-            data-bs-toggle="modal"
-            data-bs-target="#addProcedureModal"
-        >
-            <i class="bi bi-plus-lg"></i>
-            Add Procedure
-        </button>
+
+        <?php if ($can_manage_procedures): ?>
+
+            <button
+                type="button"
+                class="btn-add-procedure"
+                data-bs-toggle="modal"
+                data-bs-target="#addProcedureModal"
+            >
+                <i class="bi bi-plus-lg"></i>
+                Add Procedure
+            </button>
+
+        <?php endif; ?>
 
     </div>
 
@@ -607,42 +635,52 @@ foreach ($procedures as $procedure) {
 
                                 <td>
 
-                                    <div class="procedure-actions">
+                                    <?php if ($can_manage_procedures): ?>
 
-                                        <button
-                                            type="button"
-                                            class="action-btn edit"
-                                            title="Edit Procedure"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#editProcedureModal"
-                                            onclick='editProcedure(
-                                                <?= json_encode($procedure["procedure_id"]) ?>,
-                                                <?= json_encode($procedure["procedure_name"]) ?>,
-                                                <?= json_encode($procedure["surgical_type"]) ?>,
-                                                <?= json_encode($procedure["procedure_code"]) ?>,
-                                                <?= json_encode($procedure["description"]) ?>,
-                                                <?= json_encode($procedure["status"]) ?>
-                                            )'
-                                        >
-                                            <i class="bi bi-pencil-fill"></i>
-                                        </button>
+                                        <div class="procedure-actions">
+
+                                            <button
+                                                type="button"
+                                                class="action-btn edit"
+                                                title="Edit Procedure"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#editProcedureModal"
+                                                onclick='editProcedure(
+                                                    <?= json_encode($procedure["procedure_id"]) ?>,
+                                                    <?= json_encode($procedure["procedure_name"]) ?>,
+                                                    <?= json_encode($procedure["surgical_type"]) ?>,
+                                                    <?= json_encode($procedure["procedure_code"]) ?>,
+                                                    <?= json_encode($procedure["description"]) ?>,
+                                                    <?= json_encode($procedure["status"]) ?>
+                                                )'
+                                            >
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
 
 
-                                        <button
-                                            type="button"
-                                            class="action-btn delete"
-                                            title="Delete Procedure"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#deleteProcedureModal"
-                                            onclick='deleteProcedure(
-                                                <?= json_encode($procedure["procedure_id"]) ?>,
-                                                <?= json_encode($procedure["procedure_name"]) ?>
-                                            )'
-                                        >
-                                            <i class="bi bi-trash3"></i>
-                                        </button>
+                                            <button
+                                                type="button"
+                                                class="action-btn delete"
+                                                title="Delete Procedure"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteProcedureModal"
+                                                onclick='deleteProcedure(
+                                                    <?= json_encode($procedure["procedure_id"]) ?>,
+                                                    <?= json_encode($procedure["procedure_name"]) ?>
+                                                )'
+                                            >
+                                                <i class="bi bi-trash-fill"></i>
+                                            </button>
 
-                                    </div>
+                                        </div>
+
+                                    <?php else: ?>
+
+                                        <span class="muted-text">
+                                            View only
+                                        </span>
+
+                                    <?php endif; ?>
 
                                 </td>
 
@@ -684,6 +722,8 @@ foreach ($procedures as $procedure) {
 <!-- =========================================================
      ADD PROCEDURE MODAL
      ========================================================= -->
+
+<?php if ($can_manage_procedures): ?>
 
 <div
     class="modal fade"
@@ -863,10 +903,14 @@ foreach ($procedures as $procedure) {
 
 </div>
 
+<?php endif; ?>
+
 
 <!-- =========================================================
      EDIT PROCEDURE MODAL
      ========================================================= -->
+
+<?php if ($can_manage_procedures): ?>
 
 <div
     class="modal fade"
@@ -1054,10 +1098,14 @@ foreach ($procedures as $procedure) {
 
 </div>
 
+<?php endif; ?>
+
 
 <!-- =========================================================
      DELETE PROCEDURE MODAL
      ========================================================= -->
+
+<?php if ($can_manage_procedures): ?>
 
 <div
     class="modal fade"
@@ -1133,6 +1181,8 @@ foreach ($procedures as $procedure) {
     </div>
 
 </div>
+
+<?php endif; ?>
 
 
 <script>

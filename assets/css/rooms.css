@@ -762,57 +762,58 @@
 }
 
 
+```css
 /* =========================================================
    ACTIONS
 ========================================================= */
 
 .room-actions {
 
-    display: flex;
+    display: inline-flex;
 
     align-items: center;
 
     justify-content: flex-end;
 
-    gap: 7px;
+    gap: 6px;
 }
 
 
 .room-action-btn {
 
     width: 34px;
-
     height: 34px;
-
-    border: 1px solid var(--border);
-
-    border-radius: 9px;
 
     display: inline-flex;
 
     align-items: center;
-
     justify-content: center;
 
-    background: #eaf6f0;
+    border-radius: 8px;
+
+    font-size: 14px;
+
+    text-decoration: none;
 
     cursor: pointer;
 
     transition:
-        background .2s ease,
-        color .2s ease,
-        border-color .2s ease,
-        transform .2s ease;
+        background 0.15s ease,
+        color 0.15s ease,
+        border-color 0.15s ease,
+        transform 0.15s ease;
 }
 
 
-.room-action-btn:hover {
-
-    transform: translateY(-1px);
-}
-
+/* =========================================================
+   EDIT
+========================================================= */
 
 .room-action-edit {
+
+    border: 1px solid #c5ddd1;
+
+    background: #eaf6f0;
 
     color: #418365;
 }
@@ -820,30 +821,43 @@
 
 .room-action-edit:hover {
 
-    background: #e8f0f7;
+    background: #d9eee3;
 
-    border-color: #d7e4ee;
+    border-color: #9fc7b4;
 
-    color: #52758f;
+    color: #2f6f54;
+
+    transform: translateY(-1px);
 }
 
 
+/* =========================================================
+   DELETE
+========================================================= */
+
 .room-action-delete {
 
-       background: #fde8e8;
+    border: 1px solid #e1caca;
+
+    background: #fde8e8;
+
     color: #ff0000;
 
+    cursor: pointer;
 }
 
 
 .room-action-delete:hover {
 
-    background: #f9eaea;
+    background: #fff0f0;
 
-    border-color: #efd2d2;
+    border-color: #d9b6b6;
 
-    color: #a84f4f;
+    color: #9c4949;
+
+    transform: translateY(-1px);
 }
+
 
 
 /* =========================================================
@@ -1280,4 +1294,4 @@ textarea.form-control {
     }
 
 }
-```
+

@@ -651,78 +651,97 @@
 }
 
 
+```css
 /* =========================================================
    ACTIONS
    ========================================================= */
 
 .actions-column {
 
-    text-align: center;
+    text-align: right;
 }
 
 
 .procedure-actions {
 
-    display: flex;
+    display: inline-flex;
 
     align-items: center;
 
-    justify-content: center;
+    justify-content: flex-end;
 
-    gap: 7px;
+    gap: 6px;
 }
 
 
 .action-btn {
 
     width: 34px;
-
     height: 34px;
 
     display: inline-flex;
 
     align-items: center;
-
     justify-content: center;
 
-    border: none;
+    border-radius: 8px;
 
-    border-radius: 9px;
+    font-size: 14px;
 
-    transition: 0.2s ease;
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition:
+        background 0.15s ease,
+        color 0.15s ease,
+        border-color 0.15s ease,
+        transform 0.15s ease;
 }
 
 
+/* =========================================================
+   EDIT
+   ========================================================= */
+
 .action-btn.edit {
 
-    background: #e2f4ec;
+    border: 1px solid #c5ddd1;
 
-    color: #358e6c;
+    background: #eaf6f0;
+
+    color: #418365;
 }
 
 
 .action-btn.edit:hover {
 
-    background: #c8e9db;
+    background: #d9eee3;
 
-    color: #287256;
+    border-color: #9fc7b4;
+
+    color: #2f6f54;
+
+    transform: translateY(-1px);
 }
 
 
+
 .action-btn.delete {
-
+    border: 1px solid #e1caca;
     background: #fde8e8;
-
     color: #ff0000;
+    cursor: pointer;
 }
 
 
 .action-btn.delete:hover {
-
-    background: #f8d4d4;
-
-    color: #a93838;
+    background: #fff0f0;
+    border-color: #d9b6b6;
+    color: #9c4949;
+    transform: translateY(-1px);
 }
+
 
 
 /* =========================================================

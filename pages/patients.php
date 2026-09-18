@@ -9,6 +9,14 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
+$role = $_SESSION['role'] ?? 'Staff';
+
+$can_manage_patients = in_array(
+    $role,
+    ['Administrator', 'Scheduler'],
+    true
+);
+
 $message = "";
 $message_type = "success";
 
@@ -19,7 +27,7 @@ $edit_patient = null;
    LOAD PATIENT FOR EDIT MODAL
    ========================================================= */
 
-if (isset($_GET['edit'])) {
+if (isset($_GET['edit']) && $can_manage_patients) {
 
     $edit_id = intval($_GET['edit']);
 
@@ -67,6 +75,14 @@ if (isset($_GET['edit'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $action = $_POST['action'] ?? "";
+
+    if (
+        !$can_manage_patients &&
+        in_array($action, ['add', 'update', 'delete'], true)
+    ) {
+        header("Location: patients.php");
+        exit;
+    }
 
 
     /* =====================================================
@@ -601,453 +617,457 @@ require_once "../includes/sidebar.php";
          ADD PATIENT CARD
          ===================================================== -->
 
-    <section class="patient-form-card">
+    <?php if ($can_manage_patients): ?>
+
+        <section class="patient-form-card">
 
 
-        <!-- FORM HEADER -->
+            <!-- FORM HEADER -->
 
-        <div class="patient-form-header">
+            <div class="patient-form-header">
 
-            <div class="patient-form-heading">
+                <div class="patient-form-heading">
 
-                <div class="patient-form-icon">
+                    <div class="patient-form-icon">
 
-                    <i class="bi bi-person-plus-fill"></i>
+                        <i class="bi bi-person-plus-fill"></i>
 
-                </div>
-
-                <div>
-
-                    <div class="patient-form-eyebrow">
-                        PATIENT REGISTRATION
                     </div>
 
-                    <h2>
-                        Add Patient
-                    </h2>
+                    <div>
 
-                    <p>
-                        Enter the patient's information below.
-                    </p>
+                        <div class="patient-form-eyebrow">
+                            PATIENT REGISTRATION
+                        </div>
+
+                        <h2>
+                            Add Patient
+                        </h2>
+
+                        <p>
+                            Enter the patient's information below.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="required-note">
+
+                    <span>*</span>
+                    Required fields
 
                 </div>
 
             </div>
 
 
-            <div class="required-note">
+            <!-- =================================================
+                 ADD PATIENT FORM
+                 ================================================= -->
 
-                <span>*</span>
-                Required fields
-
-            </div>
-
-        </div>
-
-
-        <!-- =================================================
-             ADD PATIENT FORM
-             ================================================= -->
-
-        <form
-            method="POST"
-            action="patients.php"
-            autocomplete="off"
-        >
-
-            <input
-                type="hidden"
-                name="action"
-                value="add"
+            <form
+                method="POST"
+                action="patients.php"
+                autocomplete="off"
             >
 
-
-            <!-- =================================================
-                 SECTION 01
-                 ================================================= -->
-
-            <div class="patient-form-section">
-
-                <div class="patient-section-title">
-
-                    <div class="patient-section-number">
-                        01
-                    </div>
-
-                    <div>
-
-                        <h3>
-                            Registry Information
-                        </h3>
-
-                        <p>
-                            Patient registration and identification details.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="patient-form-grid patient-form-grid-3">
-
-
-                    <!-- Patient Number -->
-
-                    <div class="patient-field">
-
-                        <label>
-                            Patient Number
-                            <span>*</span>
-                        </label>
-
-                        <input
-                            type="text"
-                            name="patient_number"
-                            class="form-control"
-                            placeholder="Enter patient number"
-                            required
-                        >
-
-                    </div>
-
-
-                    <!-- Registry Date -->
-
-                    <div class="patient-field">
-
-                        <label>
-                            Registry Date
-                            <span>*</span>
-                        </label>
-
-                        <input
-                            type="date"
-                            name="registry_date"
-                            class="form-control"
-                            value="<?= date('Y-m-d') ?>"
-                            required
-                        >
-
-                    </div>
-
-
-                    <!-- Registry Type -->
-
-                    <div class="patient-field">
-
-                        <label>
-                            Registry Type
-                        </label>
-
-                        <input
-                            type="text"
-                            name="registry_type"
-                            class="form-control"
-                            placeholder="Enter registry type"
-                        >
-
-                    </div>
-
-
-                </div>
-
-            </div>
-
-
-            <!-- =================================================
-                 SECTION 02
-                 ================================================= -->
-
-            <div class="patient-form-section">
-
-                <div class="patient-section-title">
-
-                    <div class="patient-section-number">
-                        02
-                    </div>
-
-                    <div>
-
-                        <h3>
-                            Personal Information
-                        </h3>
-
-                        <p>
-                            Basic information of the registered patient.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="patient-form-grid patient-form-grid-3">
-
-
-                    <!-- First Name -->
-
-                    <div class="patient-field">
-
-                        <label>
-                            First Name
-                            <span>*</span>
-                        </label>
-
-                        <input
-                            type="text"
-                            name="first_name"
-                            class="form-control"
-                            placeholder="Enter first name"
-                            required
-                        >
-
-                    </div>
-
-
-                    <!-- Middle Name -->
-
-                    <div class="patient-field">
-
-                        <label>
-                            Middle Name
-                        </label>
-
-                        <input
-                            type="text"
-                            name="middle_name"
-                            class="form-control"
-                            placeholder="Enter middle name"
-                        >
-
-                    </div>
-
-
-                    <!-- Last Name -->
-
-                    <div class="patient-field">
-
-                        <label>
-                            Last Name
-                            <span>*</span>
-                        </label>
-
-                        <input
-                            type="text"
-                            name="last_name"
-                            class="form-control"
-                            placeholder="Enter last name"
-                            required
-                        >
-
-                    </div>
-
-
-                    <!-- Birth Date -->
-
-                    <div class="patient-field">
-
-                        <label>
-                            Birth Date
-                        </label>
-
-                        <input
-                            type="date"
-                            name="birth_date"
-                            class="form-control"
-                        >
-
-                    </div>
-
-
-                    <!-- Sex -->
-
-                    <div class="patient-field">
-
-                        <label>
-                            Sex
-                        </label>
-
-                        <select
-                            name="sex"
-                            class="form-select"
-                        >
-
-                            <option value="">
-                                Select sex
-                            </option>
-
-                            <option value="Male">
-                                Male
-                            </option>
-
-                            <option value="Female">
-                                Female
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                </div>
-
-            </div>
-
-
-            <!-- =================================================
-                 SECTION 03
-                 ================================================= -->
-
-            <div class="patient-form-section">
-
-                <div class="patient-section-title">
-
-                    <div class="patient-section-number">
-                        03
-                    </div>
-
-                    <div>
-
-                        <h3>
-                            Room & Contact Information
-                        </h3>
-
-                        <p>
-                            Current room, bed, and contact information.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="patient-form-grid patient-form-grid-4">
-
-
-                    <!-- Room -->
-
-                    <div class="patient-field">
-
-                        <label>
-                            Patient Room No.
-                        </label>
-
-                        <input
-                            type="text"
-                            name="patient_room_no"
-                            class="form-control"
-                            placeholder="Room number"
-                        >
-
-                    </div>
-
-
-                    <!-- Bed -->
-
-                    <div class="patient-field">
-
-                        <label>
-                            Bed No.
-                        </label>
-
-                        <input
-                            type="text"
-                            name="bed_no"
-                            class="form-control"
-                            placeholder="Bed number"
-                        >
-
-                    </div>
-
-
-                    <!-- Contact -->
-
-                    <div class="patient-field">
-
-                        <label>
-                            Contact Number
-                        </label>
-
-                        <input
-                            type="text"
-                            name="contact_number"
-                            class="form-control"
-                            placeholder="Contact number"
-                        >
-
-                    </div>
-
-
-                    <!-- Address -->
-
-                    <div class="patient-field">
-
-                        <label>
-                            Address
-                        </label>
-
-                        <input
-                            type="text"
-                            name="address"
-                            class="form-control"
-                            placeholder="Patient address"
-                        >
-
-                    </div>
-
-
-                </div>
-
-            </div>
-
-
-            <!-- =================================================
-                 FORM ACTIONS
-                 ================================================= -->
-
-            <div class="patient-form-actions">
-
-                <div class="patient-form-note">
-
-                    <i class="bi bi-info-circle"></i>
-
-                    <span>
-                        Make sure the patient information is correct before saving.
-                    </span>
-
-                </div>
-
-
-                <button
-                    type="reset"
-                    class="btn-patient-secondary"
+                <input
+                    type="hidden"
+                    name="action"
+                    value="add"
                 >
 
-                    <i class="bi bi-arrow-counterclockwise"></i>
 
-                    Clear
+                <!-- =================================================
+                     SECTION 01
+                     ================================================= -->
 
-                </button>
+                <div class="patient-form-section">
+
+                    <div class="patient-section-title">
+
+                        <div class="patient-section-number">
+                            01
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Registry Information
+                            </h3>
+
+                            <p>
+                                Patient registration and identification details.
+                            </p>
+
+                        </div>
+
+                    </div>
 
 
-                <button
-                    type="submit"
-                    class="btn-patient-primary"
-                >
-
-                    <i class="bi bi-person-plus-fill"></i>
-
-                    Save Patient
-
-                </button>
-
-            </div>
+                    <div class="patient-form-grid patient-form-grid-3">
 
 
-        </form>
+                        <!-- Patient Number -->
 
-    </section>
+                        <div class="patient-field">
+
+                            <label>
+                                Patient Number
+                                <span>*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                name="patient_number"
+                                class="form-control"
+                                placeholder="Enter patient number"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- Registry Date -->
+
+                        <div class="patient-field">
+
+                            <label>
+                                Registry Date
+                                <span>*</span>
+                            </label>
+
+                            <input
+                                type="date"
+                                name="registry_date"
+                                class="form-control"
+                                value="<?= date('Y-m-d') ?>"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- Registry Type -->
+
+                        <div class="patient-field">
+
+                            <label>
+                                Registry Type
+                            </label>
+
+                            <input
+                                type="text"
+                                name="registry_type"
+                                class="form-control"
+                                placeholder="Enter registry type"
+                            >
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     SECTION 02
+                     ================================================= -->
+
+                <div class="patient-form-section">
+
+                    <div class="patient-section-title">
+
+                        <div class="patient-section-number">
+                            02
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Personal Information
+                            </h3>
+
+                            <p>
+                                Basic information of the registered patient.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="patient-form-grid patient-form-grid-3">
+
+
+                        <!-- First Name -->
+
+                        <div class="patient-field">
+
+                            <label>
+                                First Name
+                                <span>*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                name="first_name"
+                                class="form-control"
+                                placeholder="Enter first name"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- Middle Name -->
+
+                        <div class="patient-field">
+
+                            <label>
+                                Middle Name
+                            </label>
+
+                            <input
+                                type="text"
+                                name="middle_name"
+                                class="form-control"
+                                placeholder="Enter middle name"
+                            >
+
+                        </div>
+
+
+                        <!-- Last Name -->
+
+                        <div class="patient-field">
+
+                            <label>
+                                Last Name
+                                <span>*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                name="last_name"
+                                class="form-control"
+                                placeholder="Enter last name"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- Birth Date -->
+
+                        <div class="patient-field">
+
+                            <label>
+                                Birth Date
+                            </label>
+
+                            <input
+                                type="date"
+                                name="birth_date"
+                                class="form-control"
+                            >
+
+                        </div>
+
+
+                        <!-- Sex -->
+
+                        <div class="patient-field">
+
+                            <label>
+                                Sex
+                            </label>
+
+                            <select
+                                name="sex"
+                                class="form-select"
+                            >
+
+                                <option value="">
+                                    Select sex
+                                </option>
+
+                                <option value="Male">
+                                    Male
+                                </option>
+
+                                <option value="Female">
+                                    Female
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     SECTION 03
+                     ================================================= -->
+
+                <div class="patient-form-section">
+
+                    <div class="patient-section-title">
+
+                        <div class="patient-section-number">
+                            03
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Room & Contact Information
+                            </h3>
+
+                            <p>
+                                Current room, bed, and contact information.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="patient-form-grid patient-form-grid-4">
+
+
+                        <!-- Room -->
+
+                        <div class="patient-field">
+
+                            <label>
+                                Patient Room No.
+                            </label>
+
+                            <input
+                                type="text"
+                                name="patient_room_no"
+                                class="form-control"
+                                placeholder="Room number"
+                            >
+
+                        </div>
+
+
+                        <!-- Bed -->
+
+                        <div class="patient-field">
+
+                            <label>
+                                Bed No.
+                            </label>
+
+                            <input
+                                type="text"
+                                name="bed_no"
+                                class="form-control"
+                                placeholder="Bed number"
+                            >
+
+                        </div>
+
+
+                        <!-- Contact -->
+
+                        <div class="patient-field">
+
+                            <label>
+                                Contact Number
+                            </label>
+
+                            <input
+                                type="text"
+                                name="contact_number"
+                                class="form-control"
+                                placeholder="Contact number"
+                            >
+
+                        </div>
+
+
+                        <!-- Address -->
+
+                        <div class="patient-field">
+
+                            <label>
+                                Address
+                            </label>
+
+                            <input
+                                type="text"
+                                name="address"
+                                class="form-control"
+                                placeholder="Patient address"
+                            >
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     FORM ACTIONS
+                     ================================================= -->
+
+                <div class="patient-form-actions">
+
+                    <div class="patient-form-note">
+
+                        <i class="bi bi-info-circle"></i>
+
+                        <span>
+                            Make sure the patient information is correct before saving.
+                        </span>
+
+                    </div>
+
+
+                    <button
+                        type="reset"
+                        class="btn-patient-secondary"
+                    >
+
+                        <i class="bi bi-arrow-counterclockwise"></i>
+
+                        Clear
+
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="btn-patient-primary"
+                    >
+
+                        <i class="bi bi-person-plus-fill"></i>
+
+                        Save Patient
+
+                    </button>
+
+                </div>
+
+
+            </form>
+
+        </section>
+
+    <?php endif; ?>
 
 
     <!-- =====================================================
@@ -1497,59 +1517,45 @@ require_once "../includes/sidebar.php";
 
                                 <td>
 
-                                    <div class="patient-actions">
+                                    <?php if ($can_manage_patients): ?>
+
+                                        <div class="patient-actions">
+
+											<div class="patient-actions">
+
+												<button
+													type="button"
+													class="patient-action-btn patient-edit-btn"
+													title="Edit patient"
+												>
+													<i class="bi bi-pencil-fill"></i>
+												</button>
 
 
-                                        <!-- EDIT -->
+												<button
+													type="button"
+													class="patient-action-btn patient-delete-btn"
+													title="Delete patient"
+													data-bs-toggle="modal"
+													data-bs-target="#deletePatientModal"
+													data-id="<?= intval($patient['patient_id']) ?>"
+													data-name="<?= htmlspecialchars($full_patient_name, ENT_QUOTES) ?>"
+												>
+													<i class="bi bi-trash-fill"></i>
+												</button>
 
-                                        <a
-                                            href="patients.php?edit=<?= intval(
-                                                $patient['patient_id']
-                                            ) ?>"
-                                            class="patient-action-edit"
-                                            title="Edit patient"
-                                        >
-                                            <i class="bi bi-pencil-fill"></i>
-                                        </a>
-
-
-
-                                        <!-- DELETE -->
-
-                                        <form
-                                            method="POST"
-                                            action="patients.php"
-                                            onsubmit="return confirm('Are you sure you want to delete this patient?');"
-                                        >
-
-                                            <input
-                                                type="hidden"
-                                                name="action"
-                                                value="delete"
-                                            >
-
-                                            <input
-                                                type="hidden"
-                                                name="patient_id"
-                                                value="<?= intval(
-                                                    $patient['patient_id']
-                                                ) ?>"
-                                            >
-
-                                            <button
-                                                type="submit"
-                                                class="patient-action-delete"
-                                                title="Delete patient"
-                                            >
-
-                                                <i class="bi bi-trash3"></i>
-
-                                            </button>
-
-                                        </form>
+											</div>
 
 
-                                    </div>
+                                        </div>
+
+                                    <?php else: ?>
+
+                                        <span class="muted-text">
+                                            View only
+                                        </span>
+
+                                    <?php endif; ?>
 
                                 </td>
 
@@ -2091,6 +2097,7 @@ require_once "../includes/sidebar.php";
 
 
 <script>
+
 document.addEventListener("DOMContentLoaded", function () {
 
     const editModalElement =
@@ -2119,9 +2126,217 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 });
+
 </script>
 
 <?php endif; ?>
+
+
+<!-- =========================================================
+     DELETE PATIENT MODAL
+     ========================================================= -->
+
+<?php if ($can_manage_patients): ?>
+
+<div
+    class="modal fade"
+    id="deletePatientModal"
+    tabindex="-1"
+    aria-labelledby="deletePatientModalLabel"
+    aria-hidden="true"
+>
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+
+            <!-- MODAL HEADER -->
+
+            <div class="modal-header">
+
+                <div>
+
+                    <div
+                        style="
+                            font-size: 11px;
+                            font-weight: 700;
+                            letter-spacing: 1.2px;
+                            color: #4da985;
+                            margin-bottom: 4px;
+                        "
+                    >
+                        CONFIRM ACTION
+                    </div>
+
+                    <h5
+                        class="modal-title"
+                        id="deletePatientModalLabel"
+                    >
+                        Delete Patient
+                    </h5>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                ></button>
+
+            </div>
+
+
+            <!-- DELETE FORM -->
+
+            <form
+                method="POST"
+                action="patients.php"
+            >
+
+                <input
+                    type="hidden"
+                    name="action"
+                    value="delete"
+                >
+
+                <input
+                    type="hidden"
+                    name="patient_id"
+                    id="delete_patient_id"
+                >
+
+
+                <div
+                    class="modal-body"
+                    style="text-align: center; padding: 30px 25px;"
+                >
+
+                    <div
+                        style="
+                            width: 58px;
+                            height: 58px;
+                            margin: 0 auto 18px;
+                            border-radius: 50%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            background: #fdecec;
+                            color: #dc3545;
+                            font-size: 24px;
+                        "
+                    >
+
+                        <i class="bi bi-trash3"></i>
+
+                    </div>
+
+
+                    <p
+                        style="
+                            margin-bottom: 8px;
+                            font-size: 15px;
+                            color: #42544d;
+                        "
+                    >
+
+                        Are you sure you want to delete
+                        <strong id="delete_patient_name"></strong>?
+
+                    </p>
+
+
+                    <span
+                        style="
+                            font-size: 13px;
+                            color: #7b8b85;
+                        "
+                    >
+                        This action cannot be undone.
+                    </span>
+
+                </div>
+
+
+                <!-- MODAL FOOTER -->
+
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                    >
+                        Cancel
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="btn btn-danger"
+                    >
+
+                        <i class="bi bi-trash3"></i>
+
+                        Delete Patient
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<?php endif; ?>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+
+    /* =====================================================
+       DELETE PATIENT
+    ====================================================== */
+
+    const deletePatientButtons =
+        document.querySelectorAll(".patient-action-delete");
+
+
+    deletePatientButtons.forEach(function (button) {
+
+        button.addEventListener("click", function () {
+
+            const patientId =
+                this.dataset.id || "";
+
+            const patientName =
+                this.dataset.name || "this patient";
+
+
+            document.getElementById(
+                "delete_patient_id"
+            ).value = patientId;
+
+
+            document.getElementById(
+                "delete_patient_name"
+            ).textContent = patientName;
+
+        });
+
+    });
+
+});
+
+</script>
 
 
 <?php
