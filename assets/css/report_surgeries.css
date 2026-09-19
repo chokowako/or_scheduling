@@ -1,0 +1,1644 @@
+```css
+/* =========================================================
+   OR SCHEDULING SYSTEM
+   SURGERY REPORT
+   SOFT SAGE / CLEAN HOSPITAL THEME
+   ========================================================= */
+
+
+/* =========================================================
+   VARIABLES
+   ========================================================= */
+
+:root {
+
+    --green-50: #f1faf6;
+    --green-100: #e2f4ec;
+    --green-200: #c8e9db;
+    --green-300: #9dd4bc;
+    --green-400: #72bd9e;
+    --green-500: #4da985;
+    --green-600: #358e6c;
+    --green-700: #287256;
+    --green-800: #205b46;
+
+    --text-900: #20352d;
+    --text-800: #2d443b;
+    --text-700: #52665e;
+    --text-600: #687a73;
+    --text-500: #84938d;
+    --text-400: #a1ada8;
+
+    --border: #e2ebe7;
+    --background: #f5f8f7;
+    --white: #ffffff;
+
+    --sidebar-width: 260px;
+}
+
+
+/* =========================================================
+   PAGE
+   ========================================================= */
+
+.surgery-report-page {
+
+    width: calc(100% - var(--sidebar-width));
+
+    margin-left: var(--sidebar-width);
+
+    min-height: 100vh;
+
+    padding: 32px 40px 50px;
+
+    background: var(--background);
+
+    color: var(--text-900);
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+.report-page-header {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 24px;
+
+    margin-bottom: 26px;
+}
+
+
+.report-breadcrumb {
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    color: var(--text-500);
+
+    margin-bottom: 7px;
+}
+
+
+.report-page-header h1 {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    margin: 0;
+
+    font-size: 28px;
+
+    font-weight: 700;
+
+    color: var(--text-900);
+}
+
+
+.page-title-icon {
+
+    width: 42px;
+
+    height: 42px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background: var(--green-100);
+
+    color: var(--green-600);
+
+    font-size: 19px;
+}
+
+
+.report-page-header p {
+
+    margin: 7px 0 0;
+
+    color: var(--text-600);
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   PRINT BUTTON
+   ========================================================= */
+
+.print-report-btn {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    min-height: 42px;
+
+    padding: 0 17px;
+
+    border: 1px solid #c8dfd5;
+
+    border-radius: 9px;
+
+    background: #ffffff;
+
+    color: var(--green-700);
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: all 0.18s ease;
+}
+
+
+.print-report-btn:hover {
+
+    background: var(--green-50);
+
+    border-color: var(--green-300);
+
+    color: var(--green-800);
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   FILTER CARD
+   ========================================================= */
+
+.report-filter-card {
+
+    background: var(--white);
+
+    border: 1px solid var(--border);
+
+    border-radius: 14px;
+
+    box-shadow: 0 3px 12px rgba(48, 86, 71, 0.04);
+
+    margin-bottom: 22px;
+
+    overflow: hidden;
+}
+
+
+.filter-card-header {
+
+    padding: 18px 20px;
+
+    border-bottom: 1px solid var(--border);
+
+    background: #fbfdfc;
+}
+
+
+.filter-title {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+.filter-icon {
+
+    width: 38px;
+
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: var(--green-100);
+
+    color: var(--green-600);
+
+    font-size: 15px;
+}
+
+
+.filter-title h2 {
+
+    margin: 0;
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+    color: var(--text-900);
+}
+
+
+.filter-title span {
+
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 12px;
+
+    color: var(--text-500);
+}
+
+
+/* =========================================================
+   FILTER FORM
+   ========================================================= */
+
+.report-filter-form {
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(140px, 0.8fr)
+        minmax(140px, 0.8fr)
+        minmax(220px, 1.5fr)
+        minmax(150px, 1fr)
+        auto;
+
+    align-items: end;
+
+    gap: 14px;
+
+    padding: 20px;
+}
+
+
+.filter-field {
+
+    min-width: 0;
+}
+
+
+.filter-field label {
+
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    color: var(--text-700);
+}
+
+
+.filter-field input,
+.filter-field select {
+
+    width: 100%;
+
+    height: 40px;
+
+    padding: 0 11px;
+
+    border: 1px solid #dce7e2;
+
+    border-radius: 8px;
+
+    background: #ffffff;
+
+    color: var(--text-800);
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    outline: none;
+
+    box-sizing: border-box;
+
+    transition:
+        border-color 0.16s ease,
+        box-shadow 0.16s ease;
+}
+
+
+.filter-field input:focus,
+.filter-field select:focus {
+
+    border-color: var(--green-400);
+
+    box-shadow: 0 0 0 3px rgba(77, 169, 133, 0.10);
+}
+
+
+.input-with-icon {
+
+    position: relative;
+}
+
+
+.input-with-icon i {
+
+    position: absolute;
+
+    left: 12px;
+
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: var(--text-400);
+
+    font-size: 13px;
+
+    pointer-events: none;
+}
+
+
+.input-with-icon input {
+
+    padding-left: 34px;
+}
+
+
+/* =========================================================
+   FILTER ACTIONS
+   ========================================================= */
+
+.filter-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+}
+
+
+.search-btn,
+.clear-btn {
+
+    height: 40px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    padding: 0 14px;
+
+    border-radius: 8px;
+
+    font-family: inherit;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition: all 0.16s ease;
+
+    box-sizing: border-box;
+}
+
+
+.search-btn {
+
+    border: 1px solid var(--green-600);
+
+    background: var(--green-600);
+
+    color: #ffffff;
+}
+
+
+.search-btn:hover {
+
+    background: var(--green-700);
+
+    border-color: var(--green-700);
+
+    transform: translateY(-1px);
+}
+
+
+.clear-btn {
+
+    border: 1px solid #dce7e2;
+
+    background: #ffffff;
+
+    color: var(--text-600);
+}
+
+
+.clear-btn:hover {
+
+    background: var(--green-50);
+
+    border-color: var(--green-200);
+
+    color: var(--green-700);
+}
+
+
+/* =========================================================
+   SUMMARY GRID
+   ========================================================= */
+
+.summary-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    gap: 16px;
+
+    margin-bottom: 22px;
+}
+
+
+.summary-card {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    min-height: 92px;
+
+    padding: 16px 18px;
+
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+
+    border-radius: 13px;
+
+    box-shadow: 0 3px 12px rgba(48, 86, 71, 0.035);
+
+    box-sizing: border-box;
+}
+
+
+.summary-icon {
+
+    width: 42px;
+
+    height: 42px;
+
+    flex: 0 0 42px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 11px;
+
+    background: var(--green-100);
+
+    color: var(--green-600);
+
+    font-size: 17px;
+}
+
+
+.summary-content {
+
+    min-width: 0;
+}
+
+
+.summary-content span {
+
+    display: block;
+
+    margin-bottom: 3px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    color: var(--text-500);
+}
+
+
+.summary-content strong {
+
+    display: block;
+
+    font-size: 24px;
+
+    line-height: 1.1;
+
+    font-weight: 750;
+
+    color: var(--text-900);
+}
+
+
+/* STAT SUMMARY */
+
+.stat-summary .summary-icon {
+
+    background: #fff0d9;
+
+    color: #c27a16;
+}
+
+
+/* COMPLETED SUMMARY */
+
+.completed-summary .summary-icon {
+
+    background: #e2f4ec;
+
+    color: var(--green-600);
+}
+
+
+/* CANCELLED SUMMARY */
+
+.cancelled-summary .summary-icon {
+
+    background: #fde8e8;
+
+    color: #c45b5b;
+}
+
+
+/* =========================================================
+   REPORT TABLE CARD
+   ========================================================= */
+
+.report-table-card {
+
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+
+    border-radius: 14px;
+
+    box-shadow: 0 3px 12px rgba(48, 86, 71, 0.04);
+
+    overflow: hidden;
+}
+
+
+.table-card-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 18px 20px;
+
+    border-bottom: 1px solid var(--border);
+
+    background: #fbfdfc;
+}
+
+
+.table-card-header h2 {
+
+    margin: 0;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+    color: var(--text-900);
+}
+
+
+.table-card-header span {
+
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 12px;
+
+    color: var(--text-500);
+}
+
+
+.record-count {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 7px 10px;
+
+    border-radius: 8px;
+
+    background: var(--green-50);
+
+    color: var(--green-700);
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+.table-responsive {
+
+    width: 100%;
+
+    overflow-x: auto;
+
+    -webkit-overflow-scrolling: touch;
+}
+
+
+.surgery-report-table {
+
+    width: 100%;
+
+    min-width: 1450px;
+
+    border-collapse: separate;
+
+    border-spacing: 0;
+
+    table-layout: auto;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   TABLE HEADER
+   ========================================================= */
+
+.surgery-report-table thead th {
+
+    padding: 12px 13px;
+
+    background: #f5f9f7;
+
+    border-bottom: 1px solid #dce8e3;
+
+    color: var(--text-700);
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.045em;
+
+    white-space: nowrap;
+
+    text-align: left;
+}
+
+
+/* =========================================================
+   TABLE BODY
+   ========================================================= */
+
+.surgery-report-table tbody td {
+
+    padding: 13px;
+
+    background: #ffffff;
+
+    border-bottom: 1px solid #edf2ef;
+
+    color: var(--text-700);
+
+    vertical-align: middle;
+
+    transition:
+        background-color 0.18s ease,
+        color 0.18s ease,
+        border-color 0.18s ease;
+}
+
+
+.surgery-report-table tbody tr:last-child td {
+
+    border-bottom: 0;
+}
+
+
+/* =========================================================
+   DEFAULT ROW HOVER
+   ALL ROWS
+   ========================================================= */
+
+.surgery-report-table tbody tr:hover td {
+
+    background: #eaf5f0;
+
+    color: var(--text-800);
+
+    border-bottom-color: #b9d9cb;
+}
+
+
+/* =========================================================
+   ELECTIVE ROW HOVER
+   ========================================================= */
+
+.surgery-report-table tbody tr:hover:has(.priority-elective) td {
+
+    background: #d8f0e3;
+
+    color: #246b4c;
+
+    border-bottom-color: #8ac9a8;
+}
+
+
+/* =========================================================
+   URGENT ROW HOVER
+   ========================================================= */
+
+.surgery-report-table tbody tr:hover:has(.priority-urgent) td {
+
+    background: #ffe5b5;
+
+    color: #805100;
+
+    border-bottom-color: #e6ae50;
+}
+
+
+/* =========================================================
+   EMERGENCY ROW HOVER
+   ========================================================= */
+
+.surgery-report-table tbody tr:hover:has(.priority-emergency) td {
+
+    background: #ffd6d6;
+
+    color: #922f2f;
+
+    border-bottom-color: #df7777;
+}
+
+
+/* =========================================================
+   STAT ROW HOVER
+   ========================================================= */
+
+.surgery-report-table tbody tr:hover:has(.stat-badge) td {
+
+    background: #ffe1bd;
+
+    color: #854b00;
+
+    border-bottom-color: #e5a04b;
+}
+
+
+/* =========================================================
+   EMERGENCY + STAT
+   STRONGEST HOVER
+   ========================================================= */
+
+.surgery-report-table tbody tr:hover:has(.priority-emergency):has(.stat-badge) td {
+
+    background: #ffc8b9;
+
+    color: #85271f;
+
+    border-bottom-color: #dd6c5c;
+}
+
+
+/* =========================================================
+   DATE CELL
+   ========================================================= */
+
+.date-cell strong {
+
+    display: block;
+
+    color: inherit;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   TIME CELL
+   ========================================================= */
+
+.time-cell {
+
+    white-space: nowrap;
+}
+
+
+.time-cell span {
+
+    font-weight: 700;
+
+    color: inherit;
+}
+
+
+.time-cell small {
+
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 10px;
+
+    color: var(--text-500);
+}
+
+
+/* =========================================================
+   PATIENT CELL
+   ========================================================= */
+
+.patient-cell strong {
+
+    display: block;
+
+    color: inherit;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+
+.patient-cell small {
+
+    display: block;
+
+    margin-top: 3px;
+
+    color: var(--text-500);
+
+    font-size: 10px;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   PROCEDURE CELL
+   ========================================================= */
+
+.procedure-cell strong {
+
+    color: inherit;
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   DOCTOR CELL
+   ========================================================= */
+
+.doctor-cell {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    min-width: 130px;
+}
+
+
+.doctor-cell i {
+
+    flex: 0 0 auto;
+
+    color: var(--green-500);
+
+    font-size: 13px;
+}
+
+
+.doctor-cell span {
+
+    color: inherit;
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   ROOM CELL
+   ========================================================= */
+
+.room-cell {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    white-space: nowrap;
+}
+
+
+.room-cell i {
+
+    color: var(--green-500);
+
+    font-size: 13px;
+}
+
+
+.room-cell strong {
+
+    color: inherit;
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   PRIORITY BADGES
+   IMPORTANT:
+   BADGES REMAIN COLORED.
+   TABLE CELLS DO NOT HAVE COLOR UNLESS HOVERED.
+   ========================================================= */
+
+.priority-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 68px;
+
+    padding: 5px 9px;
+
+    border-radius: 999px;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    line-height: 1;
+
+    white-space: nowrap;
+}
+
+
+/* ELECTIVE */
+
+.priority-badge.priority-elective {
+
+    background: #e4f4eb;
+
+    border: 1px solid #c5e5d4;
+
+    color: #347b5b;
+}
+
+
+/* URGENT */
+
+.priority-badge.priority-urgent {
+
+    background: #fff0d4;
+
+    border: 1px solid #f0d39a;
+
+    color: #9a620f;
+}
+
+
+/* EMERGENCY */
+
+.priority-badge.priority-emergency {
+
+    background: #fde2e2;
+
+    border: 1px solid #efbebe;
+
+    color: #b43f3f;
+}
+
+
+/* =========================================================
+   STAT BADGE
+   ========================================================= */
+
+.stat-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 4px;
+
+    padding: 5px 8px;
+
+    border-radius: 999px;
+
+    background: #fff0d9;
+
+    border: 1px solid #efd09d;
+
+    color: #a8660b;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    line-height: 1;
+
+    white-space: nowrap;
+}
+
+
+.stat-badge i {
+
+    font-size: 9px;
+}
+
+
+.not-stat {
+
+    color: var(--text-400);
+
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   STATUS BADGES
+   ========================================================= */
+
+.status-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 75px;
+
+    padding: 5px 9px;
+
+    border-radius: 999px;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    line-height: 1;
+
+    white-space: nowrap;
+}
+
+
+/* SCHEDULED */
+
+.status-badge.status-scheduled {
+
+    background: #edf6f2;
+
+    border: 1px solid #d0e8dd;
+
+    color: #3d8065;
+}
+
+
+/* CONFIRMED */
+
+.status-badge.status-confirmed {
+
+    background: #e3f4ec;
+
+    border: 1px solid #c6e5d5;
+
+    color: #2f7d5d;
+}
+
+
+/* IN PROGRESS */
+
+.status-badge.status-progress {
+
+    background: #fff0d7;
+
+    border: 1px solid #f0d29b;
+
+    color: #9b650f;
+}
+
+
+/* COMPLETED */
+
+.status-badge.status-completed {
+
+    background: #def2e8;
+
+    border: 1px solid #bfe2cf;
+
+    color: #2f7b58;
+}
+
+
+/* CANCELLED */
+
+.status-badge.status-cancelled {
+
+    background: #fde5e5;
+
+    border: 1px solid #efc4c4;
+
+    color: #b44949;
+}
+
+
+/* RESCHEDULED */
+
+.status-badge.status-rescheduled {
+
+    background: #eee9f8;
+
+    border: 1px solid #ddd2ed;
+
+    color: #6b558f;
+}
+
+
+/* DEFAULT */
+
+.status-badge.status-default {
+
+    background: #eef2f0;
+
+    border: 1px solid #dce4e0;
+
+    color: var(--text-600);
+}
+
+
+/* =========================================================
+   LEFT ROW HOVER INDICATOR
+   ========================================================= */
+
+.surgery-report-table tbody td:first-child {
+
+    position: relative;
+}
+
+
+.surgery-report-table tbody td:first-child::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+
+    top: 7px;
+
+    bottom: 7px;
+
+    width: 4px;
+
+    border-radius: 0 4px 4px 0;
+
+    background: transparent;
+
+    opacity: 0;
+
+    transition: opacity 0.18s ease;
+}
+
+
+/* ELECTIVE */
+
+.surgery-report-table tbody tr:hover:has(.priority-elective)
+td:first-child::before {
+
+    background: #358e6c;
+
+    opacity: 1;
+}
+
+
+/* URGENT */
+
+.surgery-report-table tbody tr:hover:has(.priority-urgent)
+td:first-child::before {
+
+    background: #e79a3b;
+
+    opacity: 1;
+}
+
+
+/* EMERGENCY */
+
+.surgery-report-table tbody tr:hover:has(.priority-emergency)
+td:first-child::before {
+
+    background: #df6969;
+
+    opacity: 1;
+}
+
+
+/* STAT */
+
+.surgery-report-table tbody tr:hover:has(.stat-badge)
+td:first-child::before {
+
+    background: #e79a3b;
+
+    opacity: 1;
+}
+
+
+/* EMERGENCY + STAT */
+
+.surgery-report-table tbody tr:hover:has(.priority-emergency):has(.stat-badge)
+td:first-child::before {
+
+    background: #c94f43;
+
+    opacity: 1;
+}
+
+
+/* =========================================================
+   MUTED TEXT
+   ========================================================= */
+
+.text-muted {
+
+    color: var(--text-500) !important;
+}
+
+
+/* =========================================================
+   EMPTY REPORT
+   ========================================================= */
+
+.empty-report {
+
+    min-height: 280px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 35px 20px;
+
+    text-align: center;
+}
+
+
+.empty-report-icon {
+
+    width: 58px;
+
+    height: 58px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin-bottom: 13px;
+
+    border-radius: 16px;
+
+    background: var(--green-50);
+
+    color: var(--green-500);
+
+    font-size: 22px;
+}
+
+
+.empty-report h3 {
+
+    margin: 0;
+
+    color: var(--text-800);
+
+    font-size: 16px;
+
+    font-weight: 700;
+}
+
+
+.empty-report p {
+
+    margin: 6px 0 0;
+
+    color: var(--text-500);
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   REPORT FOOTNOTE
+   ========================================================= */
+
+.report-footnote {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 13px 2px 0;
+
+    color: var(--text-500);
+
+    font-size: 11px;
+}
+
+
+.report-footnote span {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+}
+
+
+.report-footnote i {
+
+    color: var(--green-500);
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1200px) {
+
+    .report-filter-form {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+
+    .filter-field-wide {
+
+        grid-column: span 2;
+    }
+
+
+    .filter-actions {
+
+        grid-column: span 2;
+
+        justify-content: flex-start;
+    }
+
+
+    .summary-grid {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+@media (max-width: 800px) {
+
+    .surgery-report-page {
+
+        width: 100%;
+
+        margin-left: 0;
+
+        padding: 24px 18px 40px;
+    }
+
+
+    .report-page-header {
+
+        flex-direction: column;
+    }
+
+
+    .print-report-btn {
+
+        width: 100%;
+    }
+
+
+    .report-filter-form {
+
+        grid-template-columns: 1fr;
+    }
+
+
+    .filter-field-wide,
+    .filter-actions {
+
+        grid-column: auto;
+    }
+
+
+    .filter-actions {
+
+        width: 100%;
+    }
+
+
+    .search-btn,
+    .clear-btn {
+
+        flex: 1;
+    }
+
+
+    .summary-grid {
+
+        grid-template-columns: 1fr;
+    }
+
+
+    .table-card-header {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+
+    .record-count {
+
+        align-self: flex-start;
+    }
+
+
+    .report-footnote {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+}
+
+
+/* =========================================================
+   PRINT
+   ========================================================= */
+
+@media print {
+
+    .sidebar,
+    .print-report-btn,
+    .report-filter-card {
+
+        display: none !important;
+    }
+
+
+    .surgery-report-page {
+
+        width: 100%;
+
+        margin: 0;
+
+        padding: 0;
+
+        background: #ffffff;
+    }
+
+
+    .summary-grid {
+
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+
+    .report-table-card {
+
+        border: 1px solid #cccccc;
+
+        box-shadow: none;
+    }
+
+
+    .surgery-report-table {
+
+        min-width: 0;
+
+        font-size: 9px;
+    }
+
+
+    .surgery-report-table tbody td,
+    .surgery-report-table thead th {
+
+        padding: 7px;
+    }
+
+
+    .report-footnote {
+
+        color: #555555;
+    }
+
+
+    /* Disable hover colors while printing */
+
+    .surgery-report-table tbody tr:hover td {
+
+        background: #ffffff !important;
+
+        color: #000000 !important;
+
+        border-bottom-color: #dddddd !important;
+    }
+
+
+    .surgery-report-table tbody td:first-child::before {
+
+        display: none;
+    }
+
+}
+```
