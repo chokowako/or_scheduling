@@ -71,7 +71,6 @@ $params = [
 ];
 
 if ($patient_search !== '') {
-
     $sql .= "
         AND (
             CONCAT(
@@ -92,7 +91,6 @@ if ($patient_search !== '') {
 }
 
 if ($status_filter !== '') {
-
     $sql .= "
         AND os.status = :status
     ";
@@ -112,6 +110,38 @@ $stmt->execute($params);
 
 $surgeries = $stmt->fetchAll();
 
+// Handle Export to CSV Action if requested
+if (isset($_GET['export']) && $_GET['export'] === 'csv') {
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment; filename=surgery_report_' . date('Y-m-d') . '.csv');
+    
+    $output = fopen('php://output', 'w');
+    
+    // Add CSV Column Headers
+    fputcsv($output, ['Surgery Date', 'Start Time', 'End Time', 'Patient Name', 'Patient Number', 'Registry No.', 'Procedure', 'Surgical Type', 'Surgeon', 'Anesthesiologist', 'Operating Room', 'Priority', 'STAT', 'Status']);
+    
+    foreach ($surgeries as $s) {
+        fputcsv($output, [
+            $s['surgery_date'],
+            $s['start_time'],
+            $s['end_time'],
+            trim($s['first_name'] . ' ' . ($s['middle_name'] ? $s['middle_name'] . ' ' : '') . $s['last_name']),
+            $s['patient_number'],
+            $s['patient_registry_no'],
+            $s['procedure_name'],
+            $s['procedure_surgical_type'],
+            trim($s['surgeon_first_name'] . ' ' . $s['surgeon_last_name']),
+            trim($s['anesthesiologist_first_name'] . ' ' . $s['anesthesiologist_last_name']),
+            $s['room_name'],
+            $s['priority'] ?: 'Elective',
+            (int)$s['is_stat'] === 1 ? 'YES' : 'NO',
+            $s['status']
+        ]);
+    }
+    fclose($output);
+    exit;
+}
+
 $statusStmt = $pdo->query("
     SELECT DISTINCT status
     FROM or_schedules
@@ -128,7 +158,6 @@ $completed_count = 0;
 $cancelled_count = 0;
 
 foreach ($surgeries as $surgery) {
-
     if ((int)$surgery['is_stat'] === 1) {
         $stat_count++;
     }
@@ -142,802 +171,313 @@ foreach ($surgeries as $surgery) {
     }
 }
 
-function formatDoctorName(
-    $first_name,
-    $middle_name,
-    $last_name,
-    $suffix_name = null
-) {
-    $name = trim(
-        $first_name . ' ' .
-        ($middle_name ? $middle_name . ' ' : '') .
-        $last_name
-    );
-
+function formatDoctorName($first_name, $middle_name, $last_name, $suffix_name = null) {
+    if (empty($last_name)) return 'Not assigned';
+    $name = trim($first_name . ' ' . ($middle_name ? $middle_name . ' ' : '') . $last_name);
     if (!empty($suffix_name)) {
         $name .= ', ' . $suffix_name;
     }
-
     return $name;
 }
 
-function formatPatientName(
-    $first_name,
-    $middle_name,
-    $last_name
-) {
-    return trim(
-        $first_name . ' ' .
-        ($middle_name ? $middle_name . ' ' : '') .
-        $last_name
-    );
+function formatPatientName($first_name, $middle_name, $last_name) {
+    return trim($first_name . ' ' . ($middle_name ? $middle_name . ' ' : '') . $last_name);
 }
 
-function formatTimeValue($time)
-{
-    if (empty($time)) {
-        return '-';
-    }
-
+function formatTimeValue($time) {
+    if (empty($time)) return '-';
     return date('g:i A', strtotime($time));
 }
 
-function formatDateValue($date)
-{
-    if (empty($date)) {
-        return '-';
-    }
-
+function formatDateValue($date) {
+    if (empty($date)) return '-';
     return date('M d, Y', strtotime($date));
 }
 
-function statusClass($status)
-{
+function statusClass($status) {
     $status = strtolower(trim($status));
-
     switch ($status) {
-
-        case 'scheduled':
-            return 'status-scheduled';
-
-        case 'confirmed':
-            return 'status-confirmed';
-
-        case 'in progress':
-            return 'status-progress';
-
-        case 'completed':
-            return 'status-completed';
-
-        case 'cancelled':
-            return 'status-cancelled';
-
-        case 'rescheduled':
-            return 'status-rescheduled';
-
-        default:
-            return 'status-default';
+        case 'scheduled': return 'status-scheduled';
+        case 'confirmed': return 'status-confirmed';
+        case 'in progress': return 'status-progress';
+        case 'completed': return 'status-completed';
+        case 'cancelled': return 'status-cancelled';
+        case 'rescheduled': return 'status-rescheduled';
+        default: return 'status-default';
     }
 }
 
 ?>
 
-<link
-    rel="stylesheet"
-    href="../assets/css/report_surgeries.css?v=20260919"
->
+<link rel="stylesheet" href="../assets/css/report_surgeries.css?v=20260920">
 
 <main class="surgery-report-page">
 
-```
 <div class="report-page-header">
-
     <div>
-
         <div class="report-breadcrumb">
             Reports / Surgery Report
         </div>
-
         <h1>
-
             <span class="page-title-icon">
                 <i class="bi bi-heart-pulse-fill"></i>
             </span>
-
             Surgery Report
-
         </h1>
-
         <p>
-            View and filter scheduled surgeries and operating room activities.
+            View, filter, export, and print scheduled surgeries and operating room activities.
         </p>
-
     </div>
-
-    <button
-        type="button"
-        class="print-report-btn"
-        onclick="window.print()"
-    >
-        <i class="bi bi-printer-fill"></i>
-        Print Report
-    </button>
-
 </div>
 
-
 <section class="report-filter-card">
-
     <div class="filter-card-header">
-
         <div class="filter-title">
-
             <div class="filter-icon">
                 <i class="bi bi-funnel-fill"></i>
             </div>
-
             <div>
-
-                <h2>
-                    Report Filters
-                </h2>
-
-                <span>
-                    Set the criteria for the surgery report.
-                </span>
-
+                <h2>Report Filters</h2>
+                <span>Set the criteria for the OR schedule report.</span>
             </div>
-
         </div>
-
     </div>
 
+    <?php 
+        $export_params = $_GET;
+        $export_params['export'] = 'csv';
+        $export_url = '?' . http_build_query($export_params);
+    ?>
 
-    <form
-        method="GET"
-        action="report_surgeries.php"
-        class="report-filter-form"
-    >
-
+    <form method="GET" action="" class="report-filter-form-inline">
         <div class="filter-field">
-
-            <label for="date_from">
-                Date From
-            </label>
-
-            <input
-                type="date"
-                id="date_from"
-                name="date_from"
-                value="<?= htmlspecialchars($date_from) ?>"
-            >
-
+            <label for="date_from">Date From</label>
+            <input type="date" id="date_from" name="date_from" value="<?= htmlspecialchars($date_from) ?>">
         </div>
 
-
         <div class="filter-field">
-
-            <label for="date_to">
-                Date To
-            </label>
-
-            <input
-                type="date"
-                id="date_to"
-                name="date_to"
-                value="<?= htmlspecialchars($date_to) ?>"
-            >
-
+            <label for="date_to">Date To</label>
+            <input type="date" id="date_to" name="date_to" value="<?= htmlspecialchars($date_to) ?>">
         </div>
-
 
         <div class="filter-field filter-field-wide">
-
-            <label for="patient_search">
-                Patient / Registry No.
-            </label>
-
+            <label for="patient_search">Patient / Registry No.</label>
             <div class="input-with-icon">
-
                 <i class="bi bi-search"></i>
-
-                <input
-                    type="text"
-                    id="patient_search"
-                    name="patient_search"
-                    value="<?= htmlspecialchars($patient_search) ?>"
-                    placeholder="Search patient or registry number"
-                >
-
+                <input type="text" id="patient_search" name="patient_search" value="<?= htmlspecialchars($patient_search) ?>" placeholder="Search patient or registry number">
             </div>
-
         </div>
-
 
         <div class="filter-field">
-
-            <label for="status">
-                Status
-            </label>
-
-            <select
-                id="status"
-                name="status"
-            >
-
-                <option value="">
-                    All Statuses
-                </option>
-
+            <label for="status">Status</label>
+            <select id="status" name="status">
+                <option value="">All Statuses</option>
                 <?php foreach ($statuses as $status): ?>
-
-                    <option
-                        value="<?= htmlspecialchars($status) ?>"
-                        <?= $status_filter === $status ? 'selected' : '' ?>
-                    >
+                    <option value="<?= htmlspecialchars($status) ?>" <?= $status_filter === $status ? 'selected' : '' ?>>
                         <?= htmlspecialchars($status) ?>
                     </option>
-
                 <?php endforeach; ?>
-
             </select>
-
         </div>
 
-
-        <div class="filter-actions">
-
-            <button
-                type="submit"
-                class="search-btn"
-            >
-                <i class="bi bi-search"></i>
-                Search
+        <div class="filter-actions-inline">
+            <button type="submit" class="filter-btn-custom">
+                <i class="bi bi-funnel-fill"></i> Filter
             </button>
 
-            <a
-                href="report_surgeries.php"
-                class="clear-btn"
-            >
-                <i class="bi bi-arrow-counterclockwise"></i>
-                Clear
+            <a href="<?= basename($_SERVER['PHP_SELF']) ?>" class="reset-btn-custom">
+                <i class="bi bi-x-lg"></i> Reset
             </a>
 
+            <a href="<?= htmlspecialchars($export_url) ?>" class="export-btn-custom">
+                <i class="bi bi-download"></i> Export
+            </a>
+
+            <button type="button" class="print-btn-custom" onclick="window.print()">
+                <i class="bi bi-printer-fill"></i> Print
+            </button>
         </div>
-
     </form>
-
 </section>
-
 
 <section class="summary-grid">
+    <div class="summary-card">
+        <div class="summary-icon bg-emerald-soft text-emerald"><i class="bi bi-calendar2-check-fill"></i></div>
+        <div class="summary-content">
+            <span>Total Scheduled</span>
+            <strong><?= number_format($total_surgeries) ?></strong>
+        </div>
+    </div>
 
     <div class="summary-card">
-
-        <div class="summary-icon">
-            <i class="bi bi-calendar2-check-fill"></i>
-        </div>
-
+        <div class="summary-icon bg-rose-soft text-rose"><i class="bi bi-lightning-charge-fill"></i></div>
         <div class="summary-content">
-
-            <span>
-                Total Surgeries
-            </span>
-
-            <strong>
-                <?= number_format($total_surgeries) ?>
-            </strong>
-
+            <span>STAT Cases</span>
+            <strong><?= number_format($stat_count) ?></strong>
         </div>
-
     </div>
 
-
-    <div class="summary-card stat-summary">
-
-        <div class="summary-icon">
-            <i class="bi bi-lightning-charge-fill"></i>
-        </div>
-
+    <div class="summary-card">
+        <div class="summary-icon bg-emerald-soft text-emerald"><i class="bi bi-check-circle-fill"></i></div>
         <div class="summary-content">
-
-            <span>
-                STAT Cases
-            </span>
-
-            <strong>
-                <?= number_format($stat_count) ?>
-            </strong>
-
+            <span>Completed</span>
+            <strong><?= number_format($completed_count) ?></strong>
         </div>
-
     </div>
 
-
-    <div class="summary-card completed-summary">
-
-        <div class="summary-icon">
-            <i class="bi bi-check-circle-fill"></i>
-        </div>
-
+    <div class="summary-card">
+        <div class="summary-icon bg-rose-soft text-rose"><i class="bi bi-x-circle-fill"></i></div>
         <div class="summary-content">
-
-            <span>
-                Completed
-            </span>
-
-            <strong>
-                <?= number_format($completed_count) ?>
-            </strong>
-
+            <span>Cancelled</span>
+            <strong><?= number_format($cancelled_count) ?></strong>
         </div>
-
     </div>
-
-
-    <div class="summary-card cancelled-summary">
-
-        <div class="summary-icon">
-            <i class="bi bi-x-circle-fill"></i>
-        </div>
-
-        <div class="summary-content">
-
-            <span>
-                Cancelled
-            </span>
-
-            <strong>
-                <?= number_format($cancelled_count) ?>
-            </strong>
-
-        </div>
-
-    </div>
-
 </section>
-
 
 <section class="report-table-card">
-
     <div class="table-card-header">
-
         <div>
-
-            <h2>
-                Surgery Records
-            </h2>
-
+            <h2>Surgery Records</h2>
             <span>
-
-                <?= htmlspecialchars(formatDateValue($date_from)) ?>
-
+                Date Range: <?= htmlspecialchars(formatDateValue($date_from)) ?>
                 <?php if ($date_from !== $date_to): ?>
-
-                    to
-                    <?= htmlspecialchars(formatDateValue($date_to)) ?>
-
+                    to <?= htmlspecialchars(formatDateValue($date_to)) ?>
                 <?php endif; ?>
-
+                | <strong>Patient / Registry No.:</strong> <?= !empty($patient_search) ? htmlspecialchars($patient_search) : 'All' ?>
+                | <strong>Status:</strong> <?= !empty($status_filter) ? htmlspecialchars($status_filter) : 'All Statuses' ?>
             </span>
-
         </div>
-
         <div class="record-count">
-
             <i class="bi bi-list-ul"></i>
-
-            <?= number_format($total_surgeries) ?>
-
-            record<?= $total_surgeries === 1 ? '' : 's' ?>
-
+            <?= number_format($total_surgeries) ?> record<?= $total_surgeries === 1 ? '' : 's' ?>
         </div>
-
     </div>
 
-
     <?php if (empty($surgeries)): ?>
-
         <div class="empty-report">
-
-            <div class="empty-report-icon">
-                <i class="bi bi-calendar-x"></i>
-            </div>
-
-            <h3>
-                No Surgery Records Found
-            </h3>
-
-            <p>
-                No surgery records match the selected report filters.
-            </p>
-
+            <div class="empty-report-icon"><i class="bi bi-calendar-x"></i></div>
+            <h3>No Surgery Records Found</h3>
+            <p>No surgery records match the selected report filters.</p>
         </div>
-
     <?php else: ?>
-
         <div class="table-responsive">
-
             <table class="surgery-report-table">
-
                 <thead>
-
                     <tr>
-
-                        <th>
-                            Surgery Date
-                        </th>
-
-                        <th>
-                            Time
-                        </th>
-
-                        <th>
-                            Patient
-                        </th>
-
-                        <th>
-                            Registry No.
-                        </th>
-
-                        <th>
-                            Procedure
-                        </th>
-
-                        <th>
-                            Surgical Type
-                        </th>
-
-                        <th>
-                            Surgeon
-                        </th>
-
-                        <th>
-                            Anesthesiologist
-                        </th>
-
-                        <th>
-                            Operating Room
-                        </th>
-
-                        <th>
-                            Priority
-                        </th>
-
-                        <th>
-                            STAT
-                        </th>
-
-                        <th>
-                            Status
-                        </th>
-
+                        <th>Surgery Date</th>
+                        <th>Time</th>
+                        <th>Patient</th>
+                        <th>Registry No.</th>
+                        <th>Procedure</th>
+                        <th>Surgical Type</th>
+                        <th>Surgeon</th>
+                        <th>Anesthesiologist</th>
+                        <th>Operating Room</th>
+                        <th>Priority</th>
+                        <th>STAT</th>
+                        <th>Status</th>
                     </tr>
-
                 </thead>
-
-
                 <tbody>
-
                     <?php foreach ($surgeries as $surgery): ?>
-
-                        <tr>
-
+                        <?php
+                        $priority = $surgery['priority'] ?: 'Elective';
+                        $priority_class = strtolower($priority);
+                        ?>
+                        <tr class="row-<?= htmlspecialchars($priority_class) ?>">
                             <td>
-
                                 <div class="date-cell">
-
-                                    <strong>
-                                        <?= htmlspecialchars(
-                                            formatDateValue(
-                                                $surgery['surgery_date']
-                                            )
-                                        ) ?>
-                                    </strong>
-
+                                    <strong><?= htmlspecialchars(formatDateValue($surgery['surgery_date'])) ?></strong>
                                 </div>
-
                             </td>
-
-
                             <td>
-
                                 <div class="time-cell">
-
-                                    <span>
-                                        <?= htmlspecialchars(
-                                            formatTimeValue(
-                                                $surgery['start_time']
-                                            )
-                                        ) ?>
-                                    </span>
-
-                                    <small>
-                                        -
-                                        <?= htmlspecialchars(
-                                            formatTimeValue(
-                                                $surgery['end_time']
-                                            )
-                                        ) ?>
-                                    </small>
-
+                                    <span><?= htmlspecialchars(formatTimeValue($surgery['start_time'])) ?></span>
+                                    <small>- <?= htmlspecialchars(formatTimeValue($surgery['end_time'])) ?></small>
                                 </div>
-
                             </td>
-
-
                             <td>
-
                                 <div class="patient-cell">
-
-                                    <strong>
-                                        <?= htmlspecialchars(
-                                            formatPatientName(
-                                                $surgery['first_name'],
-                                                $surgery['middle_name'],
-                                                $surgery['last_name']
-                                            )
-                                        ) ?>
-                                    </strong>
-
+                                    <strong><?= htmlspecialchars(formatPatientName($surgery['first_name'], $surgery['middle_name'], $surgery['last_name'])) ?></strong>
                                     <?php if (!empty($surgery['patient_number'])): ?>
-
-                                        <small>
-                                            <?= htmlspecialchars(
-                                                $surgery['patient_number']
-                                            ) ?>
-                                        </small>
-
+                                        <small><?= htmlspecialchars($surgery['patient_number']) ?></small>
                                     <?php endif; ?>
-
                                 </div>
-
                             </td>
-
-
+                            <td><?= htmlspecialchars($surgery['patient_registry_no'] ?: $surgery['patient_number'] ?: '-') ?></td>
                             <td>
-
-                                <?= htmlspecialchars(
-                                    $surgery['patient_registry_no']
-                                        ?: $surgery['patient_number']
-                                        ?: '-'
-                                ) ?>
-
-                            </td>
-
-
-                            <td>
-
                                 <div class="procedure-cell">
-
-                                    <strong>
-                                        <?= htmlspecialchars(
-                                            $surgery['procedure_name']
-                                        ) ?>
-                                    </strong>
-
+                                    <strong><?= htmlspecialchars($surgery['procedure_name']) ?></strong>
                                 </div>
-
                             </td>
-
-
+                            <td><?= htmlspecialchars($surgery['procedure_surgical_type'] ?: '-') ?></td>
                             <td>
-
-                                <?= htmlspecialchars(
-                                    $surgery['procedure_surgical_type']
-                                        ?: '-'
-                                ) ?>
-
-                            </td>
-
-
-                            <td>
-
                                 <div class="doctor-cell">
-
                                     <i class="bi bi-person-badge-fill"></i>
-
-                                    <span>
-
-                                        <?= htmlspecialchars(
-                                            formatDoctorName(
-                                                $surgery['surgeon_first_name'],
-                                                $surgery['surgeon_middle_name'],
-                                                $surgery['surgeon_last_name'],
-                                                $surgery['surgeon_suffix_name']
-                                            )
-                                        ) ?>
-
-                                    </span>
-
+                                    <span><?= htmlspecialchars(formatDoctorName($surgery['surgeon_first_name'], $surgery['surgeon_middle_name'], $surgery['surgeon_last_name'], $surgery['surgeon_suffix_name'])) ?></span>
                                 </div>
-
                             </td>
-
-
                             <td>
-
-                                <?php if (
-                                    !empty(
-                                        $surgery[
-                                            'anesthesiologist_first_name'
-                                        ]
-                                    )
-                                ): ?>
-
+                                <?php if (!empty($surgery['anesthesiologist_first_name'])): ?>
                                     <div class="doctor-cell">
-
                                         <i class="bi bi-person-badge"></i>
-
-                                        <span>
-
-                                            <?= htmlspecialchars(
-                                                formatDoctorName(
-                                                    $surgery[
-                                                        'anesthesiologist_first_name'
-                                                    ],
-                                                    $surgery[
-                                                        'anesthesiologist_middle_name'
-                                                    ],
-                                                    $surgery[
-                                                        'anesthesiologist_last_name'
-                                                    ],
-                                                    $surgery[
-                                                        'anesthesiologist_suffix_name'
-                                                    ]
-                                                )
-                                            ) ?>
-
-                                        </span>
-
+                                        <span><?= htmlspecialchars(formatDoctorName($surgery['anesthesiologist_first_name'], $surgery['anesthesiologist_middle_name'], $surgery['anesthesiologist_last_name'], $surgery['anesthesiologist_suffix_name'])) ?></span>
                                     </div>
-
                                 <?php else: ?>
-
-                                    <span class="text-muted">
-                                        Not assigned
-                                    </span>
-
+                                    <span class="text-muted">Not assigned</span>
                                 <?php endif; ?>
-
                             </td>
-
-
                             <td>
-
                                 <div class="room-cell">
-
                                     <i class="bi bi-door-open-fill"></i>
-
-                                    <strong>
-                                        <?= htmlspecialchars(
-                                            $surgery['room_name']
-                                        ) ?>
-                                    </strong>
-
+                                    <strong><?= htmlspecialchars($surgery['room_name']) ?></strong>
                                 </div>
-
                             </td>
-
-
                             <td>
-
-                                <?php
-                                $priority = $surgery['priority']
-                                    ?: 'Elective';
-
-                                $priority_class =
-                                    strtolower($priority);
-                                ?>
-
-                                <span
-                                    class="priority-badge priority-<?= htmlspecialchars(
-                                        $priority_class
-                                    ) ?>"
-                                >
+                                <span class="priority-badge priority-<?= htmlspecialchars($priority_class) ?>">
                                     <?= htmlspecialchars($priority) ?>
                                 </span>
-
                             </td>
-
-
                             <td>
-
-                                <?php if (
-                                    (int)$surgery['is_stat'] === 1
-                                ): ?>
-
-                                    <span class="stat-badge">
-
-                                        <i class="bi bi-lightning-charge-fill"></i>
-
-                                        STAT
-
-                                    </span>
-
+                                <?php if ((int)$surgery['is_stat'] === 1): ?>
+                                    <span class="stat-badge"><i class="bi bi-lightning-charge-fill"></i> STAT</span>
                                 <?php else: ?>
-
-                                    <span class="not-stat">
-                                        —
-                                    </span>
-
+                                    <span class="not-stat">—</span>
                                 <?php endif; ?>
-
                             </td>
-
-
                             <td>
-
-                                <span
-                                    class="status-badge <?= htmlspecialchars(
-                                        statusClass(
-                                            $surgery['status']
-                                        )
-                                    ) ?>"
-                                >
-                                    <?= htmlspecialchars(
-                                        $surgery['status']
-                                    ) ?>
+                                <span class="status-badge <?= htmlspecialchars(statusClass($surgery['status'])) ?>">
+                                    <?= htmlspecialchars($surgery['status']) ?>
                                 </span>
-
                             </td>
-
                         </tr>
-
                     <?php endforeach; ?>
-
                 </tbody>
-
             </table>
-
         </div>
-
     <?php endif; ?>
-
 </section>
 
-
 <div class="report-footnote">
-
-    <span>
-        <i class="bi bi-info-circle"></i>
-        Report generated from the OR Scheduling System.
-    </span>
-
-    <span>
-        Generated:
-        <?= date('M d, Y h:i A') ?>
-    </span>
-
+    <span><i class="bi bi-info-circle"></i> Report generated from the OR Scheduling System.</span>
+    <span>Printed by: <?= htmlspecialchars($_SESSION['user_name'] ?? $_SESSION['full_name'] ?? 'System User') ?> | Generated: <?= date('M d, Y h:i A') ?></span>
 </div>
-```
 
 </main>
 
 <script>
-
 document.addEventListener('DOMContentLoaded', function () {
-
     const dateFrom = document.getElementById('date_from');
     const dateTo = document.getElementById('date_to');
 
     if (dateFrom && dateTo) {
-
         dateFrom.addEventListener('change', function () {
-
-            if (
-                dateFrom.value &&
-                dateTo.value < dateFrom.value
-            ) {
+            if (dateFrom.value && dateTo.value < dateFrom.value) {
                 dateTo.value = dateFrom.value;
             }
-
         });
-
     }
-
 });
-
 </script>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>

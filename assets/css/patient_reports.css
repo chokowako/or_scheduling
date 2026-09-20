@@ -1,0 +1,377 @@
+/* =========================================================
+   PATIENT REPORTS MODULE - SPECIFIC STYLES
+   ========================================================= */
+   
+   
+/* =========================================================
+   VARIABLES
+   ========================================================= */
+
+:root {
+    --green-50: #f1faf6;
+    --green-100: #e2f4ec;
+    --green-200: #c8e9db;
+    --green-300: #9dd4bc;
+    --green-400: #72bd9e;
+    --green-500: #4da985;
+    --green-600: #358e6c;
+    --green-700: #287256;
+    --green-800: #205b46;
+
+    --text-900: #20352d;
+    --text-800: #2d443b;
+    --text-700: #52665e;
+    --text-600: #687a73;
+    --text-500: #84938d;
+    --text-400: #a1ada8;
+
+    --border: #e2ebe7;
+    --background: #f5f8f7;
+    --white: #ffffff;
+
+    --sidebar-width: 260px;
+}
+
+.reports-page {
+    width: calc(100% - var(--sidebar-width));
+    margin-left: var(--sidebar-width);
+    min-height: 100vh;
+    padding: 32px 40px 50px;
+    background: var(--background);
+    color: var(--text-900);
+    box-sizing: border-box;
+}
+
+/* ---------------------------------------------------------
+   HERO HEADER BANNER
+   --------------------------------------------------------- */
+.reports-hero {
+    background: #184e38;
+    color: #ffffff;
+    border-radius: 12px;
+    padding: 24px 32px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 14px rgba(24, 78, 56, 0.15);
+    box-sizing: border-box;
+}
+
+.hero-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+}
+
+.hero-content h1 {
+    margin: 0 0 6px 0;
+    font-size: 26px;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+.hero-content p {
+    margin: 0;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.hero-badge {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 12px 18px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.hero-badge i {
+    font-size: 22px;
+    color: #a3e635;
+}
+
+.hero-badge div {
+    display: flex;
+    flex-direction: column;
+}
+
+.hero-badge strong {
+    font-size: 13px;
+    color: #ffffff;
+}
+
+.hero-badge span {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+/* ---------------------------------------------------------
+   KPI SUMMARY METRICS GRID (HORIZONTAL ROW FIX)
+   --------------------------------------------------------- */
+.stats-overview {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 16px;
+    margin-bottom: 24px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.stat-card {
+    flex: 1 1 0px !important;
+    min-width: 0 !important;
+    background: #ffffff;
+    border: 1px solid #e2ebd8;
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    box-sizing: border-box;
+    transition: all 0.22s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(40, 114, 86, 0.1);
+    border-color: #358e6c;
+}
+
+.stat-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.stat-icon.total { background: #e8f5e9; color: #2e7d32; }
+.stat-icon.scheduled { background: #e3f2fd; color: #1976d2; }
+.stat-icon.completed { background: #e0f2f1; color: #00695c; }
+.stat-icon.cancelled { background: #fce4ec; color: #c2185b; }
+
+.stat-info h4 {
+    margin: 0;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #64748b;
+    letter-spacing: 0.05em;
+}
+
+.stat-info .stat-value {
+    font-size: 22px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-top: 2px;
+}
+
+/* ---------------------------------------------------------
+   FILTER & TOOLBAR PANEL
+   --------------------------------------------------------- */
+.toolbar-panel {
+    background: #ffffff;
+    border: 1px solid #e2ebd8;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    box-sizing: border-box;
+}
+
+.filter-grid {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    width: 100%;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+}
+
+.filter-group label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #334155;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0 12px;
+    border: 1px solid #d0dcc5;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #0f172a;
+    background-color: #fcfdfe;
+    outline: none;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+    height: 38px;
+}
+
+.form-control:focus {
+    border-color: #358e6c;
+    box-shadow: 0 0 0 3px rgba(53, 142, 108, 0.15);
+    background-color: #ffffff;
+}
+
+.btn-group {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 14px;
+    height: 38px;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.btn-primary {
+    background-color: #184e38;
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background-color: #287256;
+}
+
+.btn-secondary {
+    background-color: #ffffff;
+    border-color: #d0dcc5;
+    color: #334155;
+}
+
+.btn-secondary:hover {
+    background-color: #f8fafc;
+}
+
+.btn-cancel {
+    background-color: #fff1f2;
+    color: #e11d48;
+    border-color: #fecdd3;
+}
+
+.btn-cancel:hover {
+    background-color: #ffe4e6;
+}
+
+/* ---------------------------------------------------------
+   REPORT DATA TABLE
+   --------------------------------------------------------- */
+.table-card {
+    background: #ffffff;
+    border: 1px solid #e2ebd8;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    box-sizing: border-box;
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 13px;
+}
+
+.report-table th {
+    background-color: #f1faf6;
+    color: #184e38;
+    font-weight: 700;
+    padding: 14px 18px;
+    border-bottom: 1px solid #e2ebd8;
+    white-space: nowrap;
+}
+
+.report-table td {
+    padding: 14px 18px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #1e293b;
+    vertical-align: middle;
+}
+
+.report-table tr:hover {
+    background-color: #f8fafc;
+}
+
+/* Badges */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.badge-scheduled { background: #e3f2fd; color: #1976d2; }
+.badge-completed { background: #e0f2f1; color: #00695c; }
+.status-cancelled { background: #ffe4e6; color: #e11d48; }
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-overlay.active { display: flex; }
+
+.modal-container {
+    background: #ffffff;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 500px;
+    padding: 28px;
+    box-sizing: border-box;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}

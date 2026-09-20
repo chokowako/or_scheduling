@@ -1,0 +1,637 @@
+/* ==========================================================================
+   OR Schedule Report Stylesheet
+   ========================================================================== */
+   
+   
+/* =========================================================
+   VARIABLES
+   ========================================================= */
+
+:root {
+
+    --green-50: #f1faf6;
+    --green-100: #e2f4ec;
+    --green-200: #c8e9db;
+    --green-300: #9dd4bc;
+    --green-400: #72bd9e;
+    --green-500: #4da985;
+    --green-600: #358e6c;
+    --green-700: #287256;
+    --green-800: #205b46;
+
+    --text-900: #20352d;
+    --text-800: #2d443b;
+    --text-700: #52665e;
+    --text-600: #687a73;
+    --text-500: #84938d;
+    --text-400: #a1ada8;
+
+    --border: #e2ebe7;
+    --background: #f5f8f7;
+    --white: #ffffff;
+
+    --sidebar-width: 260px;
+}
+
+
+/* Page Container & Header */
+.schedule-report-page {
+
+    width: calc(100% - var(--sidebar-width));
+
+    margin-left: var(--sidebar-width);
+
+    min-height: 100vh;
+
+    padding: 32px 40px 50px;
+
+    background: var(--background);
+
+    color: var(--text-900);
+
+    box-sizing: border-box;
+}
+
+
+.report-page-header {
+    margin-bottom: 1.5rem;
+}
+
+.report-breadcrumb {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-bottom: 0.25rem;
+}
+
+.report-page-header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #111827;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 0.25rem 0;
+}
+
+.page-title-icon {
+    color: #0f4c3a;
+}
+
+.report-page-header p {
+    color: #4b5563;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Filter Card & Actions
+   -------------------------------------------------------------------------- */
+.report-filter-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.filter-card-header {
+    margin-bottom: 1rem;
+}
+
+.filter-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.filter-icon {
+    width: 36px;
+    height: 36px;
+    background-color: #ecfdf5;
+    color: #0f4c3a;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+
+.filter-title h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    color: #111827;
+}
+
+.filter-title span {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.report-filter-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: flex-end;
+}
+
+.filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    flex: 1;
+    min-width: 160px;
+}
+
+.filter-field-wide {
+    flex: 2;
+    min-width: 240px;
+}
+
+.filter-field label {
+    font-size: 0.825rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+.filter-field input,
+.filter-field select {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #1f2937;
+    outline: none;
+    transition: border-color 0.15s ease;
+}
+
+.filter-field input:focus,
+.filter-field select:focus {
+    border-color: #0f4c3a;
+    box-shadow: 0 0 0 3px rgba(15, 76, 58, 0.1);
+}
+
+.input-with-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-with-icon i {
+    position: absolute;
+    left: 0.75rem;
+    color: #9ca3af;
+}
+
+.input-with-icon input {
+    padding-left: 2.25rem;
+    width: 100%;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid transparent;
+    text-decoration: none;
+    transition: all 0.15s ease;
+}
+
+.btn-filter {
+    background-color: #0f4c3a;
+    color: #ffffff;
+}
+
+.btn-filter:hover {
+    background-color: #0b382b;
+}
+
+.btn-reset {
+    background-color: #f3f4f6;
+    color: #374151;
+    border-color: #d1d5db;
+}
+
+.btn-reset:hover {
+    background-color: #e5e7eb;
+}
+
+.btn-export {
+    background-color: #ffffff;
+    color: #0f4c3a;
+    border-color: #0f4c3a;
+}
+
+.btn-export:hover {
+    background-color: #ecfdf5;
+}
+
+.btn-print {
+    background-color: #3b82f6;
+    color: #ffffff;
+}
+
+.btn-print:hover {
+    background-color: #2563eb;
+}
+
+/* --------------------------------------------------------------------------
+   Summary Cards Grid
+   -------------------------------------------------------------------------- */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.summary-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.summary-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.icon-scheduled { background-color: #ecfdf5; color: #0f4c3a; }
+.icon-stat { background-color: #fef2f2; color: #dc2626; }
+.icon-completed { background-color: #f0fdf4; color: #16a34a; }
+.icon-cancelled { background-color: #fef2f2; color: #991b1b; }
+
+.summary-content span {
+    display: block;
+    font-size: 0.825rem;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.summary-content strong {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111827;
+}
+
+/* --------------------------------------------------------------------------
+   Table & Records Section
+   -------------------------------------------------------------------------- */
+.report-table-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.table-card-header {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.table-card-header h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem 0;
+    color: #111827;
+}
+
+.table-card-header span {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.record-count {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #0f4c3a;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.schedule-report-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    text-align: left;
+}
+
+.schedule-report-table th {
+    background-color: #0f4c3a;
+    color: #ffffff;
+    padding: 0.75rem 0.85rem;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    border-bottom: 2px solid #0b382b;
+}
+
+.schedule-report-table td {
+    padding: 0.75rem 0.85rem;
+    border-bottom: 1px solid #e5e7eb;
+    vertical-align: top;
+    color: #374151;
+}
+
+.schedule-report-table tbody tr {
+    transition: background-color 0.15s ease-in-out;
+    cursor: pointer;
+}
+
+
+/* Optional dynamic left accent bar matching your priority/STAT badges */
+.schedule-report-table tbody tr:has(.priority-emergency):hover {
+    background-color: #fee2e2 !important;
+}
+
+.schedule-report-table tbody tr:has(.priority-urgent):hover {
+    background-color: #fef3c7 !important;
+}
+
+.schedule-report-table tbody tr:has(.priority-elective):hover {
+    background-color: #e0f2fe !important;
+}
+
+/* Fallback generic hover if row class doesn't match */
+.schedule-report-table tbody tr:hover {
+    background-color: #f1f5f9 !important;
+}
+
+
+
+/* Cells formatting */
+.date-cell strong {
+    color: #111827;
+}
+
+/* Time Cell */
+.time-cell {
+    display: flex;
+    flex-direction: column;
+    white-space: nowrap;
+}
+
+.time-cell span {
+    font-weight: 600;
+    color: #111827;
+}
+
+.time-cell small {
+    color: #6b7280;
+    font-size: 0.8rem;
+}
+
+.patient-cell strong {
+    display: block;
+    color: #111827;
+}
+
+.patient-cell small {
+    display: block;
+    color: #6b7280;
+    font-size: 0.775rem;
+}
+
+.doctor-cell, .room-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.doctor-cell i, .room-cell i {
+    color: #6b7280;
+    font-size: 0.85rem;
+}
+
+/* --------------------------------------------------------------------------
+   Badges (Priority, STAT, Status)
+   -------------------------------------------------------------------------- */
+.priority-badge {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.priority-elective { background-color: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+.priority-urgent { background-color: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+.priority-emergency { background-color: #fef2f2; color: #b91c1c; border: 1px solid #fca5a5; }
+
+.stat-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 12px;
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fca5a5;
+    font-weight: 700;
+    font-size: 0.75rem;
+}
+
+.not-stat {
+    color: #9ca3af;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.status-scheduled { background-color: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+.status-confirmed { background-color: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+.status-progress { background-color: #fefce8; color: #a16207; border: 1px solid #fef08a; }
+.status-completed { background-color: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+.status-cancelled { background-color: #fef2f2; color: #b91c1c; border: 1px solid #fca5a5; }
+.status-rescheduled { background-color: #f5f3ff; color: #6d28d9; border: 1px solid #ddd6fe; }
+.status-default { background-color: #f3f4f6; color: #374151; border: 1px solid #e5e7eb; }
+
+/* Footnote & Empty States */
+.empty-report {
+    padding: 3rem;
+    text-align: center;
+    color: #6b7280;
+}
+
+.empty-report-icon {
+    font-size: 2.5rem;
+    color: #9ca3af;
+    margin-bottom: 0.5rem;
+}
+
+.report-footnote {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+
+/* ==========================================================================
+   PRINT STYLES
+   ========================================================================== */
+
+@media print {
+    @page {
+        size: landscape;
+        margin: 8mm;
+    }
+
+    body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-size: 10px;
+    }
+
+    /* Hide Navigation, Layout Headers/Footers, Sidebar, Filters, and Buttons */
+    header,
+    footer,
+    sidebar,
+    nav,
+    .no-print,
+    .report-breadcrumb,
+    .report-filter-card,
+    .filter-actions,
+    .btn-action {
+        display: none !important;
+    }
+
+    /* Explicitly allow the report page footnote to print */
+    .report-footnote {
+        display: flex !important;
+        justify-content: space-between !important;
+        font-size: 8px !important;
+        color: #374151 !important;
+        margin-top: 10px !important;
+        padding-top: 5px !important;
+        border-top: 1px solid #d1d5db !important;
+    }
+
+    .report-footnote i {
+        display: inline-block !important;
+    }
+
+    /* Hide decorative table icons */
+    .schedule-report-table td .bi,
+    .schedule-report-table td i {
+        display: none !important;
+    }
+
+    /* Layout Reset for Full Page Output */
+    main.schedule-report-page {
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Summary Grid Print Layout */
+    .summary-grid {
+        display: flex !important;
+        gap: 10px !important;
+        margin-bottom: 12px !important;
+    }
+
+    .summary-card {
+        flex: 1;
+        border: 1px solid #d1d5db !important;
+        box-shadow: none !important;
+        padding: 6px 10px !important;
+        background: #ffffff !important;
+    }
+
+    /* Table Formatting for Print */
+    .table-responsive {
+        overflow: visible !important;
+    }
+
+    .schedule-report-table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        table-layout: auto !important;
+    }
+
+    .schedule-report-table th,
+    .schedule-report-table td {
+        padding: 5px 6px !important;
+        font-size: 9.5px !important;
+        white-space: normal !important;
+        word-break: normal !important;
+        border: 1px solid #d1d5db !important;
+        vertical-align: top !important;
+    }
+
+    .schedule-report-table th {
+        background-color: #0f4c3a !important;
+        color: #ffffff !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    /* Time column print protection */
+    .schedule-report-table th:nth-child(2),
+    .schedule-report-table td:nth-child(2) {
+        white-space: nowrap !important;
+        min-width: 65px;
+    }
+
+    /* Badges in Print */
+    .status-badge,
+    .priority-badge,
+    .stat-badge {
+        display: inline-block !important;
+        padding: 2px 6px !important;
+        font-size: 8.5px !important;
+        white-space: nowrap !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .stat-badge .bi {
+        display: inline-block !important;
+    }
+
+    /* Avoid splitting rows across page breaks */
+    .schedule-report-table tr {
+        page-break-inside: avoid;
+    }
+}

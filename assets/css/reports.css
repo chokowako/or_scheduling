@@ -1,447 +1,368 @@
-
 /* =========================================================
-   OR SCHEDULING SYSTEM
-   REPORTS PAGE
-   SOFT SAGE / CLEAN HOSPITAL THEME
-========================================================= */
-
-/* =========================================================
-   VARIABLES
-========================================================= */
+   REPORTS HUB - MODERN DASHBOARD DESIGN WITH ADVANCED ANIMATIONS
+   ========================================================= */
 
 :root {
-
-    --green-50: #f1faf6;
-    --green-100: #e2f4ec;
-    --green-200: #c8e9db;
-    --green-300: #9dd4bc;
-    --green-400: #72bd9e;
-    --green-500: #4da985;
-    --green-600: #358e6c;
-    --green-700: #287256;
-    --green-800: #205b46;
-
-    --text-900: #20352d;
-    --text-800: #2d443b;
-    --text-700: #52665e;
-    --text-600: #687a73;
-    --text-500: #84938d;
-    --text-400: #a1ada8;
-
-    --border: #e2ebe7;
-    --background: #f5f8f7;
-    --white: #ffffff;
+    --primary-600: #287256;
+    --primary-500: #358e6c;
+    --primary-100: #e2f4ec;
+    --primary-50:  #f1faf6;
+    
+    --slate-900: #1e293b;
+    --slate-800: #334155;
+    --slate-600: #475569;
+    --slate-500: #64748b;
+    --slate-400: #94a3b8;
+    --slate-100: #f1f5f9;
+    --slate-50:  #f8fafc;
 
     --sidebar-width: 260px;
+    --card-radius: 16px;
+    --transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* =========================================================
-   REPORTS PAGE
-========================================================= */
-
 .reports-page {
-
     width: calc(100% - var(--sidebar-width));
-
     margin-left: var(--sidebar-width);
-
     min-height: 100vh;
-
-    padding: 32px 40px 50px;
-
-    background: var(--background);
-
-    color: var(--text-900);
-
+    padding: 36px 40px 60px;
+    background-color: #f6f9f8;
+    color: var(--slate-900);
     box-sizing: border-box;
 }
 
-/* =========================================================
-   PAGE HEADER
-========================================================= */
-
-.reports-page-header {
-
-    margin-bottom: 28px;
+/* ---------------------------------------------------------
+   HERO HEADER SECTION
+   --------------------------------------------------------- */
+.reports-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, #1b4d3e 0%, #287256 100%);
+    padding: 32px 36px;
+    border-radius: 20px;
+    color: #ffffff;
+    box-shadow: 0 10px 25px -5px rgba(32, 91, 70, 0.25);
+    margin-bottom: 32px;
+    animation: fadeInUp 0.45s ease-out forwards;
 }
 
-
-.reports-kicker {
-
-    margin-bottom: 6px;
-
-    color: var(--green-600);
-
-    font-size: 12px;
-
+.hero-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
     font-weight: 700;
-
-    letter-spacing: 1.4px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(4px);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
 }
 
+.hero-content h1 {
+    margin: 0 0 6px;
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
 
-.reports-page-header h1 {
-
+.hero-content p {
     margin: 0;
-
-    color: var(--text-900);
-
-    font-size: 28px;
-
-    font-weight: 700;
-
-    line-height: 1.2;
-}
-
-
-.reports-page-header p {
-
-    margin: 7px 0 0;
-
-    color: var(--text-600);
-
     font-size: 14px;
-
+    color: rgba(255, 255, 255, 0.85);
+    max-width: 580px;
     line-height: 1.5;
 }
 
-
-/* =========================================================
-   REPORT PANEL
-========================================================= */
-
-.reports-panel {
-
-    width: 100%;
-
-    background: var(--white);
-
-    border: 1px solid var(--border);
-
-    border-radius: 16px;
-
-    box-shadow:
-        0 4px 16px rgba(32, 53, 45, 0.035);
-
-    overflow: hidden;
-
-    box-sizing: border-box;
+.hero-badge {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    padding: 14px 20px;
+    border-radius: 14px;
 }
 
-
-/* =========================================================
-   PANEL HEADER
-========================================================= */
-
-.reports-panel-header {
-
-    padding: 24px 26px 20px;
-
-    border-bottom: 1px solid var(--border);
+.hero-badge i {
+    font-size: 26px;
+    color: #8be0be;
 }
 
+.hero-badge strong {
+    display: block;
+    font-size: 15px;
+    font-weight: 700;
+}
 
-.reports-panel-kicker {
-
-    margin-bottom: 5px;
-
-    color: var(--green-600);
-
+.hero-badge span {
     font-size: 11px;
-
-    font-weight: 700;
-
-    letter-spacing: 1.3px;
+    color: rgba(255, 255, 255, 0.75);
 }
 
+/* ---------------------------------------------------------
+   PANEL & GRID
+   --------------------------------------------------------- */
+.panel-header {
+    margin-bottom: 24px;
+}
 
-.reports-panel-header h2 {
-
-    margin: 0;
-
-    color: var(--text-900);
-
+.panel-header h2 {
+    margin: 0 0 4px;
     font-size: 20px;
-
     font-weight: 700;
+    color: var(--slate-900);
 }
 
-
-.reports-panel-header p {
-
-    margin: 6px 0 0;
-
-    color: var(--text-600);
-
+.panel-header p {
+    margin: 0;
     font-size: 13px;
+    color: var(--slate-500);
 }
-
-
-/* =========================================================
-   REPORT GRID
-========================================================= */
 
 .reports-grid {
-
     display: grid;
-
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
-
-    gap: 18px;
-
-    padding: 24px 26px 26px;
-
-    box-sizing: border-box;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 22px;
 }
 
-
-/* =========================================================
-   REPORT CARD
-========================================================= */
-
+/* ---------------------------------------------------------
+   REPORT CARDS & HOVER ANIMATIONS
+   --------------------------------------------------------- */
 .report-card {
-
     display: flex;
-
-    align-items: flex-start;
-
-    gap: 17px;
-
-    padding: 22px;
-
-    background: var(--white);
-
-    border: 1px solid var(--border);
-
-    border-radius: 14px;
-
-    box-sizing: border-box;
-
-    transition:
-        transform 0.18s ease,
-        box-shadow 0.18s ease,
-        border-color 0.18s ease;
-}
-
-
-.report-card:hover {
-
-    transform: translateY(-2px);
-
-    border-color: var(--green-200);
-
-    box-shadow:
-        0 8px 22px rgba(32, 53, 45, 0.07);
-}
-
-
-/* =========================================================
-   REPORT CARD ICON
-========================================================= */
-
-.report-card-icon {
-
-    width: 48px;
-
-    height: 48px;
-
-    flex: 0 0 48px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    border-radius: 12px;
-
-    background: var(--green-50);
-
-    color: var(--green-600);
-
-    font-size: 20px;
-}
-
-
-/* =========================================================
-   REPORT CARD CONTENT
-========================================================= */
-
-.report-card-content {
-
-    min-width: 0;
-
-    flex: 1;
-}
-
-
-.report-card-content h3 {
-
-    margin: 1px 0 7px;
-
-    color: var(--text-900);
-
-    font-size: 17px;
-
-    font-weight: 650;
-
-    line-height: 1.3;
-}
-
-
-.report-card-content p {
-
-    margin: 0 0 15px;
-
-    color: var(--text-600);
-
-    font-size: 13px;
-
-    line-height: 1.6;
-}
-
-
-/* =========================================================
-   VIEW REPORT LINK
-========================================================= */
-
-.report-card-link {
-
-    display: inline-flex;
-
-    align-items: center;
-
-    gap: 7px;
-
-    color: var(--green-600);
-
-    font-size: 13px;
-
-    font-weight: 600;
-
+    flex-direction: column;
+    background: #ffffff;
+    border: 1px solid #e2ebd8;
+    border-radius: var(--card-radius);
+    padding: 24px;
     text-decoration: none;
-
-    transition:
-        color 0.15s ease,
-        gap 0.15s ease;
+    color: inherit;
+    position: relative;
+    overflow: hidden; /* Clips the shine sweep animation */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    opacity: 0; /* Animated in via keyframes */
+    animation: cardAppear 0.45s ease-out forwards;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                box-shadow 0.3s ease, 
+                border-color 0.3s ease;
 }
 
-
-.report-card-link:hover {
-
-    color: var(--green-800);
-
-    gap: 10px;
+/* HIGH-VISIBILITY LIGHT-GREEN SHIMMER SWEEP */
+.report-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -120%;
+    width: 75%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.2) 20%,
+        rgba(255, 255, 255, 0.65) 50%,
+        rgba(255, 255, 255, 0.2) 80%,
+        transparent 100%
+    );
+    transform: skewX(-25deg);
+    transition: left 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    z-index: 3;
 }
 
+/* Card Hover State */
+.report-card:hover {
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: 0 16px 32px -8px rgba(40, 114, 86, 0.22),
+                0 4px 12px rgba(0, 0, 0, 0.04);
+    border-color: var(--primary-500);
+}
 
-.report-card-link i {
+/* Trigger Light-Green Sweep on Hover */
+.report-card:hover::before {
+    left: 180%;
+}
 
+/* Active Click Feedback */
+.report-card:active {
+    transform: translateY(-2px) scale(0.99) !important;
+    box-shadow: 0 4px 12px rgba(40, 114, 86, 0.1) !important;
+}
+
+/* ---------------------------------------------------------
+   CATEGORY LABEL (TOP TAG)
+   --------------------------------------------------------- */
+.card-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--slate-500);
+    margin-bottom: 8px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: transparent;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.report-card:hover .card-tag {
+    color: var(--primary-600);
+    background: var(--primary-100);
+    letter-spacing: 0.07em;
+}
+
+/* ---------------------------------------------------------
+   BOLD TITLE ANIMATION (ENLARGES & STAYS SCALED ON HOVER)
+   --------------------------------------------------------- */
+.report-card-content h3 {
+    margin: 0 0 8px;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--slate-900);
+    transform-origin: left center;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                color 0.3s ease;
+}
+
+/* Enlarges on hover and stays scaled until mouseout */
+.report-card:hover .report-card-content h3 {
+    transform: scale(1.08) translateX(2px);
+    color: var(--primary-600);
+}
+
+/* Card Icon Box */
+.card-icon-wrapper {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-bottom: 16px;
+    transform-origin: center center;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                box-shadow 0.3s ease,
+                background-color 0.3s ease;
+}
+
+/* Icon glyph transition */
+.card-icon-wrapper i {
+    transition: transform 0.3s ease;
+}
+
+/* Stays scaled, elevated, and highlighted for the duration of the card hover */
+.report-card:hover .card-icon-wrapper {
+    transform: translateY(-4px) scale(1.15);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+/* Subtle icon shift inside the box */
+.report-card:hover .card-icon-wrapper i {
+    transform: scale(1.08);
+}
+
+/* Distinct Icon Color Accents */
+.icon-schedule { background: #e3f2fd; color: #1976d2; }
+.icon-surgeries { background: #e8f5e9; color: #2e7d32; }
+.icon-patients { background: #f3e5f5; color: #7b1fa2; }
+.icon-surgeons { background: #fff3e0; color: #e65100; }
+.icon-utilization { background: #e0f2f1; color: #00695c; }
+.icon-status { background: #fce4ec; color: #c2185b; }
+
+/* Card Body Content */
+.report-card-content p {
+    margin: 0 0 20px;
     font-size: 13px;
+    color: var(--slate-600);
+    line-height: 1.55;
+    flex-grow: 1;
 }
 
+/* Card Action Footer */
+.card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 14px;
+    border-top: 1px solid var(--slate-100);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--primary-600);
+}
 
-/* =========================================================
-   TABLET
-========================================================= */
+.card-footer i {
+    font-size: 18px;
+    transition: transform 0.28s ease, color 0.28s ease;
+}
 
-@media (max-width: 1100px) {
+.report-card:hover .card-footer i {
+    transform: translateX(6px) scale(1.2);
+    color: var(--primary-500);
+}
 
+/* ---------------------------------------------------------
+   KEYFRAME ANIMATIONS & STAGGERED ENTRANCES
+   --------------------------------------------------------- */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes cardAppear {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes iconPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.22); }
+    100% { transform: scale(1); }
+}
+
+/* Stagger card entrances sequentially */
+.reports-grid .report-card:nth-child(1) { animation-delay: 0.05s; }
+.reports-grid .report-card:nth-child(2) { animation-delay: 0.10s; }
+.reports-grid .report-card:nth-child(3) { animation-delay: 0.15s; }
+.reports-grid .report-card:nth-child(4) { animation-delay: 0.20s; }
+.reports-grid .report-card:nth-child(5) { animation-delay: 0.25s; }
+.reports-grid .report-card:nth-child(6) { animation-delay: 0.30s; }
+
+/* ---------------------------------------------------------
+   RESPONSIVE LAYOUT
+   --------------------------------------------------------- */
+@media (max-width: 1024px) {
     .reports-page {
-
-        padding: 28px 25px 45px;
+        width: 100%;
+        margin-left: 0;
+        padding: 24px 20px;
     }
 
+    .reports-hero {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .hero-badge {
+        width: 100%;
+        box-sizing: border-box;
+    }
 }
-
-
-/* =========================================================
-   MOBILE
-========================================================= */
-
-@media (max-width: 800px) {
-
-    .reports-page {
-
-        margin-left: 0 !important;
-
-        width: 100% !important;
-
-        padding: 24px 18px 40px;
-    }
-
-
-    .reports-grid {
-
-        grid-template-columns: 1fr;
-    }
-
-
-    .reports-panel-header {
-
-        padding: 22px 20px 18px;
-    }
-
-
-    .reports-grid {
-
-        padding: 20px;
-    }
-
-}
-
-
-/* =========================================================
-   SMALL MOBILE
-========================================================= */
-
-@media (max-width: 480px) {
-
-    .reports-page {
-
-        padding: 20px 14px 35px;
-    }
-
-
-    .reports-page-header h1 {
-
-        font-size: 25px;
-    }
-
-
-    .reports-page-header p {
-
-        font-size: 13px;
-    }
-
-
-    .reports-grid {
-
-        padding: 16px;
-
-        gap: 14px;
-    }
-
-
-    .report-card {
-
-        padding: 18px;
-
-        gap: 14px;
-    }
-
-
-    .report-card-icon {
-
-        width: 44px;
-
-        height: 44px;
-
-        flex-basis: 44px;
-
-        font-size: 18px;
-    }
-
-}
-
