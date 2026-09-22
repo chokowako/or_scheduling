@@ -455,12 +455,12 @@ function statusClass($status) {
 <div id="exportModal" class="modal-overlay">
     <div class="modal-container">
          <div class="modal-header">
-            <h3>Export Surgery Report</h3>
+            <h3>Export Patient Report</h3>
             <button type="button" class="modal-close-btn" onclick="closeExportModal()"><i class="bi bi-x-lg"></i></button>
         </div>
         
         <div class="modal-body">
-            <p>Choose your preferred export format for the filtered surgery dataset.</p>
+			<p>Choose your preferred export format for the filtered patient dataset.</p>
             <div class="export-options-list">
                 <button type="button" class="export-option-btn pdf" onclick="exportAsPDF()">
                     <i class="bi bi-file-earmark-pdf-fill text-danger"></i> Export as PDF Document
@@ -475,7 +475,7 @@ function statusClass($status) {
                 </button>
             </div>
         </div>
-         <div class="modal-footer">
+          <div class="modal-footer">
             <button type="button" class="modal-cancel-btn" onclick="closeExportModal()">Cancel</button>
         </div>
     </div>
@@ -506,10 +506,12 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
+
 /* =================================================
     EXPORT MODAL & CLIENT-SIDE EXPORT FUNCTIONS
 ================================================= */
 
+// Modal Control Functions
 function openExportModal() {
     document.getElementById('exportModal').classList.add('active');
 }
@@ -518,6 +520,7 @@ function closeExportModal() {
     document.getElementById('exportModal').classList.remove('active');
 }
 
+// Close modal when clicking outside the container
 window.addEventListener('click', function(event) {
     const modal = document.getElementById('exportModal');
     if (event.target === modal) {
@@ -527,11 +530,12 @@ window.addEventListener('click', function(event) {
 
 function exportAsPDF() {
     closeExportModal();
-    window.print();
+    window.print(); // Triggers the clean print preview dialog configured for PDF saving
 }
 
 function exportAsExcel() {
     closeExportModal();
+    // Triggers the PHP backend generator to download an Excel file from the filtered query
     const urlParams = new URLSearchParams(window.location.search);
     urlParams.set('export', 'excel');
     window.location.href = '?' + urlParams.toString();
@@ -539,6 +543,7 @@ function exportAsExcel() {
 
 function exportAsCSV() {
     closeExportModal();
+    // Triggers the PHP backend CSV generator which contains all filtered data securely
     const urlParams = new URLSearchParams(window.location.search);
     urlParams.set('export', 'csv');
     window.location.href = '?' + urlParams.toString();

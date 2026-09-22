@@ -951,6 +951,7 @@ function dashboard_room_status_icon($status)
 
 
 
+
     <!-- =================================================
          MAIN DASHBOARD GRID
          ================================================= -->
@@ -1184,9 +1185,7 @@ function dashboard_room_status_icon($status)
 										data-surgeon="<?= htmlspecialchars($surgeon_name, ENT_QUOTES) ?>"
 										data-anesthesiologist="<?= htmlspecialchars($anesthesiologist_name, ENT_QUOTES) ?>"
 										data-status="<?= htmlspecialchars($status, ENT_QUOTES) ?>"
-										data-priority="<?= htmlspecialchars($priority, ENT_QUOTES) ?>"
-									>
-
+										data-priority="<?= htmlspecialchars($priority, ENT_QUOTES) ?>">
 										<i class="bi bi-sliders"></i>
 										<span>
 											Manage Schedule
@@ -1736,17 +1735,14 @@ function dashboard_room_status_icon($status)
 >
 
 <div class="modal-dialog modal-dialog-centered">
-
     <div class="modal-content schedule-modal">
 
         <!-- HEADER -->
         <div class="modal-header schedule-modal-header">
-
             <div>
                 <span class="schedule-modal-kicker">
                     OR SCHEDULE
                 </span>
-
                 <h5
                     class="modal-title"
                     id="manageScheduleModalLabel"
@@ -1761,7 +1757,6 @@ function dashboard_room_status_icon($status)
                 data-bs-dismiss="modal"
                 aria-label="Close"
             ></button>
-
         </div>
 
 
@@ -1866,25 +1861,23 @@ function dashboard_room_status_icon($status)
                         <strong id="modalSurgeon">
                             —
                         </strong>
-
                     </div>
 
 
                     <div class="schedule-modal-info">
-
                         <span>
                             ANESTHESIOLOGIST
                         </span>
-
                         <strong id="modalAnesthesiologist">
                             —
                         </strong>
-
-                    </div>
-
+                    </div>							
                 </div>
-
+				
             </div>
+			
+			
+			
 
 
             <!-- CANCELLATION SECTION -->
@@ -2078,6 +2071,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const cancelReasonError =
         document.getElementById('cancelReasonError');
+		
+		
 
 
     /*

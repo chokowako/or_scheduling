@@ -2,13 +2,11 @@
    OR Schedule Report Stylesheet
    ========================================================================== */
    
-   
 /* =========================================================
    VARIABLES
    ========================================================= */
 
 :root {
-
     --green-50: #f1faf6;
     --green-100: #e2f4ec;
     --green-200: #c8e9db;
@@ -33,25 +31,16 @@
     --sidebar-width: 260px;
 }
 
-
 /* Page Container & Header */
 .schedule-report-page {
-
     width: calc(100% - var(--sidebar-width));
-
     margin-left: var(--sidebar-width);
-
     min-height: 100vh;
-
     padding: 32px 40px 50px;
-
     background: var(--background);
-
     color: var(--text-900);
-
     box-sizing: border-box;
 }
-
 
 .report-page-header {
     margin-bottom: 1.5rem;
@@ -198,15 +187,18 @@
 .btn-action {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    cursor: pointer;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 14px;
+    height: 38px;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 8px;
     border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.22s ease;
     text-decoration: none;
-    transition: all 0.15s ease;
+    white-space: nowrap;
 }
 
 .btn-filter {
@@ -219,13 +211,13 @@
 }
 
 .btn-reset {
-    background-color: #f3f4f6;
-    color: #374151;
-    border-color: #d1d5db;
+    background-color: #fff1f2;
+    color: #e11d48;
+    border-color: #fecdd3;
 }
 
 .btn-reset:hover {
-    background-color: #e5e7eb;
+    background-color: #ffe4e6;
 }
 
 .btn-export {
@@ -235,16 +227,18 @@
 }
 
 .btn-export:hover {
-    background-color: #ecfdf5;
+    background-color: #f1f5f9 !important;
+    color: #0f4c3a !important;
 }
 
 .btn-print {
-    background-color: #3b82f6;
+    background-color: #2563eb;
     color: #ffffff;
+    border-color: #2563eb;
 }
 
 .btn-print:hover {
-    background-color: #2563eb;
+    background-color: #1d4ed8;
 }
 
 /* --------------------------------------------------------------------------
@@ -301,39 +295,45 @@
    -------------------------------------------------------------------------- */
 .report-table-card {
     background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     overflow: hidden;
+    margin-bottom: 1.5rem;
 }
 
 .table-card-header {
-    padding: 1rem 1.25rem;
-    border-bottom: 1px solid #e5e7eb;
+    padding: 1.25rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    flex-wrap: wrap;
+    gap: 0.75rem;
 }
 
 .table-card-header h2 {
     font-size: 1.1rem;
     font-weight: 600;
-    margin: 0 0 0.25rem 0;
-    color: #111827;
+    color: #0f172a;
+    margin: 0 0 0.2rem 0;
 }
 
 .table-card-header span {
     font-size: 0.85rem;
-    color: #6b7280;
+    color: #64748b;
 }
 
 .record-count {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #0f4c3a;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 0.4rem;
+    background-color: #f1f5f9;
+    padding: 0.35rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #475569;
 }
 
 .table-responsive {
@@ -344,26 +344,26 @@
 .schedule-report-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.875rem;
     text-align: left;
+    white-space: nowrap;
 }
 
 .schedule-report-table th {
-    background-color: #0f4c3a;
+    background-color: #0d4732;
     color: #ffffff;
-    padding: 0.75rem 0.85rem;
     font-weight: 600;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 0.03em;
-    border-bottom: 2px solid #0b382b;
+    letter-spacing: 0.05em;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid #093423;
 }
 
 .schedule-report-table td {
-    padding: 0.75rem 0.85rem;
-    border-bottom: 1px solid #e5e7eb;
-    vertical-align: top;
-    color: #374151;
+    padding: 0.85rem 1rem;
+    font-size: 0.9rem;
+    color: #334155;
+    border-bottom: 1px solid #f1f5f9;
 }
 
 .schedule-report-table tbody tr {
@@ -371,8 +371,6 @@
     cursor: pointer;
 }
 
-
-/* Optional dynamic left accent bar matching your priority/STAT badges */
 .schedule-report-table tbody tr:has(.priority-emergency):hover {
     background-color: #fee2e2 !important;
 }
@@ -385,19 +383,15 @@
     background-color: #e0f2fe !important;
 }
 
-/* Fallback generic hover if row class doesn't match */
 .schedule-report-table tbody tr:hover {
     background-color: #f1f5f9 !important;
 }
-
-
 
 /* Cells formatting */
 .date-cell strong {
     color: #111827;
 }
 
-/* Time Cell */
 .time-cell {
     display: flex;
     flex-direction: column;
@@ -505,6 +499,145 @@
     color: #6b7280;
 }
 
+/* ==========================================================================
+   EXPORT MODAL STYLES
+   ========================================================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-container {
+    background: #ffffff;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 480px;
+    padding: 24px 28px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    box-sizing: border-box;
+    animation: modalPopIn 0.2s ease-out;
+}
+
+@keyframes modalPopIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    border-bottom: none;
+    padding: 0;
+}
+
+.modal-header h3 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+
+.modal-close-btn {
+    background: #6b7280;
+    color: #ffffff;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.modal-close-btn:hover {
+    background: #4b5563;
+}
+
+.modal-body p {
+    font-size: 0.9rem;
+    color: #4b5563;
+    margin: 0 0 20px 0;
+}
+
+.export-options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.export-option-btn {
+    width: 100%;
+    background-color: #0d4732;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.export-option-btn:hover {
+    background-color: #093423;
+}
+
+.export-option-btn i {
+    font-size: 1.1rem;
+}
+
+.export-option-btn.pdf i { color: #f87171; }
+.export-option-btn.excel i { color: #4ade80; }
+.export-option-btn.csv i { color: #60a5fa; }
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    border-top: none;
+    padding: 0;
+}
+
+.modal-cancel-btn {
+    background: transparent;
+    border: none;
+    color: #374151;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 6px 12px;
+}
+
+.modal-cancel-btn:hover {
+    color: #111827;
+}
 
 /* ==========================================================================
    PRINT STYLES
@@ -522,7 +655,6 @@
         font-size: 10px;
     }
 
-    /* Hide Navigation, Layout Headers/Footers, Sidebar, Filters, and Buttons */
     header,
     footer,
     sidebar,
@@ -531,11 +663,11 @@
     .report-breadcrumb,
     .report-filter-card,
     .filter-actions,
-    .btn-action {
+    .btn-action,
+    .modal-overlay {
         display: none !important;
     }
 
-    /* Explicitly allow the report page footnote to print */
     .report-footnote {
         display: flex !important;
         justify-content: space-between !important;
@@ -550,13 +682,11 @@
         display: inline-block !important;
     }
 
-    /* Hide decorative table icons */
     .schedule-report-table td .bi,
     .schedule-report-table td i {
         display: none !important;
     }
 
-    /* Layout Reset for Full Page Output */
     main.schedule-report-page {
         width: 100% !important;
         max-width: none !important;
@@ -564,7 +694,6 @@
         padding: 0 !important;
     }
 
-    /* Summary Grid Print Layout */
     .summary-grid {
         display: flex !important;
         gap: 10px !important;
@@ -579,7 +708,6 @@
         background: #ffffff !important;
     }
 
-    /* Table Formatting for Print */
     .table-responsive {
         overflow: visible !important;
     }
@@ -607,14 +735,12 @@
         print-color-adjust: exact;
     }
 
-    /* Time column print protection */
     .schedule-report-table th:nth-child(2),
     .schedule-report-table td:nth-child(2) {
         white-space: nowrap !important;
         min-width: 65px;
     }
 
-    /* Badges in Print */
     .status-badge,
     .priority-badge,
     .stat-badge {
@@ -630,7 +756,6 @@
         display: inline-block !important;
     }
 
-    /* Avoid splitting rows across page breaks */
     .schedule-report-table tr {
         page-break-inside: avoid;
     }
