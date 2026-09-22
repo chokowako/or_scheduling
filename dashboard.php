@@ -1725,7 +1725,6 @@ function dashboard_room_status_icon($status)
 <!-- =========================================================
      MANAGE SCHEDULE MODAL
      ========================================================= -->
-
 <div
     class="modal fade"
     id="manageScheduleModal"
@@ -1734,7 +1733,7 @@ function dashboard_room_status_icon($status)
     aria-hidden="true"
 >
 
-<div class="modal-dialog modal-dialog-centered">
+<div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content schedule-modal">
 
         <!-- HEADER -->
@@ -1747,7 +1746,7 @@ function dashboard_room_status_icon($status)
                     class="modal-title"
                     id="manageScheduleModalLabel"
                 >
-                    Manage Schedule
+                    Manage Schedule & Clinical Logs
                 </h5>
             </div>
 
@@ -1763,154 +1762,106 @@ function dashboard_room_status_icon($status)
         <!-- BODY -->
         <div class="modal-body">
 
-            <!-- SCHEDULE INFORMATION -->
+            <!-- SCHEDULE INFORMATION (Read-only details) -->
             <div
                 id="scheduleDetailsSection"
                 class="schedule-details-section"
             >
 
                 <div class="schedule-modal-status-row">
-
-                    <span class="schedule-modal-label">
-                        STATUS
-                    </span>
-
-                    <span
-                        id="modalScheduleStatus"
-                        class="schedule-modal-status"
-                    >
-                        Scheduled
-                    </span>
-
+                    <span class="schedule-modal-label">STATUS</span>
+                    <span id="modalScheduleStatus" class="schedule-modal-status">Scheduled</span>
                 </div>
-
 
                 <div class="schedule-modal-patient">
+                    <span class="schedule-modal-label">PATIENT</span>
+                    <strong id="modalPatient">—</strong>
+                </div>
 
-                    <span class="schedule-modal-label">
-                        PATIENT
-                    </span>
+                <div class="schedule-modal-grid mb-4">
+                    <div class="schedule-modal-info">
+                        <span>PROCEDURE</span>
+                        <strong id="modalProcedure">—</strong>
+                    </div>
 
-                    <strong id="modalPatient">
-                        —
-                    </strong>
+                    <div class="schedule-modal-info">
+                        <span>OPERATING ROOM</span>
+                        <strong id="modalRoom">—</strong>
+                    </div>
 
+                    <div class="schedule-modal-info">
+                        <span>SURGERY DATE</span>
+                        <strong id="modalDate">—</strong>
+                    </div>
+
+                    <div class="schedule-modal-info">
+                        <span>TIME</span>
+                        <strong id="modalTime">—</strong>
+                    </div>
+
+                    <div class="schedule-modal-info">
+                        <span>SURGEON</span>
+                        <strong id="modalSurgeon">—</strong>
+                    </div>
+
+                    <div class="schedule-modal-info">
+                        <span>ANESTHESIOLOGIST</span>
+                        <strong id="modalAnesthesiologist">—</strong>
+                    </div>
                 </div>
 
 
-                <div class="schedule-modal-grid">
-
-                    <div class="schedule-modal-info">
-
-                        <span>
-                            PROCEDURE
-                        </span>
-
-                        <strong id="modalProcedure">
-                            —
-                        </strong>
-
-                    </div>
-
-
-                    <div class="schedule-modal-info">
-
-                        <span>
-                            OPERATING ROOM
-                        </span>
-
-                        <strong id="modalRoom">
-                            —
-                        </strong>
-
-                    </div>
-
-
-                    <div class="schedule-modal-info">
-
-                        <span>
-                            SURGERY DATE
-                        </span>
-
-                        <strong id="modalDate">
-                            —
-                        </strong>
-
-                    </div>
-
-
-                    <div class="schedule-modal-info">
-
-                        <span>
-                            TIME
-                        </span>
-
-                        <strong id="modalTime">
-                            —
-                        </strong>
-
-                    </div>
-
-
-                    <div class="schedule-modal-info">
-
-                        <span>
-                            SURGEON
-                        </span>
-
-                        <strong id="modalSurgeon">
-                            —
-                        </strong>
-                    </div>
-
-
-                    <div class="schedule-modal-info">
-                        <span>
-                            ANESTHESIOLOGIST
-                        </span>
-                        <strong id="modalAnesthesiologist">
-                            —
-                        </strong>
-                    </div>							
-                </div>
+                <!-- CLINICAL INPUT FIELDS (Always Visible Text Inputs) -->
+               <div class="clinical-logs-section">
+				<div class="clinical-logs-header">
+					<i class="bi bi-clipboard2-pulse-fill"></i> Clinical & Post-Op Logs
+				</div>
 				
+				<div class="clinical-logs-grid">
+					<div class="clinical-field-group">
+						<label class="clinical-field-label" for="inputPreOpDiagnosis">Pre-Operation Diagnosis</label>
+						<textarea id="inputPreOpDiagnosis" name="pre_op_diagnosis" class="form-control" rows="2" placeholder="Enter pre-op diagnosis..."></textarea>
+					</div>
+
+					<div class="clinical-field-group">
+						<label class="clinical-field-label" for="inputPostOpDiagnosis">Post-Operation Diagnosis</label>
+						<textarea id="inputPostOpDiagnosis" name="post_op_diagnosis" class="form-control" rows="2" placeholder="Enter post-op diagnosis..."></textarea>
+					</div>
+
+					<div class="clinical-field-group">
+						<label class="clinical-field-label" for="inputDrains">Drains (Kinds & Numbers)</label>
+						<input type="text" id="inputDrains" name="drains" class="form-control" placeholder="e.g., Penrose drain (2)">
+					</div>
+
+					<div class="clinical-field-group">
+						<label class="clinical-field-label" for="inputSpecimen">Specimen for Lab Exam</label>
+						<input type="text" id="inputSpecimen" name="specimen_lab_exam" class="form-control" placeholder="e.g., Tissue biopsy">
+					</div>
+
+					<div class="clinical-field-group full-width">
+						<label class="clinical-field-label" for="inputSpongeCountVerified">Sponge & Instrument Count Verified</label>
+						<input type="text" id="inputSpongeCountVerified" name="sponge_count_verified" class="form-control" placeholder="e.g., Verified correct / counts match">
+					</div>
+				</div>	
+
             </div>
-			
-			
-			
 
 
-            <!-- CANCELLATION SECTION -->
+            <!-- CANCELLATION SECTION (Only shows if cancel is clicked) -->
             <div
                 id="cancelSection"
                 class="cancel-section"
                 style="display: none;"
             >
-
                 <div class="cancel-warning">
-
                     <i class="bi bi-exclamation-triangle-fill"></i>
-
                     <div>
-                        <strong>
-                            Cancel this schedule?
-                        </strong>
-
-                        <span>
-                            Please provide a reason for cancellation.
-                        </span>
+                        <strong>Cancel this schedule?</strong>
+                        <span>Please provide a reason for cancellation.</span>
                     </div>
-
                 </div>
 
-
-                <label
-                    for="cancelReason"
-                    class="cancel-reason-label"
-                >
-                    Cancellation Reason
-                </label>
-
+                <label for="cancelReason" class="cancel-reason-label">Cancellation Reason</label>
                 <textarea
                     id="cancelReason"
                     class="form-control cancel-reason-input"
@@ -1918,14 +1869,9 @@ function dashboard_room_status_icon($status)
                     placeholder="Enter the reason for cancellation..."
                 ></textarea>
 
-                <div
-                    id="cancelReasonError"
-                    class="cancel-reason-error"
-                    style="display: none;"
-                >
+                <div id="cancelReasonError" class="cancel-reason-error" style="display: none;">
                     Please enter a cancellation reason.
                 </div>
-
             </div>
 
         </div>
@@ -1939,7 +1885,6 @@ function dashboard_room_status_icon($status)
                 id="scheduleActionButtons"
                 class="schedule-action-buttons"
             >
-
                 <button
                     type="button"
                     class="btn schedule-complete-btn"
@@ -1957,7 +1902,6 @@ function dashboard_room_status_icon($status)
                     <i class="bi bi-x-circle-fill"></i>
                     Cancel Schedule
                 </button>
-
             </div>
 
 
@@ -1967,7 +1911,6 @@ function dashboard_room_status_icon($status)
                 class="schedule-action-buttons"
                 style="display: none;"
             >
-
                 <button
                     type="button"
                     class="btn schedule-back-btn"
@@ -1985,15 +1928,12 @@ function dashboard_room_status_icon($status)
                     <i class="bi bi-x-circle-fill"></i>
                     Confirm Cancellation
                 </button>
-
             </div>
 
         </div>
 
     </div>
-
 </div>
-```
 
 </div>
 

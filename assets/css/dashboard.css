@@ -3404,6 +3404,87 @@ button:focus-visible {
     font-weight: 700;
 }
 
+/* =========================================================
+   CLINICAL LOGS SECTION (ADDITIONAL STYLING)
+   ========================================================= */
+
+.clinical-logs-section {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
+.clinical-logs-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--green-700);
+}
+
+.clinical-logs-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.clinical-field-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.clinical-field-group.full-width {
+    grid-column: span 2;
+}
+
+.clinical-field-label {
+    display: block;
+    margin-bottom: 6px;
+
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+
+    color: var(--text-500);
+}
+
+/* Customizing Bootstrap .form-control to match your design system */
+.schedule-modal .form-control {
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: #fbfdfc;
+    padding: 10px 12px;
+
+    font-size: 13px;
+    color: var(--text-900);
+    font-weight: 500;
+
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.schedule-modal .form-control::placeholder {
+    color: var(--text-400, #9ca3af);
+    font-weight: 400;
+}
+
+.schedule-modal .form-control:focus {
+    border-color: var(--green-600);
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+    background: #ffffff;
+    outline: none;
+}
+
+.schedule-modal textarea.form-control {
+    resize: vertical;
+    min-height: 65px;
+}
+
 
 /* =========================================================
    COMPLETE BUTTON
