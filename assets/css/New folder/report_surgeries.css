@@ -571,6 +571,177 @@
     gap: 0.5rem;
 }
 
+
+/* =================================================
+   DETAILS / PRINT BUTTON STYLING
+================================================= */
+.surgery-report-table .date-cell .btn-outline-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border: 1px solid #0d4732;
+    color: #0d4732;
+    background-color: transparent;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.surgery-report-table .date-cell .btn-outline-primary:hover {
+    background-color: #0d4732;
+    color: #ffffff;
+    box-shadow: 0 2px 4px rgba(13, 71, 50, 0.2);
+}
+
+/* Hide the details button when printing the whole page */
+@media print {
+    .surgery-report-table .date-cell button {
+        display: none !important;
+    }
+}
+
+
+
+
+/* ==========================================================================
+   SURGERY DETAIL MODAL STYLING
+   ========================================================================== */
+
+.modal-container {
+    background: var(--white, #ffffff);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 700px;
+    padding: 24px 28px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    box-sizing: border-box;
+    animation: modalPopIn 0.2s ease-out;
+}
+
+/* Modal Header */
+.modal-container .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border, #e2ebe7);
+    margin-bottom: 16px;
+}
+
+.modal-container .modal-header h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-900, #20352d);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+}
+
+.modal-container .modal-header h3 i {
+    color: var(--green-600, #358e6c);
+}
+
+.modal-close-btn {
+    background: #f1f5f9;
+    color: #64748b;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.modal-close-btn:hover {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+/* Modal Body & Table Layout */
+.modal-body h4 {
+    color: var(--text-900, #20352d);
+    font-weight: 700;
+}
+
+.modal-body .table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 0.9rem;
+}
+
+.modal-body .table th {
+    background-color: var(--green-50, #f1faf6);
+    color: var(--text-800, #2d443b);
+    font-weight: 600;
+    text-align: left;
+    padding: 10px 14px;
+    border: 1px solid var(--border, #e2ebe7);
+    width: 32%;
+}
+
+.modal-body .table td {
+    padding: 10px 14px;
+    color: var(--text-900, #20352d);
+    border: 1px solid var(--border, #e2ebe7);
+    background-color: #ffffff;
+}
+
+/* Modal Footer & Buttons */
+.modal-container .modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border, #e2ebe7);
+    margin-top: 20px;
+}
+
+.modal-container .modal-footer .btn-primary {
+    background-color: #0d4732;
+    color: #ffffff;
+    border: 1px solid #0d4732;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.modal-container .modal-footer .btn-primary:hover {
+    background-color: #093423;
+}
+
+.modal-container .modal-footer .modal-cancel-btn {
+    background: transparent;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.modal-container .modal-footer .modal-cancel-btn:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
 @media (max-width: 1200px) {
     .filter-actions-inline {
         margin-left: 0;
@@ -579,6 +750,13 @@
         margin-top: 0.5rem;
     }
 }
+
+
+
+
+
+
+
 
 
 /* ==========================================================================
@@ -725,6 +903,11 @@
 
 
 
+
+
+
+
+
 /* ==========================================================================
     PRINT STYLES FOR REPORT SURGERIES
    ========================================================================== */
@@ -845,3 +1028,4 @@
         page-break-inside: avoid;
     }
 }
+

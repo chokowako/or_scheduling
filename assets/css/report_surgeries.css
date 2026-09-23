@@ -571,6 +571,267 @@
     gap: 0.5rem;
 }
 
+
+/* =================================================
+   DETAILS / PRINT BUTTON STYLING
+================================================= */
+.surgery-report-table .date-cell .btn-outline-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border: 1px solid #0d4732;
+    color: #0d4732;
+    background-color: transparent;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.surgery-report-table .date-cell .btn-outline-primary:hover {
+    background-color: #0d4732;
+    color: #ffffff;
+    box-shadow: 0 2px 4px rgba(13, 71, 50, 0.2);
+}
+
+/* Hide the details button when printing the whole page */
+@media print {
+    .surgery-report-table .date-cell button {
+        display: none !important;
+    }
+}
+
+
+
+
+      
+/* ==========================================================================
+   PATIENT DETAILS SECTION STYLING
+   ========================================================================== */
+
+.Patient_detail {
+    background: #ffffff;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Header Row (Icon + Title) */
+.Patient_detail .patient-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+/* Icon Box Styling */
+.Patient_detail .Patient-icon {
+    width: 36px;
+    height: 36px;
+    background-color: var(--green-50, #f1faf6);
+    color: var(--green-600, #358e6c);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+
+/* Section Title Heading */
+.Patient_detail .patient-title h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-900, #20352d);
+    margin: 0;
+}
+
+/* Column-First Grid Layout */
+.Patient_detail .patient-detail-grid {
+    padding-left: 48px;
+    display: grid;
+    /* 2 columns, each taking equal space */
+    grid-template-columns: 1fr 1fr; 
+    /* 3 rows high (since there are 5 items, column 1 will have 3, column 2 will have 2) */
+    grid-template-rows: repeat(3, auto); 
+    /* This makes items fill DOWN the columns first instead of across rows */
+    grid-auto-flow: column; 
+    gap: 8px 24px;
+    margin-top: 4px;
+}
+
+/* Individual Item Row */
+.Patient_detail .patient-name-container {
+	display: flex;
+    align-items: baseline;
+}
+
+/* Shared Static Label Style */
+.Patient_detail .patient-label {
+	color: #64748b;
+    font-weight: 500;
+    font-size: 0.9rem;
+    width: 115px; /* Adjust this width if needed so your longest label fits */
+    flex-shrink: 0; /* Prevents the label from squishing */
+}
+
+/* Shared Dynamic Value Style */
+.Patient_detail .patient-value {
+	font-size: 0.95rem;
+    font-weight: 600;
+    color: #0284c7;
+}
+
+
+
+
+
+
+
+
+
+
+
+   
+   
+   
+   
+
+.modal-container {
+    background: var(--white, #ffffff);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 700px;
+    padding: 24px 28px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    box-sizing: border-box;
+    animation: modalPopIn 0.2s ease-out;
+}
+
+/* Modal Header */
+.modal-container .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border, #e2ebe7);
+    margin-bottom: 16px;
+}
+
+.modal-container .modal-header h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-900, #20352d);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+}
+
+.modal-container .modal-header h3 i {
+    color: var(--green-600, #358e6c);
+}
+
+.modal-close-btn {
+    background: #f1f5f9;
+    color: #64748b;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.modal-close-btn:hover {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+/* Modal Body & Table Layout */
+.modal-body h4 {
+    color: var(--text-900, #20352d);
+    font-weight: 700;
+}
+
+.modal-body .table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 0.9rem;
+}
+
+.modal-body .table th {
+    background-color: var(--green-50, #f1faf6);
+    color: var(--text-800, #2d443b);
+    font-weight: 600;
+    text-align: left;
+    padding: 10px 14px;
+    border: 1px solid var(--border, #e2ebe7);
+    width: 32%;
+}
+
+.modal-body .table td {
+    padding: 10px 14px;
+    color: var(--text-900, #20352d);
+    border: 1px solid var(--border, #e2ebe7);
+    background-color: #ffffff;
+}
+
+/* Modal Footer & Buttons */
+.modal-container .modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border, #e2ebe7);
+    margin-top: 20px;
+}
+
+.modal-container .modal-footer .btn-primary {
+    background-color: #0d4732;
+    color: #ffffff;
+    border: 1px solid #0d4732;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.modal-container .modal-footer .btn-primary:hover {
+    background-color: #093423;
+}
+
+.modal-container .modal-footer .modal-cancel-btn {
+    background: transparent;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.modal-container .modal-footer .modal-cancel-btn:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
 @media (max-width: 1200px) {
     .filter-actions-inline {
         margin-left: 0;
@@ -579,6 +840,13 @@
         margin-top: 0.5rem;
     }
 }
+
+
+
+
+
+
+
 
 
 /* ==========================================================================
@@ -725,6 +993,11 @@
 
 
 
+
+
+
+
+
 /* ==========================================================================
     PRINT STYLES FOR REPORT SURGERIES
    ========================================================================== */
@@ -845,3 +1118,4 @@
         page-break-inside: avoid;
     }
 }
+

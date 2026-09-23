@@ -1,0 +1,58 @@
+
+Patient Detail - 
+Patient name
+Birthdate
+Registry No.
+Registry Type
+Room
+
+Schedule -
+Surgery DAte
+End Date
+
+
+Operating Time-
+Start Time
+End Time
+
+Operating Room -
+Or Room
+
+Clinical Priority-
+Priority
+
+Emmediate attention-
+Stat
+
+Surgical Team-
+Surgeon
+Anesthesiology
+
+
+Assistante Surgeon - 
+Assistant
+
+
+Anesthetic - 
+Anesthisia
+
+Surgical Type -
+Minor
+Cardiologist
+Circulating Nurse
+Instrument Nurse
+
+
+Additional Info - 
+Remarks
+Infecetion
+
+
+
+os.pre_op_diagnosis,
+os.post_op_diagnosis,
+os.drains,
+os.specimen_lab_exam,
+os.sponge_count_verified,
+
+surgery-report-table

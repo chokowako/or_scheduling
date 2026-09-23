@@ -13,8 +13,8 @@ $date_to = $_GET['date_to'] ?? date('Y-m-d');
 $patient_search = trim($_GET['patient_search'] ?? '');
 $status_filter = trim($_GET['status'] ?? '');
 
-$sql = "
-    SELECT
+$sql = "SELECT
+	
         os.schedule_id,
         os.surgery_date,
         os.date_end,
@@ -24,14 +24,18 @@ $sql = "
         os.priority,
         os.is_stat,
         os.status,
-
+      
         p.patient_number,
         p.first_name,
         p.middle_name,
         p.last_name,
+		os.birth_date,
+		os.registry_type,
 
         pr.procedure_name,
         pr.surgical_type AS procedure_surgical_type,
+        os.anesthetic,
+        
 
         surgeon.first_name AS surgeon_first_name,
         surgeon.middle_name AS surgeon_middle_name,
@@ -42,8 +46,20 @@ $sql = "
         anesthesiologist.middle_name AS anesthesiologist_middle_name,
         anesthesiologist.last_name AS anesthesiologist_last_name,
         anesthesiologist.suffix_name AS anesthesiologist_suffix_name,
-
-        r.room_name
+        r.room_name,
+        
+        os.cardiologist,
+        os.circulating_nurse,
+            
+        os.pre_op_diagnosis,
+        os.post_op_diagnosis,
+        os.drains,
+        os.specimen_lab_exam,
+        os.sponge_count_verified,
+        os.remarks,
+        os.infections
+        
+	
 
     FROM or_schedules os
 
@@ -123,8 +139,13 @@ if (isset($_GET['export'])) {
         
         $output = fopen('php://output', 'w');
         
-        // Add Column Headers
-        fputcsv($output, ['Surgery Date', 'Start Time', 'End Time', 'Patient Name', 'Patient Number', 'Procedure', 'Surgical Type', 'Surgeon', 'Anesthesiologist', 'Operating Room', 'Priority', 'STAT', 'Status']);
+        // Add Column Headers including Priority and Clinical Logs
+        fputcsv($output, [
+            'Surgery Date', 'Start Time', 'End Time', 'Patient Name', 'Patient Number', 
+            'Procedure', 'Surgical Type', 'Surgeon', 'Anesthesiologist', 'Operating Room', 
+            'Priority', 'STAT', 'Status', 'Pre-Op Diagnosis', 'Post-Op Diagnosis', 
+            'Drains', 'Specimen/Lab Exam', 'Sponge & Count Verified'
+        ]);
         
         foreach ($surgeries as $s) {
             fputcsv($output, [
@@ -140,7 +161,12 @@ if (isset($_GET['export'])) {
                 $s['room_name'],
                 $s['priority'] ?: 'Elective',
                 (int)$s['is_stat'] === 1 ? 'YES' : 'NO',
-                $s['status']
+                $s['status'],
+                $s['pre_op_diagnosis'],
+                $s['post_op_diagnosis'],
+                $s['drains'],
+                $s['specimen_lab_exam'],
+                $s['sponge_count_verified']
             ]);
         }
         fclose($output);
@@ -231,7 +257,7 @@ function statusClass($status) {
             Surgery Report
         </h1>
         <p>
-            View, filter, export, and print scheduled surgeries and operating room activities.
+            Review completed procedures, post-operative outcomes, clinical logs, and historical surgical case details over a selected period.
         </p>
     </div>
 </div>
@@ -284,8 +310,7 @@ function statusClass($status) {
             <button type="submit" class="filter-btn-custom"><i class="bi bi-funnel-fill"></i> Filter </button>
             <button type="button" class="reset-btn-custom" onclick="resetFilters()"><i class="bi bi-x-lg"></i> Reset</button>    
             <button type="button" class="export-btn-custom" onclick="openExportModal()"><i class="bi bi-download"></i> Export</button>
-            <button type="button" class="print-btn-custom" onclick="window.print()"><i class="bi bi-printer-fill"></i> Print
-            </button>
+            <button type="button" class="print-btn-custom" onclick="window.print()"><i class="bi bi-printer-fill"></i> Print</button>
         </div>
     </form>
 </section>
@@ -327,7 +352,7 @@ function statusClass($status) {
 <section class="report-table-card">
     <div class="table-card-header">
         <div>
-            <h2>Surgery Records</h2>
+            <h2>Surgery Records & Clinical Logs</h2>
             <span>
                 Date Range: <?= htmlspecialchars(formatDateValue($date_from)) ?>
                 <?php if ($date_from !== $date_to): ?>
@@ -365,6 +390,7 @@ function statusClass($status) {
                         <th>Priority</th>
                         <th>STAT</th>
                         <th>Status</th>
+                        <th>Clinical Logs / Post-Op Outcomes</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -372,17 +398,34 @@ function statusClass($status) {
                         <?php
                         $priority = $surgery['priority'] ?: 'Elective';
                         $priority_class = strtolower($priority);
+
+                        // Prepare formatted names for the detail view modal
+                        $surgery['formatted_date'] = formatDateValue($surgery['surgery_date']);
+                        $surgery['formatted_start_time'] = formatTimeValue($surgery['start_time']);
+                        $surgery['formatted_end_time'] = formatTimeValue($surgery['end_time']);
+                        $surgery['formatted_patient_name'] = formatPatientName($surgery['first_name'], $surgery['middle_name'], $surgery['last_name']);
+                        $surgery['formatted_surgeon'] = formatDoctorName($surgery['surgeon_first_name'], $surgery['surgeon_middle_name'], $surgery['surgeon_last_name'], $surgery['surgeon_suffix_name']);
+                        $surgery['formatted_anesthesiologist'] = !empty($surgery['anesthesiologist_first_name']) ? formatDoctorName($surgery['anesthesiologist_first_name'], $surgery['anesthesiologist_middle_name'], $surgery['anesthesiologist_last_name'], $surgery['anesthesiologist_suffix_name']) : 'Not assigned';
+                        $surgery['display_priority'] = $priority;
+                        $surgery['display_stat'] = ((int)$surgery['is_stat'] === 1) ? 'YES' : 'NO';
                         ?>
                         <tr class="row-<?= htmlspecialchars($priority_class) ?>">
                             <td>
                                 <div class="date-cell">
                                     <strong><?= htmlspecialchars(formatDateValue($surgery['surgery_date'])) ?></strong>
+                                    <div class="mt-1">
+                                        <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size: 0.75rem;" onclick='openDetailModal(<?= json_encode($surgery, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>)'>
+                                            <i class="bi bi-eye-fill"></i> Details / Print
+                                        </button>
+                                    </div>
                                 </div>
                             </td>
                             <td>
                                 <div class="time-cell">
-                                    <span><?= htmlspecialchars(formatTimeValue($surgery['start_time'])) ?></span>
-                                    <small>- <?= htmlspecialchars(formatTimeValue($surgery['end_time'])) ?></small>
+                                    <div><?= htmlspecialchars(formatTimeValue($surgery['start_time'])) ?></div>
+                                    <?php if (!empty($surgery['end_time'])): ?>
+                                        <div class="small text-muted"><?= htmlspecialchars(formatTimeValue($surgery['end_time'])) ?></div>
+                                    <?php endif; ?>
                                 </div>
                             </td>
                             <td>
@@ -438,6 +481,18 @@ function statusClass($status) {
                                     <?= htmlspecialchars($surgery['status']) ?>
                                 </span>
                             </td>
+                            <td>
+                                <?php if (strcasecmp($surgery['status'], 'Completed') === 0): ?>
+                                    <div class="clinical-summary-cell small">
+                                        <div><strong>Pre-Op:</strong> <?= htmlspecialchars($surgery['pre_op_diagnosis'] ?: '—') ?></div>
+                                        <div><strong>Post-Op:</strong> <?= htmlspecialchars($surgery['post_op_diagnosis'] ?: '—') ?></div>
+                                        <div><strong>Drains:</strong> <?= htmlspecialchars($surgery['drains'] ?: '—') ?></div>
+                                        <div><strong>Specimen:</strong> <?= htmlspecialchars($surgery['specimen_lab_exam'] ?: '—') ?></div>
+                                    </div>
+                                <?php else: ?>
+                                    <span class="text-muted font-italic">—</span>
+                                <?php endif; ?>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -463,7 +518,7 @@ function statusClass($status) {
             <p>Choose your preferred export format for the filtered surgery dataset.</p>
             <div class="export-options-list">
                 <button type="button" class="export-option-btn pdf" onclick="exportAsPDF()">
-                    <i class="bi bi-file-earmark-pdf-fill text-danger"></i> Export as PDF Document
+                    <i class="bi bi-file-earmark-pdf-fill text-danger"></i> Export as PDF Document / Print
                 </button>
 
                 <button type="button" class="export-option-btn excel" onclick="exportAsExcel()">
@@ -477,6 +532,147 @@ function statusClass($status) {
         </div>
          <div class="modal-footer">
             <button type="button" class="modal-cancel-btn" onclick="closeExportModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- Detail & Print Modal Structure -->
+<div id="detailModal" class="modal-overlay">
+    <div class="modal-container" style="max-width: 700px;">
+        <div class="modal-header">
+            <h3><i class="bi bi-file-earmark-medical"></i> Surgery Case Detailed Report</h3>
+            <button type="button" class="modal-close-btn" onclick="closeDetailModal()"><i class="bi bi-x-lg"></i></button>
+        </div>
+        
+        <div class="modal-body" id="printableDetailBody" style="max-height: 70vh; overflow-y: auto;">	
+		
+			<section class="Patient_detail">
+				<div class="patient-title">
+					<div class="Patient-icon">
+						<i class="bi bi-person-fill"></i>
+					</div>
+					<div>
+						<h2>Patient Details</h2>
+					</div>
+				</div>
+					
+				<div class="patient-detail-grid">
+					<div class="patient-name-container">
+						<span class="patient-label">Patient Name:</span>
+						<span class="patient-value" id="det_patient_name"></span>
+					</div>
+					
+					<div class="patient-name-container">
+						<span class="patient-label">Birthdate:</span>
+						<span class="patient-value" id="det_birth_date"></span>
+					</div>
+					
+					<div class="patient-name-container">
+						<span class="patient-label">Registry No:</span>
+						<span class="patient-value" id="det_patient_no"></span>
+					</div>
+					
+					<div class="patient-name-container">
+						<span class="patient-label">Registry Type:</span>
+						<span class="patient-value" id="det_registry_type"></span>
+					</div>
+
+					<div class="patient-name-container">
+						<span class="patient-label">Room:</span>
+						<span class="patient-value" id="det_room"></span>
+					</div>
+				</div>
+			</section>
+	
+	
+            <table class="table table-bordered table-sm">
+		           
+                <tr>
+                    <th>Procedure:</th>
+                    <td id="det_procedure"></td>
+                </tr>
+                <tr>
+                    <th>Surgical Type:</th>
+                    <td id="det_surgical_type"></td>
+                </tr>
+                <tr>
+                    <th>Surgery Date & Time:</th>
+                    <td id="det_datetime"></td>
+                </tr>
+                <tr>
+                    <th>Operating Room:</th>
+                    <td id="det_room"></td>
+                </tr>
+                <tr>
+                    <th>Surgeon:</th>
+                    <td id="det_surgeon"></td>
+                </tr>
+                <tr>
+                    <th>Anesthesiologist:</th>
+                    <td id="det_anesthesiologist"></td>
+                </tr>
+                <tr>
+                    <th>Priority & STAT:</th>
+                    <td id="det_priority_stat"></td>
+                </tr>
+                <tr>
+                    <th>Case Status:</th>
+                    <td id="det_status"></td>
+                </tr>
+                <tr>
+                    <th>Pre-Operative Diagnosis:</th>
+                    <td id="det_pre_op"></td>
+                </tr>
+                <tr>
+                    <th>Post-Operative Diagnosis:</th>
+                    <td id="det_post_op"></td>
+                </tr>
+                <tr>
+                    <th>Drains:</th>
+                    <td id="det_drains"></td>
+                </tr>
+                <tr>
+                    <th>Specimen / Lab Exam:</th>
+                    <td id="det_specimen"></td>
+                </tr>
+                <tr>
+                    <th>Sponge & Count Verified:</th>
+                    <td id="det_sponge"></td>
+                </tr>			
+				 <tr>
+                    <th>anesthetic:</th>
+                    <td id="det_anesthetic"></td>
+                </tr>
+				 <tr>
+                    <th>cardiologist:</th>
+                    <td id="det_cardiologist"></td>
+                </tr>
+				 <tr>
+                    <th>circulating nurse:</th>
+                    <td id="det_circulating_nurse"></td>
+                </tr>
+				 <tr>
+                    <th>remarks:</th>
+                    <td id="det_remarks"></td>
+                </tr>
+				<tr>
+                    <th>infections:</th>
+                    <td id="det_infections"></td>
+                </tr>
+				
+				
+			
+            </table>
+        </div>
+		
+		
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" onclick="printSingleRecord()"><i class="bi bi-printer-fill"></i> Print This Record</button>
+            <button type="button" class="modal-cancel-btn" onclick="closeDetailModal()">Close</button>
         </div>
     </div>
 </div>
@@ -506,10 +702,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-/* =================================================
-    EXPORT MODAL & CLIENT-SIDE EXPORT FUNCTIONS
-================================================= */
-
 function openExportModal() {
     document.getElementById('exportModal').classList.add('active');
 }
@@ -518,10 +710,53 @@ function closeExportModal() {
     document.getElementById('exportModal').classList.remove('active');
 }
 
+function openDetailModal(data) {
+    document.getElementById('det_patient_name').innerText = data.formatted_patient_name || '—';
+	document.getElementById('det_birth_date').innerText = data.birth_date || '—';
+    document.getElementById('det_patient_no').innerText = data.patient_registry_no || data.patient_number || '—';
+	document.getElementById('det_registry_type').innerText = data.registry_type || data.registry_type || '—';
+	document.getElementById('det_room').innerText = data.room_name || '—';
+	
+    document.getElementById('det_procedure').innerText = data.procedure_name || '—';
+    document.getElementById('det_surgical_type').innerText = data.procedure_surgical_type || 'General';
+    document.getElementById('det_datetime').innerText = data.formatted_date + ' (' + data.formatted_start_time + ' - ' + data.formatted_end_time + ')';    
+    document.getElementById('det_surgeon').innerText = data.formatted_surgeon || '—';
+    document.getElementById('det_anesthesiologist').innerText = data.formatted_anesthesiologist || '—';
+    document.getElementById('det_priority_stat').innerText = data.display_priority + (data.display_stat === 'YES' ? ' (STAT)' : '');
+    document.getElementById('det_status').innerText = data.status || '—';
+    document.getElementById('det_pre_op').innerText = data.pre_op_diagnosis || '—';
+    document.getElementById('det_post_op').innerText = data.post_op_diagnosis || '—';
+    document.getElementById('det_drains').innerText = data.drains || '—';
+    document.getElementById('det_specimen').innerText = data.specimen_lab_exam || '—';
+    document.getElementById('det_sponge').innerText = data.sponge_count_verified || '—';
+
+	document.getElementById('det_anesthetic').innerText = data.anesthetic || '—';
+	document.getElementById('det_cardiologist').innerText = data.cardiologist || '—';
+	document.getElementById('det_circulating_nurse').innerText = data.circulating_nurse || '—';
+	document.getElementById('det_remarks').innerText = data.remarks || '—';
+	document.getElementById('det_infections').innerText = data.infections || '—';
+	
+
+    document.getElementById('detailModal').classList.add('active');
+}
+
+function closeDetailModal() {
+    document.getElementById('detailModal').classList.remove('active');
+}
+
+function printSingleRecord() {
+    // Opens standard print dialog. You can add a print media CSS query if you want to isolate only the modal content during print.
+    window.print();
+}
+
 window.addEventListener('click', function(event) {
-    const modal = document.getElementById('exportModal');
-    if (event.target === modal) {
+    const exportModal = document.getElementById('exportModal');
+    const detailModal = document.getElementById('detailModal');
+    if (event.target === exportModal) {
         closeExportModal();
+    }
+    if (event.target === detailModal) {
+        closeDetailModal();
     }
 });
 
@@ -531,17 +766,45 @@ function exportAsPDF() {
 }
 
 function exportAsExcel() {
+    let table = document.querySelector(".surgery-report-table") || document.querySelector("table"); 
+    
+    if (!table) {
+        alert("Error: No data table found to export.");
+        closeExportModal();
+        return;
+    }
+
+    let rows = table.querySelectorAll("tr");
+    let csv = [];
+
+    for (let i = 0; i < rows.length; i++) {
+        let row = [], cols = rows[i].querySelectorAll("td, th");
+        
+        for (let j = 0; j < cols.length; j++) {
+            let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, " ").replace(/\s+/g, " ").trim();
+            data = data.replace(/"/g, '""');
+            row.push('"' + data + '"');
+        }
+        if (row.length > 0) csv.push(row.join(","));
+    }
+
+    let csvContent = "data:text/csv;charset=utf-8," + encodeURIComponent(csv.join("\n"));
+    let downloadLink = document.createElement("a");
+    downloadLink.setAttribute("href", csvContent);
+    downloadLink.setAttribute("download", "Patient_Report_" + new Date().toISOString().slice(0,10) + ".csv");
+    document.body.appendChild(downloadLink);
+    
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+
     closeExportModal();
-    const urlParams = new URLSearchParams(window.location.search);
-    urlParams.set('export', 'excel');
-    window.location.href = '?' + urlParams.toString();
 }
 
-function exportAsCSV() {
-    closeExportModal();
-    const urlParams = new URLSearchParams(window.location.search);
-    urlParams.set('export', 'csv');
-    window.location.href = '?' + urlParams.toString();
+
+
+
+function exportToCSV() {
+    exportAsExcel();
 }
 </script>
 

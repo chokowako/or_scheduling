@@ -19,12 +19,22 @@ require_once "config/database.php";
    ========================================================= */
 
 		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
+			
+	
 			$action = $_POST['schedule_action'] ?? '';
 			$schedule_id = (int)($_POST['schedule_id'] ?? 0);
 
 			$user_id = $_SESSION['user_id'] ?? null;
+			
+			// Capture the new fields
+			$pre_op_diagnosis       = $_POST['pre_op_diagnosis'] ?? '';
+			$post_op_diagnosis      = $_POST['post_op_diagnosis'] ?? '';
+			$drains                 = $_POST['drains'] ?? '';
+			$specimen_lab_exam      = $_POST['specimen_lab_exam'] ?? '';
+			$sponge_count_verified  = $_POST['sponge_count_verified'] ?? '';
 
+			
+		
 
 			if ($schedule_id > 0 && $user_id) {
 
@@ -70,12 +80,30 @@ require_once "config/database.php";
 							SET
 								status = 'Completed',
 								completed_by = ?,
-								completed_at = NOW()
+								completed_at = NOW(),
+								pre_op_diagnosis = ?,
+								post_op_diagnosis = ?,
+								drains = ?,
+								specimen_lab_exam = ?,
+								sponge_count_verified = ?
 							WHERE schedule_id = ?
 						");
 
+						// The order here MUST match the order of the '?' placeholders above:
+						// 1. completed_by ($user_id)
+						// 2. pre_op_diagnosis
+						// 3. post_op_diagnosis
+						// 4. drains
+						// 5. specimen_lab_exam
+						// 6. sponge_count_verified
+						// 7. schedule_id (WHERE clause)
 						$stmt->execute([
 							$user_id,
+							$pre_op_diagnosis,
+							$post_op_diagnosis,
+							$drains,
+							$specimen_lab_exam,
+							$sponge_count_verified,
 							$schedule_id
 						]);
 
@@ -1723,7 +1751,7 @@ function dashboard_room_status_icon($status)
 </div>
 
 <!-- =========================================================
-     MANAGE SCHEDULE MODAL
+     MANAGE SCHEDULE MODAL (Wrapped with the Form)
      ========================================================= -->
 <div
     class="modal fade"
@@ -1733,8 +1761,14 @@ function dashboard_room_status_icon($status)
     aria-hidden="true"
 >
 
-<div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content schedule-modal">
+<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    <!-- THE FORM NOW WRAPS THE ENTIRE MODAL CONTENT -->
+    <form id="scheduleActionForm" method="POST" action="dashboard.php" class="modal-content schedule-modal">
+
+        <!-- HIDDEN SYSTEM INPUTS -->
+        <input type="hidden" name="schedule_action" id="scheduleAction">
+        <input type="hidden" name="schedule_id" id="scheduleId">
+        <input type="hidden" name="cancel_reason" id="hiddenCancelReason">
 
         <!-- HEADER -->
         <div class="modal-header schedule-modal-header">
@@ -1767,11 +1801,6 @@ function dashboard_room_status_icon($status)
                 id="scheduleDetailsSection"
                 class="schedule-details-section"
             >
-
-                <div class="schedule-modal-status-row">
-                    <span class="schedule-modal-label">STATUS</span>
-                    <span id="modalScheduleStatus" class="schedule-modal-status">Scheduled</span>
-                </div>
 
                 <div class="schedule-modal-patient">
                     <span class="schedule-modal-label">PATIENT</span>
@@ -1811,43 +1840,44 @@ function dashboard_room_status_icon($status)
                 </div>
 
 
-                <!-- CLINICAL INPUT FIELDS (Always Visible Text Inputs) -->
-               <div class="clinical-logs-section">
-				<div class="clinical-logs-header">
-					<i class="bi bi-clipboard2-pulse-fill"></i> Clinical & Post-Op Logs
-				</div>
-				
-				<div class="clinical-logs-grid">
-					<div class="clinical-field-group">
-						<label class="clinical-field-label" for="inputPreOpDiagnosis">Pre-Operation Diagnosis</label>
-						<textarea id="inputPreOpDiagnosis" name="pre_op_diagnosis" class="form-control" rows="2" placeholder="Enter pre-op diagnosis..."></textarea>
-					</div>
+                <!-- CLINICAL INPUT FIELDS -->
+                <div class="border-top pt-3">
+                    <h6 class="text-primary fw-bold mb-3">
+                        <i class="bi bi-clipboard2-pulse-fill"></i> Clinical & Post-Op Logs
+                    </h6>
+                    
+                    <div class="clinical-logs-grid">
+                        <div class="clinical-field-group">
+                            <label class="clinical-field-label" for="inputPreOpDiagnosis">Pre-Operation Diagnosis</label>
+                            <textarea id="inputPreOpDiagnosis" name="pre_op_diagnosis" class="form-control" rows="2" placeholder="Enter pre-op diagnosis..."></textarea>
+                        </div>
 
-					<div class="clinical-field-group">
-						<label class="clinical-field-label" for="inputPostOpDiagnosis">Post-Operation Diagnosis</label>
-						<textarea id="inputPostOpDiagnosis" name="post_op_diagnosis" class="form-control" rows="2" placeholder="Enter post-op diagnosis..."></textarea>
-					</div>
+                        <div class="clinical-field-group">
+                            <label class="clinical-field-label" for="inputPostOpDiagnosis">Post-Operation Diagnosis</label>
+                            <textarea id="inputPostOpDiagnosis" name="post_op_diagnosis" class="form-control" rows="2" placeholder="Enter post-op diagnosis..."></textarea>
+                        </div>
 
-					<div class="clinical-field-group">
-						<label class="clinical-field-label" for="inputDrains">Drains (Kinds & Numbers)</label>
-						<input type="text" id="inputDrains" name="drains" class="form-control" placeholder="e.g., Penrose drain (2)">
-					</div>
+                        <div class="clinical-field-group">
+                            <label class="clinical-field-label" for="inputDrains">Drains (Kinds & Numbers)</label>
+                            <input type="text" id="inputDrains" name="drains" class="form-control" placeholder="e.g., Penrose drain (2)">
+                        </div>
 
-					<div class="clinical-field-group">
-						<label class="clinical-field-label" for="inputSpecimen">Specimen for Lab Exam</label>
-						<input type="text" id="inputSpecimen" name="specimen_lab_exam" class="form-control" placeholder="e.g., Tissue biopsy">
-					</div>
+                        <div class="clinical-field-group">
+                            <label class="clinical-field-label" for="inputSpecimen">Specimen for Lab Exam</label>
+                            <input type="text" id="inputSpecimen" name="specimen_lab_exam" class="form-control" placeholder="e.g., Tissue biopsy">
+                        </div>
 
-					<div class="clinical-field-group full-width">
-						<label class="clinical-field-label" for="inputSpongeCountVerified">Sponge & Instrument Count Verified</label>
-						<input type="text" id="inputSpongeCountVerified" name="sponge_count_verified" class="form-control" placeholder="e.g., Verified correct / counts match">
-					</div>
-				</div>	
+                        <div class="clinical-field-group full-width">
+                            <label class="clinical-field-label" for="inputSpongeCountVerified">Sponge & Instrument Count Verified</label>
+                            <input type="text" id="inputSpongeCountVerified" name="sponge_count_verified" class="form-control" placeholder="e.g., Verified correct / counts match">
+                        </div>
+                    </div>
+                </div>
 
             </div>
 
 
-            <!-- CANCELLATION SECTION (Only shows if cancel is clicked) -->
+            <!-- CANCELLATION SECTION -->
             <div
                 id="cancelSection"
                 class="cancel-section"
@@ -1932,43 +1962,12 @@ function dashboard_room_status_icon($status)
 
         </div>
 
-    </div>
+    </form>
 </div>
 
 </div>
 
-<!-- =========================================================
-     SCHEDULE ACTION FORM
-     ========================================================= -->
 
-<form
-    id="scheduleActionForm"
-    method="POST"
-    action="dashboard.php"
-    style="display: none;"
->
-
-```
-<input
-    type="hidden"
-    name="schedule_action"
-    id="scheduleAction"
->
-
-<input
-    type="hidden"
-    name="schedule_id"
-    id="scheduleId"
->
-
-<input
-    type="hidden"
-    name="cancel_reason"
-    id="hiddenCancelReason"
->
-```
-
-</form>
 
 <!-- =========================================================
      MANAGE SCHEDULE JAVASCRIPT
@@ -1978,287 +1977,132 @@ function dashboard_room_status_icon($status)
 
 document.addEventListener('DOMContentLoaded', function () {
 
-    const manageModal =
-        document.getElementById('manageScheduleModal');
+    const manageModal = document.getElementById('manageScheduleModal');
+    const scheduleActionForm = document.getElementById('scheduleActionForm');
+    const scheduleAction = document.getElementById('scheduleAction');
+    const scheduleId = document.getElementById('scheduleId');
+    const hiddenCancelReason = document.getElementById('hiddenCancelReason');
 
-    const scheduleActionForm =
-        document.getElementById('scheduleActionForm');
+    const scheduleDetailsSection = document.getElementById('scheduleDetailsSection');
+    const cancelSection = document.getElementById('cancelSection');
 
-    const scheduleAction =
-        document.getElementById('scheduleAction');
+    const scheduleActionButtons = document.getElementById('scheduleActionButtons');
+    const cancelActionButtons = document.getElementById('cancelActionButtons');
 
-    const scheduleId =
-        document.getElementById('scheduleId');
-
-    const hiddenCancelReason =
-        document.getElementById('hiddenCancelReason');
-
-
-    const scheduleDetailsSection =
-        document.getElementById('scheduleDetailsSection');
-
-    const cancelSection =
-        document.getElementById('cancelSection');
-
-    const scheduleActionButtons =
-        document.getElementById('scheduleActionButtons');
-
-    const cancelActionButtons =
-        document.getElementById('cancelActionButtons');
-
-    const cancelReason =
-        document.getElementById('cancelReason');
-
-    const cancelReasonError =
-        document.getElementById('cancelReasonError');
-		
-		
-
+    const cancelReason = document.getElementById('cancelReason');
+    const cancelReasonError = document.getElementById('cancelReasonError');
 
     /*
      * OPEN MODAL
      */
-    manageModal.addEventListener(
-        'show.bs.modal',
-        function (event) {
+    manageModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        if (!button) return;
 
-            const button =
-                event.relatedTarget;
+        scheduleId.value = button.dataset.scheduleId || '';
+        document.getElementById('modalPatient').textContent = button.dataset.patient || '—';
+        document.getElementById('modalProcedure').textContent = button.dataset.procedure || '—';
+        document.getElementById('modalRoom').textContent = button.dataset.room || '—';
+        document.getElementById('modalDate').textContent = button.dataset.date || '—';
+        document.getElementById('modalTime').textContent = formatScheduleTime(button.dataset.startTime, button.dataset.endTime);
+        document.getElementById('modalSurgeon').textContent = button.dataset.surgeon || '—';
+        document.getElementById('modalAnesthesiologist').textContent = button.dataset.anesthesiologist || '—';
+        // Status bar line removed here!
 
-            if (!button) {
-                return;
+        // Reset sections and views
+        scheduleDetailsSection.style.display = '';
+        cancelSection.style.display = 'none';
+
+        scheduleActionButtons.style.display = 'flex';
+        cancelActionButtons.style.display = 'none';
+
+        cancelReason.value = '';
+        cancelReasonError.style.display = 'none';
+    });
+
+    /*
+     * COMPLETE SCHEDULE ACTION
+     */
+    const completeScheduleBtn = document.getElementById('completeScheduleBtn');
+    if (completeScheduleBtn) {
+        completeScheduleBtn.addEventListener('click', function () {
+            if (!scheduleId.value) return;
+
+            scheduleAction.value = 'complete';
+            hiddenCancelReason.value = '';
+            
+            if (scheduleActionForm) {
+                scheduleActionForm.submit();
             }
-
-
-            scheduleId.value =
-                button.dataset.scheduleId || '';
-
-
-            document.getElementById('modalPatient').textContent =
-                button.dataset.patient || '—';
-
-            document.getElementById('modalProcedure').textContent =
-                button.dataset.procedure || '—';
-
-            document.getElementById('modalRoom').textContent =
-                button.dataset.room || '—';
-
-            document.getElementById('modalDate').textContent =
-                button.dataset.date || '—';
-
-            document.getElementById('modalTime').textContent =
-                formatScheduleTime(
-                    button.dataset.startTime,
-                    button.dataset.endTime
-                );
-
-            document.getElementById('modalSurgeon').textContent =
-                button.dataset.surgeon || '—';
-
-            document.getElementById('modalAnesthesiologist').textContent =
-                button.dataset.anesthesiologist || '—';
-
-            document.getElementById('modalScheduleStatus').textContent =
-                button.dataset.status || 'Scheduled';
-
-
-            /*
-             * Reset cancellation section
-             */
-            scheduleDetailsSection.style.display =
-                '';
-
-            cancelSection.style.display =
-                'none';
-
-            scheduleActionButtons.style.display =
-                'flex';
-
-            cancelActionButtons.style.display =
-                'none';
-
-            cancelReason.value =
-                '';
-
-            cancelReasonError.style.display =
-                'none';
-
-        }
-    );
-
+        });
+    }
 
     /*
      * SHOW CANCEL FORM
      */
-    document
-        .getElementById('showCancelBtn')
-        .addEventListener(
-            'click',
-            function () {
+    document.getElementById('showCancelBtn').addEventListener('click', function () {
+        scheduleDetailsSection.style.display = 'none';
+        cancelSection.style.display = 'block';
 
-                scheduleDetailsSection.style.display =
-                    'none';
+        scheduleActionButtons.style.display = 'none';
+        cancelActionButtons.style.display = 'flex';
 
-                cancelSection.style.display =
-                    'block';
-
-                scheduleActionButtons.style.display =
-                    'none';
-
-                cancelActionButtons.style.display =
-                    'flex';
-
-                cancelReason.focus();
-
-            }
-        );
-
+        cancelReason.focus();
+    });
 
     /*
-     * BACK TO SCHEDULE DETAILS
+     * BACK TO SCHEDULE DETAILS FROM CANCELLATION
      */
-    document
-        .getElementById('backToScheduleBtn')
-        .addEventListener(
-            'click',
-            function () {
+    document.getElementById('backToScheduleBtn').addEventListener('click', function () {
+        scheduleDetailsSection.style.display = '';
+        cancelSection.style.display = 'none';
 
-                scheduleDetailsSection.style.display =
-                    '';
-
-                cancelSection.style.display =
-                    'none';
-
-                scheduleActionButtons.style.display =
-                    'flex';
-
-                cancelActionButtons.style.display =
-                    'none';
-
-                cancelReasonError.style.display =
-                    'none';
-
-            }
-        );
-
-
-    /*
-     * COMPLETE SCHEDULE
-     */
-    document
-        .getElementById('completeScheduleBtn')
-        .addEventListener(
-            'click',
-            function () {
-
-                if (!scheduleId.value) {
-                    return;
-                }
-
-                scheduleAction.value =
-                    'complete';
-
-                hiddenCancelReason.value =
-                    '';
-
-                scheduleActionForm.submit();
-
-            }
-        );
-
+        scheduleActionButtons.style.display = 'flex';
+        cancelActionButtons.style.display = 'none';
+        cancelReasonError.style.display = 'none';
+    });
 
     /*
      * CONFIRM CANCELLATION
      */
-    document
-        .getElementById('confirmCancelBtn')
-        .addEventListener(
-            'click',
-            function () {
+    document.getElementById('confirmCancelBtn').addEventListener('click', function () {
+        const reason = cancelReason.value.trim();
 
-                const reason =
-                    cancelReason.value.trim();
+        if (reason === '') {
+            cancelReasonError.style.display = 'block';
+            cancelReason.focus();
+            return;
+        }
 
+        if (!scheduleId.value) return;
 
-                if (reason === '') {
-
-                    cancelReasonError.style.display =
-                        'block';
-
-                    cancelReason.focus();
-
-                    return;
-                }
-
-
-                if (!scheduleId.value) {
-                    return;
-                }
-
-
-                scheduleAction.value =
-                    'cancel';
-
-                hiddenCancelReason.value =
-                    reason;
-
-                scheduleActionForm.submit();
-
-            }
-        );
-
+        scheduleAction.value = 'cancel';
+        hiddenCancelReason.value = reason;
+        
+        if (scheduleActionForm) {
+            scheduleActionForm.submit();
+        }
+    });
 
     /*
-     * FORMAT TIME
+     * FORMAT TIME HELPERS
      */
     function formatScheduleTime(startTime, endTime) {
-
-        if (!startTime) {
-            return '—';
-        }
-
-
-        const start =
-            formatTime(startTime);
-
-        const end =
-            endTime
-                ? formatTime(endTime)
-                : '';
-
-
-        return end
-            ? start + ' - ' + end
-            : start;
+        if (!startTime) return '—';
+        const start = formatTime(startTime);
+        const end = endTime ? formatTime(endTime) : '';
+        return end ? start + ' - ' + end : start;
     }
 
-
     function formatTime(time) {
+        const parts = time.split(':');
+        if (parts.length < 2) return time;
 
-        const parts =
-            time.split(':');
+        let hour = parseInt(parts[0], 10);
+        const minute = parts[1];
+        const period = hour >= 12 ? 'PM' : 'AM';
 
-        if (parts.length < 2) {
-            return time;
-        }
-
-
-        let hour =
-            parseInt(parts[0], 10);
-
-        const minute =
-            parts[1];
-
-        const period =
-            hour >= 12
-                ? 'PM'
-                : 'AM';
-
-
-        hour =
-            hour % 12 || 12;
-
-
+        hour = hour % 12 || 12;
         return hour + ':' + minute + ' ' + period;
     }
 
