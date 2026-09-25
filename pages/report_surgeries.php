@@ -46,10 +46,40 @@ $sql = "SELECT
         anesthesiologist.middle_name AS anesthesiologist_middle_name,
         anesthesiologist.last_name AS anesthesiologist_last_name,
         anesthesiologist.suffix_name AS anesthesiologist_suffix_name,
+		
+		-- CONCATENATED ANESTHESIOLOGIST NAME (Left join handled with COALESCE)
+		TRIM(CONCAT(
+        COALESCE(anesthesiologist.first_name, ''), ' ',
+        CASE WHEN anesthesiologist.middle_name IS NOT NULL AND anesthesiologist.middle_name != '' THEN CONCAT(LEFT(anesthesiologist.middle_name, 1), '. ') ELSE '' END,
+        COALESCE(anesthesiologist.last_name, ''),
+        CASE WHEN anesthesiologist.suffix_name IS NOT NULL AND anesthesiologist.suffix_name != '' THEN CONCAT(', ', anesthesiologist.suffix_name) ELSE '' END
+		)) AS anesthesiologist_full_name,
+		
+		
+		-- ASSISTANT SURGEONS (Stacked vertically with <br>)
+    (
+        SELECT GROUP_CONCAT(
+            TRIM(CONCAT(
+                COALESCE(asst_doc.first_name, ''), ' ',
+                CASE WHEN asst_doc.middle_name IS NOT NULL AND asst_doc.middle_name != '' THEN CONCAT(LEFT(asst_doc.middle_name, 1), '. ') ELSE '' END,
+                COALESCE(asst_doc.last_name, ''),
+                CASE WHEN asst_doc.suffix_name IS NOT NULL AND asst_doc.suffix_name != '' THEN CONCAT(', ', asst_doc.suffix_name) ELSE '' END
+            )) 
+            ORDER BY osa.assistant_order ASC 
+            SEPARATOR '<br>'
+        )
+        FROM or_schedule_assistants osa
+        INNER JOIN doctors asst_doc ON osa.doctor_id = asst_doc.doctor_id
+        WHERE osa.schedule_id = os.schedule_id
+    ) AS assistant_surgeon_full_name,
+		
+		
+		
         r.room_name,
         
         os.cardiologist,
         os.circulating_nurse,
+		os.instrument_nurse,
             
         os.pre_op_diagnosis,
         os.post_op_diagnosis,
@@ -74,9 +104,12 @@ $sql = "SELECT
 
     LEFT JOIN doctors anesthesiologist
         ON os.anesthesiologist_doctor_id = anesthesiologist.doctor_id
+		
 
     INNER JOIN operating_rooms r
         ON os.room_id = r.room_id
+		
+		
 
     WHERE os.surgery_date BETWEEN :date_from AND :date_to
 ";
@@ -546,127 +579,245 @@ function statusClass($status) {
             <h3><i class="bi bi-file-earmark-medical"></i> Surgery Case Detailed Report</h3>
             <button type="button" class="modal-close-btn" onclick="closeDetailModal()"><i class="bi bi-x-lg"></i></button>
         </div>
-        
-        <div class="modal-body" id="printableDetailBody" style="max-height: 70vh; overflow-y: auto;">	
-		
-			<section class="Patient_detail">
-				<div class="patient-title">
-					<div class="Patient-icon">
-						<i class="bi bi-person-fill"></i>
-					</div>
-					<div>
-						<h2>Patient Details</h2>
-					</div>
-				</div>
-					
-				<div class="patient-detail-grid">
-					<div class="patient-name-container">
-						<span class="patient-label">Patient Name:</span>
-						<span class="patient-value" id="det_patient_name"></span>
-					</div>
-					
-					<div class="patient-name-container">
-						<span class="patient-label">Birthdate:</span>
-						<span class="patient-value" id="det_birth_date"></span>
-					</div>
-					
-					<div class="patient-name-container">
-						<span class="patient-label">Registry No:</span>
-						<span class="patient-value" id="det_patient_no"></span>
-					</div>
-					
-					<div class="patient-name-container">
-						<span class="patient-label">Registry Type:</span>
-						<span class="patient-value" id="det_registry_type"></span>
-					</div>
-
-					<div class="patient-name-container">
-						<span class="patient-label">Room:</span>
-						<span class="patient-value" id="det_room"></span>
-					</div>
-				</div>
-			</section>
-	
-	
-            <table class="table table-bordered table-sm">
-		           
-                <tr>
-                    <th>Procedure:</th>
-                    <td id="det_procedure"></td>
-                </tr>
-                <tr>
-                    <th>Surgical Type:</th>
-                    <td id="det_surgical_type"></td>
-                </tr>
-                <tr>
-                    <th>Surgery Date & Time:</th>
-                    <td id="det_datetime"></td>
-                </tr>
-                <tr>
-                    <th>Operating Room:</th>
-                    <td id="det_room"></td>
-                </tr>
-                <tr>
-                    <th>Surgeon:</th>
-                    <td id="det_surgeon"></td>
-                </tr>
-                <tr>
-                    <th>Anesthesiologist:</th>
-                    <td id="det_anesthesiologist"></td>
-                </tr>
-                <tr>
-                    <th>Priority & STAT:</th>
-                    <td id="det_priority_stat"></td>
-                </tr>
-                <tr>
-                    <th>Case Status:</th>
-                    <td id="det_status"></td>
-                </tr>
-                <tr>
-                    <th>Pre-Operative Diagnosis:</th>
-                    <td id="det_pre_op"></td>
-                </tr>
-                <tr>
-                    <th>Post-Operative Diagnosis:</th>
-                    <td id="det_post_op"></td>
-                </tr>
-                <tr>
-                    <th>Drains:</th>
-                    <td id="det_drains"></td>
-                </tr>
-                <tr>
-                    <th>Specimen / Lab Exam:</th>
-                    <td id="det_specimen"></td>
-                </tr>
-                <tr>
-                    <th>Sponge & Count Verified:</th>
-                    <td id="det_sponge"></td>
-                </tr>			
-				 <tr>
-                    <th>anesthetic:</th>
-                    <td id="det_anesthetic"></td>
-                </tr>
-				 <tr>
-                    <th>cardiologist:</th>
-                    <td id="det_cardiologist"></td>
-                </tr>
-				 <tr>
-                    <th>circulating nurse:</th>
-                    <td id="det_circulating_nurse"></td>
-                </tr>
-				 <tr>
-                    <th>remarks:</th>
-                    <td id="det_remarks"></td>
-                </tr>
-				<tr>
-                    <th>infections:</th>
-                    <td id="det_infections"></td>
-                </tr>
-				
-				
 			
-            </table>
+			<div class="modal-body" id="printableDetailBody" style="max-height: 70vh; overflow-y: auto;">    
+    
+    <!-- SECTION 1: Patient Details -->
+    <section class="Patient_detail">
+        <div class="patient-title">
+            <div class="Patient-icon">
+                <i class="bi bi-person-fill"></i>
+            </div>
+            <div>
+                <h2>Patient Details</h2>
+            </div>
         </div>
+            
+        <div class="patient-detail-grid">
+            <div class="patient-name-container">
+                <span class="patient-label">Patient Name:</span>
+                <span class="patient-value" id="det_patient_name"></span>
+            </div>
+            
+            <div class="patient-name-container">
+                <span class="patient-label">Birthdate:</span>
+                <span class="patient-value" id="det_birth_date"></span>
+            </div>
+            
+            <div class="patient-name-container">
+                <span class="patient-label">Registry No:</span>
+                <span class="patient-value" id="det_patient_no"></span>
+            </div>
+            
+            <div class="patient-name-container">
+                <span class="patient-label">Registry Type:</span>
+                <span class="patient-value" id="det_registry_type"></span>
+            </div>
+
+            <div class="patient-name-container">
+                <span class="patient-label">Room:</span>
+                <span class="patient-value" id="det_operating_room"></span>
+            </div>
+        </div>
+    </section>
+    
+    <!-- SECTION 2: Schedule Details -->
+    <section class="Schedule-Details">
+        <div class="schedule-inline-layout">
+            <div class="schedule-title-group">
+                <div class="schedule-icon">
+                    <i class="bi bi-calendar-event-fill"></i>
+                </div>
+                <h2>Schedule Details</h2>
+            </div>    
+
+            <div class="schedule-detail-grid">
+                <div class="schedule-column">
+                    <span class="schedule-label">Surgery Date:</span>
+                    <span class="schedule-value" id="det_surgery_date"></span>
+                </div>
+                <div class="schedule-column">
+                    <span class="schedule-label">Surgery Time:</span>
+                    <span class="schedule-value" id="det_surgery_time"></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: Clinical Information Cards -->
+    <section class="info-cards-section">
+        <div class="info-cards-grid">
+            <div class="info-card-item">
+                <div class="info-card-header">
+                    <div class="schedule-icon">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                    </div>
+                    <span class="info-card-label">Clinical Priority</span>
+                </div>
+                <div class="schedule-value" id="det_priority"></div>
+            </div>
+
+            <div class="info-card-item">
+                <div class="info-card-header">
+                    <div class="schedule-icon">
+                        <i class="bi bi-lightning-fill"></i>
+                    </div>
+                    <span class="info-card-label">Immediate Attention</span>
+                </div>
+                <div class="schedule-value" id="det_immediate_attention"></div>
+            </div>
+
+            <div class="info-card-item">
+                <div class="info-card-header">
+                    <div class="schedule-icon">
+                        <i class="bi bi-shield-exclamation"></i>
+                    </div>
+                    <span class="info-card-label">Case Status</span>
+                </div>
+                <div class="schedule-value" id="det_status"></div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- SECTION 4: Surgical Team -->
+    <section class="surgical-team-section">
+        <div class="surgical-team-header">
+            <div class="surgical-team-icon">
+                <i class="bi bi-people-fill"></i>
+            </div>
+            <div>
+                <h2>Surgical Team</h2>
+            </div>
+        </div>
+        <div class="surgical-team-grid">
+            <div class="surgical-team-field">
+                <span class="surgical-team-label">Surgeon:</span>
+                <span class="surgical-team-value" id="det_surgeon"></span>
+            </div>
+            
+            <div class="surgical-team-field">
+                <span class="surgical-team-label">Anesthesiology:</span>
+                <span class="surgical-team-value" id="det_anesthesiology"></span>
+            </div>
+            
+            <div class="surgical-team-field">
+                <span class="surgical-team-label">Assistant Surgeon:</span>
+                <span class="surgical-team-value" id="det_assistant_surgeon"></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5A: Procedure & Anesthesia -->
+		<section class="procedure-details-section">
+			<div class="surgical-team-header">
+				<div class="surgical-team-icon">
+					<i class="bi bi-journal-medical"></i>
+				</div>
+				<div>
+					<h2>Procedure & Anesthesia</h2>
+				</div>
+			</div>
+			
+			<div class="procedure-3col-grid">
+				<div class="surgical-team-field">
+					<span class="surgical-team-label">Procedure:</span>
+					<span class="surgical-team-value" id="det_procedure"></span>
+				</div>
+				
+				<div class="surgical-team-field">
+					<span class="surgical-team-label">Surgical Type:</span>
+					<span class="surgical-team-value" id="det_surgical_type"></span>
+				</div>
+				
+				<div class="surgical-team-field">
+					<span class="surgical-team-label">Anesthetic:</span>
+					<span class="surgical-team-value" id="det_anesthetic"></span>
+				</div>
+			</div>
+		</section>
+
+    <!-- SECTION 5B: Supporting Medical Staff -->
+		  <section class="medical-staff-section">
+			<div class="surgical-team-header">
+				<div class="surgical-team-icon">
+					<i class="bi bi-people"></i>
+				</div>
+				<div>
+					<h2>Supporting Medical Staff</h2>
+				</div>
+			</div>
+			
+			<div class="medical-staff-grid">
+				<div class="surgical-team-field">
+					<span class="surgical-team-label">Cardiologist:</span>
+					<span class="surgical-team-value" id="det_cardiologist"></span>
+				</div>
+				
+				<div class="surgical-team-field">
+					<span class="surgical-team-label">Circulating Nurse:</span>
+					<span class="surgical-team-value" id="det_circulating_nurse"></span>
+				</div>
+				
+				<div class="surgical-team-field">
+					<span class="surgical-team-label">Instrument Nurse:</span>
+					<span class="surgical-team-value" id="det_instrument_nurse"></span>
+				</div>
+			</div>
+		</section>
+	
+	
+
+		<!-- SECTION 5C: Clinical Assessment & Safety Notes -->
+		<section class="clinical-assessment-section">
+			<div class="surgical-team-header">
+				<div class="surgical-team-icon">
+					<i class="bi bi-clipboard-pulse"></i>
+				</div>
+				<div>
+					<h2>Clinical Assessment & Safety Notes</h2>
+				</div>
+			</div>
+			
+			<div class="clinical-assessment-grid">
+				<div class="surgical-team-field">
+					<span class="surgical-team-label">Pre-Operative Diagnosis:</span>
+					<span class="surgical-team-value" id="det_pre_op"></span>
+				</div>
+				
+				<div class="surgical-team-field">
+					<span class="surgical-team-label">Post-Operative Diagnosis:</span>
+					<span class="surgical-team-value" id="det_post_op"></span>
+				</div>
+				
+				<div class="surgical-team-field">
+					<span class="surgical-team-label">Drains:</span>
+					<span class="surgical-team-value" id="det_drains"></span>
+				</div>
+				
+				<div class="surgical-team-field">
+					<span class="surgical-team-label">Specimen / Lab Exam:</span>
+					<span class="surgical-team-value" id="det_specimen"></span>
+				</div>
+				
+				<div class="surgical-team-field">
+					<span class="surgical-team-label">Sponge & Count Verified:</span>
+					<span class="surgical-team-value" id="det_sponge"></span>
+				</div>
+				
+				<div class="surgical-team-field">
+					<span class="surgical-team-label">Infections:</span>
+					<span class="surgical-team-value" id="det_infections"></span>
+				</div>
+				
+				<div class="surgical-team-field full-width">
+					<span class="surgical-team-label">Remarks:</span>
+					<span class="surgical-team-value" id="det_remarks"></span>
+				</div>
+			</div>
+		</section>
+</div>
+
+        
 		
 		
 
@@ -714,29 +865,36 @@ function openDetailModal(data) {
     document.getElementById('det_patient_name').innerText = data.formatted_patient_name || '—';
 	document.getElementById('det_birth_date').innerText = data.birth_date || '—';
     document.getElementById('det_patient_no').innerText = data.patient_registry_no || data.patient_number || '—';
-	document.getElementById('det_registry_type').innerText = data.registry_type || data.registry_type || '—';
-	document.getElementById('det_room').innerText = data.room_name || '—';
+	document.getElementById('det_registry_type').innerText = data.registry_type || '—';
+	document.getElementById('det_operating_room').innerText = data.operating_room || '—';
 	
+	document.getElementById('det_surgery_date').innerText =  data.surgery_date + ' - ' + data.date_end ;
+	document.getElementById('det_surgery_time').innerText =  data.start_time + ' - ' + data.end_time ;
+		
+	document.getElementById('det_priority').innerText = data.priority || '—';
+	document.getElementById('det_immediate_attention').innerText = (data.is_stat == 1 || data.is_stat === true) ? 'STAT ' : 'No';
+				
+	document.getElementById('det_surgeon').innerText = data.formatted_surgeon || '—';
+	document.getElementById('det_anesthesiology').innerText = data.anesthesiologist_full_name || '—';
+	document.getElementById('det_assistant_surgeon').innerHTML = data.assistant_surgeon_full_name || '—';
+		
     document.getElementById('det_procedure').innerText = data.procedure_name || '—';
     document.getElementById('det_surgical_type').innerText = data.procedure_surgical_type || 'General';
-    document.getElementById('det_datetime').innerText = data.formatted_date + ' (' + data.formatted_start_time + ' - ' + data.formatted_end_time + ')';    
-    document.getElementById('det_surgeon').innerText = data.formatted_surgeon || '—';
-    document.getElementById('det_anesthesiologist').innerText = data.formatted_anesthesiologist || '—';
-    document.getElementById('det_priority_stat').innerText = data.display_priority + (data.display_stat === 'YES' ? ' (STAT)' : '');
-    document.getElementById('det_status').innerText = data.status || '—';
-    document.getElementById('det_pre_op').innerText = data.pre_op_diagnosis || '—';
+    document.getElementById('det_anesthetic').innerText = data.anesthetic || '—';
+       
+	document.getElementById('det_cardiologist').innerText = data.cardiologist || '—';
+	document.getElementById('det_circulating_nurse').innerText = data.circulating_nurse || '—';
+    document.getElementById('det_instrument_nurse').innerText = data.instrument_nurse || '—';
+	
+	document.getElementById('det_pre_op').innerText = data.pre_op_diagnosis || '—';
     document.getElementById('det_post_op').innerText = data.post_op_diagnosis || '—';
     document.getElementById('det_drains').innerText = data.drains || '—';
     document.getElementById('det_specimen').innerText = data.specimen_lab_exam || '—';
     document.getElementById('det_sponge').innerText = data.sponge_count_verified || '—';
-
-	document.getElementById('det_anesthetic').innerText = data.anesthetic || '—';
-	document.getElementById('det_cardiologist').innerText = data.cardiologist || '—';
-	document.getElementById('det_circulating_nurse').innerText = data.circulating_nurse || '—';
-	document.getElementById('det_remarks').innerText = data.remarks || '—';
-	document.getElementById('det_infections').innerText = data.infections || '—';
-	
-
+    document.getElementById('det_infections').innerText = data.infections || '—';
+    document.getElementById('det_remarks').innerText = data.remarks || '—';
+    document.getElementById('det_status').innerText = data.status || '—';
+   
     document.getElementById('detailModal').classList.add('active');
 }
 
@@ -744,10 +902,79 @@ function closeDetailModal() {
     document.getElementById('detailModal').classList.remove('active');
 }
 
+
+
 function printSingleRecord() {
-    // Opens standard print dialog. You can add a print media CSS query if you want to isolate only the modal content during print.
-    window.print();
+    // 1. Get the HTML content of the modal body
+    var printContent = document.getElementById('printableDetailBody').innerHTML;
+    
+    // 2. Retrieve the current user's name (assumes you store/display it globally or in an element like #currentUsername)
+    // Adjust selector or variable name depending on how your application handles logged-in user data
+    var printedBy = "System User"; 
+    var userElement = document.getElementById('logged_in_user'); // Change this selector if you have a specific element
+    if (userElement && userElement.textContent.trim() !== "") {
+        printedBy = userElement.textContent.trim();
+    }
+    
+    // 3. Format the current date and time cleanly
+    var now = new Date();
+    var dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    var timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    var timestamp = dateStr + ' at ' + timeStr;
+
+    // 4. Create a new window for printing
+    var printWindow = window.open('', '_blank', 'height=700,width=900');
+    
+    printWindow.document.write('<html><head><title>Surgery Case Detailed Report</title>');
+    
+    // Include Bootstrap Icons and your custom CSS stylesheets
+    printWindow.document.write('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">');
+    
+    var stylesheets = document.querySelectorAll('link[rel="stylesheet"], style');
+    stylesheets.forEach(function(sheet) {
+        printWindow.document.write(sheet.outerHTML);
+    });
+    
+    // Print-specific layout enhancements
+    printWindow.document.write('<style>');
+    printWindow.document.write('body { background: #ffffff !important; padding: 24px; font-family: inherit; color: #20352d; }');
+    printWindow.document.write('.modal-body { max-height: none !important; overflow: visible !important; padding: 0 !important; }');
+    printWindow.document.write('section { break-inside: avoid; page-break-inside: avoid; border: 1px solid #cbd5e1 !important; margin-bottom: 16px !important; }');
+    // Print Header Styling
+    printWindow.document.write('.print-header { border-bottom: 2px solid #0d4732; padding-bottom: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-end; }');
+    printWindow.document.write('.print-header h1 { font-size: 1.4rem; font-weight: 700; color: #0d4732; margin: 0; display: flex; align-items: center; gap: 8px; }');
+    printWindow.document.write('.print-meta { font-size: 0.85rem; color: #64748b; text-align: right; line-height: 1.4; }');
+    printWindow.document.write('</style>');
+    
+    printWindow.document.write('</head><body>');
+    
+    // Inject the Header with Title, Printed By, and Timestamp
+    printWindow.document.write('<div class="print-header">');
+    printWindow.document.write('<h1><i class="bi bi-file-earmark-medical"></i> Surgery Case Detailed Report</h1>');
+    printWindow.document.write('<div class="print-meta">');
+    printWindow.document.write('<strong>Printed By:</strong> ' + printedBy + '<br>');
+    printWindow.document.write('<strong>Date:</strong> ' + timestamp);
+    printWindow.document.write('</div>');
+    printWindow.document.write('</div>');
+    
+    // Inject the modal body card sections
+    printWindow.document.write(printContent);
+    
+    printWindow.document.write('</body></html>');
+    
+    printWindow.document.close();
+    printWindow.focus();
+    
+    // Trigger print dialog after assets load
+    setTimeout(function() {
+        printWindow.print();
+        printWindow.close();
+    }, 500);
 }
+
+
+
+
 
 window.addEventListener('click', function(event) {
     const exportModal = document.getElementById('exportModal');

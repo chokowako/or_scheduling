@@ -307,11 +307,13 @@
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
     box-sizing: border-box;
+	
 }
 
 .table-responsive {
     width: 100%;
     overflow-x: auto;
+	
 }
 
 .report-table {
@@ -328,6 +330,8 @@
     padding: 14px 18px;
     border-bottom: 1px solid #e2ebd8;
     white-space: nowrap;
+	background-color: #0d4732;
+	color: #ffffff;
 }
 
 .report-table td {

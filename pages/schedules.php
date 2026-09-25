@@ -762,45 +762,22 @@ $anesthesiologists = [];
 $cardiologists = [];
 
 
-foreach (
-    $doctors as $doctor
-) {
+foreach ($doctors as $doctor) {
+    $specialization = strtolower(trim($doctor['specialization'] ?? ''));
 
-    $specialization =
-        strtolower(
-            trim(
-                $doctor['specialization'] ?? ''
-            )
-        );
-
-
-    if (
-        $specialization ===
-        'surgeon'
-    ) {
-
-        $surgeons[] =
-            $doctor;
-
+    // Group anyone with 'surgery' or 'surgeon' in their specialization
+    if (str_contains($specialization, 'surgery') || str_contains($specialization, 'surgeon')) {
+        $surgeons[] = $doctor;
     }
 
-    elseif (
-        $specialization ===
-        'anesthesiologist'
-    ) {
+   // Group any variation of anesthesiology (catches both 'anes' and 'anae')
+    if (str_contains($specialization, 'anes') || str_contains($specialization, 'anae')) {
+        $anesthesiologists[] = $doctor;
+	}
 
-        $anesthesiologists[] =
-            $doctor;
-
-    }
-
-    elseif (
-        $specialization ===
-        'cardiologist'
-    ) {
-
-        $cardiologists[] =
-            $doctor;
+    // Group anyone with 'cardio' (covers Cardiology, Pediatrics-Cardiology, etc.)
+    if (str_contains($specialization, 'cardio')) {
+        $cardiologists[] = $doctor;
     }
 }
 

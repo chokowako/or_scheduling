@@ -1,7 +1,6 @@
 <?php
 
 session_start();
-
 require_once "../config/database.php";
 
 /*
@@ -14,7 +13,6 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: ../login.php");
     exit;
 }
-
 
 /*
 |--------------------------------------------------------------------------
@@ -35,7 +33,6 @@ $can_manage_surgeons = in_array(
 
 $edit_doctor = null;
 
-
 /*
 |--------------------------------------------------------------------------
 | SUCCESS MESSAGES
@@ -43,19 +40,15 @@ $edit_doctor = null;
 */
 
 if (isset($_GET['success'])) {
-
     switch ($_GET['success']) {
-
         case "added":
             $message = "Surgeon successfully added.";
             $message_type = "success";
             break;
-
         case "updated":
             $message = "Surgeon information successfully updated.";
             $message_type = "success";
             break;
-
         case "deleted":
             $message = "Surgeon successfully deleted.";
             $message_type = "success";
@@ -71,9 +64,7 @@ if (isset($_GET['success'])) {
 */
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
     $action = $_POST['action'] ?? "";
-
     if (
         !$can_manage_surgeons &&
         in_array($action, ['add', 'update', 'delete'], true)
@@ -82,7 +73,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-
     /*
     |--------------------------------------------------------------------------
     | ADD SURGEON
@@ -90,7 +80,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     */
 
     if ($action === "add") {
-
         $last_name = trim($_POST['last_name'] ?? "");
         $first_name = trim($_POST['first_name'] ?? "");
         $middle_name = trim($_POST['middle_name'] ?? "");
@@ -102,16 +91,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $specialization = trim($_POST['specialization'] ?? "");
         $status = $_POST['status'] ?? "Active";
 
-
         if ($last_name === "" || $first_name === "") {
-
             $message = "Last Name and First Name are required.";
             $message_type = "danger";
-
         } else {
-
             try {
-
                 $sql = "
                     INSERT INTO doctors
                     (
@@ -142,7 +126,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ";
 
                 $stmt = $pdo->prepare($sql);
-
                 $stmt->execute([
                     ":last_name" => $last_name,
                     ":first_name" => $first_name,
@@ -155,10 +138,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ":specialization" => $specialization !== "" ? $specialization : null,
                     ":status" => $status
                 ]);
-
                 header("Location: surgeons.php?success=added");
                 exit;
-
             } catch (PDOException $e) {
 
                 $message = "Unable to add surgeon: " . $e->getMessage();
@@ -175,9 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     */
 
     elseif ($action === "update") {
-
         $doctor_id = intval($_POST['doctor_id'] ?? 0);
-
         $last_name = trim($_POST['last_name'] ?? "");
         $first_name = trim($_POST['first_name'] ?? "");
         $middle_name = trim($_POST['middle_name'] ?? "");
@@ -189,21 +168,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $specialization = trim($_POST['specialization'] ?? "");
         $status = $_POST['status'] ?? "Active";
 
-
         if ($doctor_id <= 0) {
-
             $message = "Invalid surgeon.";
             $message_type = "danger";
-
         } elseif ($last_name === "" || $first_name === "") {
 
             $message = "Last Name and First Name are required.";
             $message_type = "danger";
-
         } else {
-
             try {
-
                 $sql = "
                     UPDATE doctors
                     SET
@@ -221,7 +194,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ";
 
                 $stmt = $pdo->prepare($sql);
-
                 $stmt->execute([
                     ":last_name" => $last_name,
                     ":first_name" => $first_name,
@@ -235,12 +207,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ":status" => $status,
                     ":doctor_id" => $doctor_id
                 ]);
-
                 header("Location: surgeons.php?success=updated");
                 exit;
-
             } catch (PDOException $e) {
-
                 $message = "Unable to update surgeon: " . $e->getMessage();
                 $message_type = "danger";
             }
@@ -255,37 +224,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     */
 
     elseif ($action === "delete") {
-
         $doctor_id = intval($_POST['doctor_id'] ?? 0);
-
         if ($doctor_id <= 0) {
-
             $message = "Invalid surgeon.";
             $message_type = "danger";
-
         } else {
-
             try {
-
                 $sql = "
                     DELETE FROM doctors
                     WHERE doctor_id = :doctor_id
                 ";
-
                 $stmt = $pdo->prepare($sql);
-
                 $stmt->execute([
                     ":doctor_id" => $doctor_id
                 ]);
-
                 header("Location: surgeons.php?success=deleted");
                 exit;
-
             } catch (PDOException $e) {
-
                 $message =
                     "Unable to delete surgeon. This surgeon may already be used in an operating schedule.";
-
                 $message_type = "danger";
             }
         }
@@ -295,29 +252,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 /*
 |--------------------------------------------------------------------------
-| SEARCH
+| PAGINATION & SEARCH SETUP
 |--------------------------------------------------------------------------
 */
 
+$results_per_page = 10; // Show 10 surgeons per page
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+if ($page < 1) { $page = 1; }
+$start_from = ($page - 1) * $results_per_page;
+
 $search = trim($_GET['search'] ?? "");
 
-
+// 1. Count total records so the page buttons know how many pages to show
 if ($search !== "") {
+    $count_sql = "
+        SELECT COUNT(*) FROM doctors
+        WHERE
+            last_name LIKE :search
+            OR first_name LIKE :search
+            OR middle_name LIKE :search
+            OR nick_name LIKE :search
+            OR service_class LIKE :search
+            OR specialization LIKE :search
+			ORDER BY last_name ASC, first_name ASC
+    ";
+    $count_stmt = $pdo->prepare($count_sql);
+    $count_stmt->execute([":search" => "%" . $search . "%"]);
+    $total_records = $count_stmt->fetchColumn();
+} else {
+    $count_sql = "SELECT COUNT(*) FROM doctors";
+    $total_records = $pdo->query($count_sql)->fetchColumn();
+}
 
+$total_pages = ceil($total_records / $results_per_page);
+
+// 2. Fetch only 10 rows for the current page
+if ($search !== "") {
     $sql = "
         SELECT
-            doctor_id,
-            last_name,
-            first_name,
-            middle_name,
-            suffix_name,
-            birth_date,
-            nick_name,
-            sex_gender,
-            service_class,
-            specialization,
-            status,
-            created_at
+            doctor_id, last_name, first_name, middle_name, suffix_name,
+            birth_date, nick_name, sex_gender, service_class,
+            specialization, status, created_at
         FROM doctors
         WHERE
             last_name LIKE :search
@@ -326,43 +301,40 @@ if ($search !== "") {
             OR nick_name LIKE :search
             OR service_class LIKE :search
             OR specialization LIKE :search
-        ORDER BY
-            last_name ASC,
-            first_name ASC
+        ORDER BY last_name ASC, first_name ASC
+        LIMIT :limit OFFSET :offset
     ";
-
     $stmt = $pdo->prepare($sql);
-
-    $stmt->execute([
-        ":search" => "%" . $search . "%"
-    ]);
-
+    $stmt->bindValue(':search', "%" . $search . "%", PDO::PARAM_STR);
+    $stmt->bindValue(':limit', $results_per_page, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', $start_from, PDO::PARAM_INT);
+    $stmt->execute();
 } else {
-
     $sql = "
         SELECT
-            doctor_id,
-            last_name,
-            first_name,
-            middle_name,
-            suffix_name,
-            birth_date,
-            nick_name,
-            sex_gender,
-            service_class,
-            specialization,
-            status,
-            created_at
+            doctor_id, last_name, first_name, middle_name, suffix_name,
+            birth_date, nick_name, sex_gender, service_class,
+            specialization, status, created_at
         FROM doctors
-        ORDER BY
-            last_name ASC,
-            first_name ASC
+        ORDER BY last_name ASC, first_name ASC
+        LIMIT :limit OFFSET :offset
     ";
-
-    $stmt = $pdo->query($sql);
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(':limit', $results_per_page, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', $start_from, PDO::PARAM_INT);
+    $stmt->execute();
 }
 
 $surgeons = $stmt->fetchAll();
+
+
+
+
+
+
+
+
+
 
 
 /*
@@ -372,21 +344,16 @@ $surgeons = $stmt->fetchAll();
 */
 
 $total_surgeons = count($surgeons);
-
 $active_count = 0;
 $inactive_count = 0;
-
 foreach ($surgeons as $surgeon) {
-
     if ($surgeon['status'] === "Active") {
         $active_count++;
     }
-
     if ($surgeon['status'] === "Inactive") {
         $inactive_count++;
     }
 }
-
 
 /*
 |--------------------------------------------------------------------------
@@ -395,7 +362,6 @@ foreach ($surgeons as $surgeon) {
 */
 
 $page_title = "Surgeons";
-
 require_once "../includes/header.php";
 require_once "../includes/sidebar.php";
 
@@ -406,7 +372,6 @@ require_once "../includes/sidebar.php";
     href="../assets/css/surgeons.css?v=20260914"
 >
 
-
 <main class="main-content surgeons-page">
 
 
@@ -415,13 +380,9 @@ require_once "../includes/sidebar.php";
          ========================================================= -->
 
     <?php if ($message !== ""): ?>
-
         <div class="alert alert-<?= htmlspecialchars($message_type) ?> surgeon-alert">
-
             <?= htmlspecialchars($message) ?>
-
         </div>
-
     <?php endif; ?>
 
 
@@ -430,36 +391,25 @@ require_once "../includes/sidebar.php";
          ========================================================= -->
 
     <?php if ($can_manage_surgeons): ?>
-
         <section class="surgeon-form-card">
-
             <div class="surgeon-form-header">
-
                 <div class="surgeon-form-icon">
                     <i class="bi bi-person-badge"></i>
                 </div>
-
                 <div>
-
                     <div class="surgeon-form-eyebrow">
                         SURGEON MANAGEMENT
                     </div>
-
                     <h1 class="surgeon-form-heading">
                         Add Surgeon
                     </h1>
-
                     <p class="surgeon-form-description">
                         Register a surgeon for operating room scheduling.
                     </p>
-
                 </div>
-
             </div>
 
-
             <form method="POST">
-
                 <input
                     type="hidden"
                     name="action"
@@ -472,46 +422,35 @@ require_once "../includes/sidebar.php";
                      ================================================= -->
 
                 <div class="surgeon-section-title">
-
                     <span class="surgeon-section-number">
                         01
                     </span>
-
                     <div>
                         <strong>Personal Information</strong>
                         <small>Basic surgeon information</small>
                     </div>
-
                 </div>
-
 
                 <div class="surgeon-form-grid surgeon-form-grid-4">
 
-
                     <div class="surgeon-field">
-
                         <label>
                             Last Name
                             <span>*</span>
                         </label>
-
                         <input
                             type="text"
                             name="last_name"
                             placeholder="Enter last name"
                             required
                         >
-
                     </div>
 
-
                     <div class="surgeon-field">
-
                         <label>
                             First Name
                             <span>*</span>
                         </label>
-
                         <input
                             type="text"
                             name="first_name"
@@ -521,24 +460,18 @@ require_once "../includes/sidebar.php";
 
                     </div>
 
-
                     <div class="surgeon-field">
-
                         <label>
                             Middle Name
                         </label>
-
                         <input
                             type="text"
                             name="middle_name"
                             placeholder="Enter middle name"
                         >
-
                     </div>
 
-
                     <div class="surgeon-field">
-
                         <label>
                             Suffix
                         </label>
@@ -548,16 +481,13 @@ require_once "../includes/sidebar.php";
                             name="suffix_name"
                             placeholder="Jr., Sr., III"
                         >
-
                     </div>
 
 
                     <div class="surgeon-field">
-
                         <label>
                             Nickname
                         </label>
-
                         <input
                             type="text"
                             name="nick_name"
@@ -566,13 +496,10 @@ require_once "../includes/sidebar.php";
 
                     </div>
 
-
                     <div class="surgeon-field">
-
                         <label>
                             Birth Date
                         </label>
-
                         <input
                             type="date"
                             name="birth_date"
@@ -580,15 +507,11 @@ require_once "../includes/sidebar.php";
 
                     </div>
 
-
                     <div class="surgeon-field">
-
                         <label>
                             Sex / Gender
                         </label>
-
                         <select name="sex_gender">
-
                             <option value="">
                                 Select
                             </option>
@@ -600,11 +523,8 @@ require_once "../includes/sidebar.php";
                             <option value="Female">
                                 Female
                             </option>
-
                         </select>
-
                     </div>
-
                 </div>
 
 
@@ -613,7 +533,6 @@ require_once "../includes/sidebar.php";
                      ================================================= -->
 
                 <div class="surgeon-section-title surgeon-section-spacing">
-
                     <span class="surgeon-section-number">
                         02
                     </span>
@@ -622,15 +541,11 @@ require_once "../includes/sidebar.php";
                         <strong>Professional Information</strong>
                         <small>Service and specialization</small>
                     </div>
-
                 </div>
 
 
                 <div class="surgeon-form-grid surgeon-form-grid-3">
-
-
                     <div class="surgeon-field">
-
                         <label>
                             Service Class
                         </label>
@@ -640,12 +555,10 @@ require_once "../includes/sidebar.php";
                             name="service_class"
                             placeholder="Example: General Surgery"
                         >
-
                     </div>
 
 
                     <div class="surgeon-field">
-
                         <label>
                             Specialization
                         </label>
@@ -655,30 +568,21 @@ require_once "../includes/sidebar.php";
                             name="specialization"
                             placeholder="Example: Orthopedic Surgery"
                         >
-
                     </div>
 
-
                     <div class="surgeon-field">
-
                         <label>
                             Status
                         </label>
-
                         <select name="status">
-
                             <option value="Active">
                                 Active
                             </option>
-
                             <option value="Inactive">
                                 Inactive
                             </option>
-
                         </select>
-
                     </div>
-
                 </div>
 
 
@@ -687,20 +591,16 @@ require_once "../includes/sidebar.php";
                      ================================================= -->
 
                 <div class="surgeon-form-actions">
-
                     <div class="surgeon-form-note">
-
                         <i class="bi bi-info-circle"></i>
 
                         Fields marked with
                         <strong>*</strong>
                         are required.
-
                     </div>
 
 
                     <div class="surgeon-form-buttons">
-
                         <button
                             type="reset"
                             class="btn-surgeon-secondary"
@@ -716,15 +616,10 @@ require_once "../includes/sidebar.php";
                             <i class="bi bi-person-plus"></i>
                             Add Surgeon
                         </button>
-
                     </div>
-
                 </div>
-
             </form>
-
         </section>
-
     <?php endif; ?>
 
 
@@ -734,29 +629,21 @@ require_once "../includes/sidebar.php";
 
     <section class="surgeon-list-card">
 
-
         <div class="surgeon-list-header">
-
             <div class="surgeon-list-heading-area">
-
                 <div class="surgeon-list-icon">
                     <i class="bi bi-people"></i>
                 </div>
-
                 <div>
 
                     <div class="surgeon-list-eyebrow">
                         REGISTERED SURGEONS
                     </div>
-
                     <h2 class="surgeon-list-heading">
                         Surgeons
                     </h2>
-
                 </div>
-
             </div>
-
 
             <div class="surgeon-list-count">
 
@@ -769,7 +656,6 @@ require_once "../includes/sidebar.php";
                 </span>
 
             </div>
-
         </div>
 
 
@@ -778,25 +664,19 @@ require_once "../includes/sidebar.php";
              ===================================================== -->
 
         <div class="surgeon-search-area">
-
             <form
                 method="GET"
                 class="surgeon-search-form"
             >
-
                 <div class="surgeon-search-input">
-
                     <i class="bi bi-search"></i>
-
                     <input
                         type="text"
                         name="search"
                         value="<?= htmlspecialchars($search) ?>"
                         placeholder="Search by name, service class, or specialization..."
                     >
-
                 </div>
-
 
                 <button
                     type="submit"
@@ -806,9 +686,7 @@ require_once "../includes/sidebar.php";
                     Search
                 </button>
 
-
                 <?php if ($search !== ""): ?>
-
                     <a
                         href="surgeons.php"
                         class="btn-surgeon-clear"
@@ -816,11 +694,8 @@ require_once "../includes/sidebar.php";
                         <i class="bi bi-x-lg"></i>
                         Clear
                     </a>
-
                 <?php endif; ?>
-
             </form>
-
         </div>
 
 
@@ -1111,7 +986,40 @@ require_once "../includes/sidebar.php";
                 </table>
 
             </div>
+		       
+        <?php endif; ?>
+		
+		
+		</div>
 
+      
+        <!-- =====================================================
+             PAGINATION BUTTONS
+             ===================================================== -->
+        <?php if ($total_pages > 1): ?>
+            <div style="text-align: right; margin-top: 20px; margin-bottom: 30px;">
+                
+                <!-- Previous Button -->
+                <?php if ($page > 1): ?>
+                    <a href="?page=<?php echo $page - 1; ?>&search=<?php echo urlencode($search); ?>" style="padding: 8px 12px; margin: 2px; border: 1px solid #ccc; text-decoration: none; border-radius: 4px;">&laquo; Previous</a>
+                <?php endif; ?>
+
+                <!-- Number Buttons -->
+                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                    <?php if ($i == $page): ?>
+                        <span style="padding: 8px 12px; margin: 2px; background: #007bff; color: white; border: 1px solid #007bff; border-radius: 4px;"><?php echo $i; ?></span>
+                    <?php else: ?>
+                        <a href="?page=<?php echo $i; ?>&search=<?php echo urlencode($search); ?>" style="padding: 8px 12px; margin: 2px; border: 1px solid #ccc; text-decoration: none; border-radius: 4px;"><?php echo $i; ?></a>
+                    <?php endif; ?>
+                <?php endfor; ?>
+
+                <!-- Next Button -->
+                <?php if ($page < $total_pages): ?>
+                    <a href="?page=<?php echo $page + 1; ?>&search=<?php echo urlencode($search); ?>" style="padding: 8px 12px; margin: 2px; border: 1px solid #ccc; text-decoration: none; border-radius: 4px;">Next &raquo;</a>
+                <?php endif; ?>
+
+            </div>
+			
         <?php endif; ?>
 
 

@@ -611,7 +611,7 @@
 /* ==========================================================================
    PATIENT DETAILS SECTION STYLING
    ========================================================================== */
-
+/* ==PATIENT DETAILS=========================================================*/
 .Patient_detail {
     background: #ffffff;
     border-radius: 0.5rem;
@@ -621,7 +621,7 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-/* Header Row (Icon + Title) */
+
 .Patient_detail .patient-title {
     display: flex;
     align-items: center;
@@ -629,7 +629,7 @@
     margin-bottom: 12px;
 }
 
-/* Icon Box Styling */
+
 .Patient_detail .Patient-icon {
     width: 36px;
     height: 36px;
@@ -642,7 +642,7 @@
     font-size: 1.1rem;
 }
 
-/* Section Title Heading */
+
 .Patient_detail .patient-title h2 {
     font-size: 1.1rem;
     font-weight: 700;
@@ -650,7 +650,7 @@
     margin: 0;
 }
 
-/* Column-First Grid Layout */
+
 .Patient_detail .patient-detail-grid {
     padding-left: 48px;
     display: grid;
@@ -685,6 +685,450 @@
     font-weight: 600;
     color: #0284c7;
 }
+
+
+
+
+
+ 
+/* ==========================================================================
+   SCHEDULE DETAILS SECTION STYLING
+   ========================================================================== */
+
+.Schedule-Details {
+  background: #ffffff;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Main container placing Title group on left and grid on right */
+.Schedule-Details .schedule-inline-layout {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 32px;
+}
+
+/* Left side group (Icon + Title) */
+.Schedule-Details .schedule-title-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+/* Icon Box Styling */
+.Schedule-Details .schedule-icon {
+    width: 36px;
+    height: 36px;
+    background-color: var(--green-50, #f1faf6);
+    color: var(--green-600, #358e6c);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+/* Section Title Heading */
+.Schedule-Details h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-900, #20352d);
+    margin: 0;
+}
+
+/* 2-Column Grid Layout for the right side */
+.Schedule-Details .schedule-detail-grid {
+    display: grid;
+    grid-template-columns: auto auto; 
+    gap: 8px 48px; 
+    flex-grow: 1;
+    justify-content: flex-end;
+}
+
+/* Column Wrapper to stack Label on top and Value underneath */
+.Schedule-Details .schedule-column {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* Label Style */
+.Schedule-Details .schedule-label {
+    color: #64748b;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+/* Dynamic Value Style (Sits underneath the label) */
+.Schedule-Details .schedule-value {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #0284c7;
+    white-space: nowrap;
+}
+
+
+
+
+
+
+/* ==========================================================================
+   INFO CARDS SECTION (Operating Room, Clinical Priority, Immediate Attention)
+   ========================================================================== */
+
+.info-cards-section {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border, #e2ebe7);
+}
+
+/* 3-Column Grid Layout with equal distribution */
+.info-cards-section .info-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    align-items: stretch;
+}
+
+/* Individual Card Item Wrapper */
+.info-cards-section .info-card-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: #fafcfb;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border, #e2ebe7);
+}
+
+/* Header group for Icon + Label */
+.info-cards-section .info-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Icon Box Styling */
+.info-cards-section .schedule-icon {
+    width: 32px;
+    height: 32px;
+    background-color: var(--green-50, #f1faf6);
+    color: var(--green-600, #358e6c);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+/* Card Label */
+.info-cards-section .info-card-label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-900, #20352d);
+    white-space: nowrap; /* Prevents awkward multi-line text wrapping */
+}
+
+/* Dynamic Value Stacked Underneath */
+.info-cards-section .schedule-value {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #0284c7;
+    padding-left: 42px; /* Aligns neatly under the label, past the icon box */
+}
+
+
+
+/* ==========================================================================
+   SURGICAL TEAM SECTION STYLING
+   ========================================================================== */
+.surgical-team-section {
+    background: #ffffff;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Header Layout */
+.surgical-team-section .surgical-team-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+/* Icon Box Styling */
+.surgical-team-section .surgical-team-icon {
+    width: 36px;
+    height: 36px;
+    background-color: #f1faf6;
+    color: #358e6c;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+/* Section Title Heading */
+.surgical-team-section .surgical-team-header h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #20352d;
+    margin: 0;
+}
+
+/* 3-Column Grid Layout (Removed awkward left padding) */
+.surgical-team-section .surgical-team-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px 24px;
+}
+
+/* Individual Field Container (Label stacked above Value) */
+.surgical-team-section .surgical-team-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* Label Style */
+.surgical-team-section .surgical-team-label {
+    color: #64748b;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+/* Dynamic Value Style */
+.surgical-team-section .surgical-team-value {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #0284c7;
+    line-height: 1.4;
+}
+
+
+
+/* ==========================================================================
+   PROCEDURE & ANESTHESIA SECTION STYLING
+   ========================================================================== */
+.procedure-details-section {
+    background: #ffffff;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Header Layout (Matches Surgical Team precisely) */
+.procedure-details-section .surgical-team-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+/* Icon Box Styling (Green rounded container) */
+.procedure-details-section .surgical-team-icon {
+    width: 36px;
+    height: 36px;
+    background-color: #f1faf6;
+    color: #358e6c;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+/* Section Title Heading (Matches font-size, weight, and color of other sections) */
+.procedure-details-section .surgical-team-header h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #20352d;
+    margin: 0;
+}
+
+/* 3-Column Grid */
+.procedure-details-section .procedure-3col-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px 24px;
+}
+
+/* Fields & Stacking */
+.procedure-details-section .surgical-team-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.procedure-details-section .surgical-team-label {
+    color: #64748b;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.procedure-details-section .surgical-team-value {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #0284c7;
+    line-height: 1.4;
+}
+
+
+/* ==========================================================================
+   SUPPORTING MEDICAL STAFF SECTION STYLING
+   ========================================================================== */
+.medical-staff-section {
+    background: #ffffff;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Header Layout (Inherits unified styling) */
+.medical-staff-section .surgical-team-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.medical-staff-section .surgical-team-icon {
+    width: 36px;
+    height: 36px;
+    background-color: #f1faf6;
+    color: #358e6c;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.medical-staff-section .surgical-team-header h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #20352d;
+    margin: 0;
+}
+
+/* 3-Column Grid Layout */
+.medical-staff-section .medical-staff-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px 24px;
+}
+
+/* Field Stacking */
+.medical-staff-section .surgical-team-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.medical-staff-section .surgical-team-label {
+    color: #64748b;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.medical-staff-section .surgical-team-value {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #0284c7;
+    line-height: 1.4;
+}
+
+
+/* ==========================================================================
+   CLINICAL ASSESSMENT & SAFETY NOTES SECTION STYLING
+   ========================================================================== */
+.clinical-assessment-section {
+    background: #ffffff;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Header Layout */
+.clinical-assessment-section .surgical-team-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.clinical-assessment-section .surgical-team-icon {
+    width: 36px;
+    height: 36px;
+    background-color: #f1faf6;
+    color: #358e6c;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.clinical-assessment-section .surgical-team-header h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #20352d;
+    margin: 0;
+}
+
+/* 3-Column Grid Layout */
+.clinical-assessment-section .clinical-assessment-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px 24px;
+}
+
+/* Field Stacking */
+.clinical-assessment-section .surgical-team-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* Remarks spans across all 3 columns for full readability */
+.clinical-assessment-section .surgical-team-field.full-width {
+    grid-column: span 3;
+}
+
+.clinical-assessment-section .surgical-team-label {
+    color: #64748b;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.clinical-assessment-section .surgical-team-value {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #0284c7;
+    line-height: 1.4;
+}
+
 
 
 
@@ -840,6 +1284,12 @@
         margin-top: 0.5rem;
     }
 }
+
+
+
+
+
+
 
 
 

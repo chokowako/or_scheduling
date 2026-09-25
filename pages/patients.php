@@ -69,6 +69,42 @@ if (isset($_GET['edit']) && $can_manage_patients) {
 
 
 /* =========================================================
+   LOAD PATIENT FOR DELETE MODAL
+   ========================================================= */
+
+$delete_patient = null;
+
+if (isset($_GET['delete']) && $can_manage_patients) {
+
+    $delete_id = intval($_GET['delete']);
+
+    if ($delete_id > 0) {
+
+        $stmt = $pdo->prepare("
+            SELECT
+                patient_id,
+                first_name,
+                last_name
+            FROM patients
+            WHERE patient_id = :patient_id
+            LIMIT 1
+        ");
+
+        $stmt->execute([
+            ':patient_id' => $delete_id
+        ]);
+
+        $delete_patient = $stmt->fetch();
+
+        if (!$delete_patient) {
+            $message = "Patient record not found.";
+            $message_type = "danger";
+        }
+    }
+}
+
+
+/* =========================================================
    FORM ACTIONS
    ========================================================= */
 
@@ -1410,56 +1446,38 @@ require_once "../includes/sidebar.php";
                                         <span class="muted-text">
                                             Not provided
                                         </span>
-
                                     <?php endif; ?>
-
                                 </td>
 
 
                                 <!-- Room / Bed -->
-
                                 <td>
-
                                     <div class="patient-room-cell">
-
-
                                         <?php if (
                                             !empty(
                                                 $patient['patient_room_no']
                                             )
                                         ): ?>
-
                                             <strong>
-
                                                 <i class="bi bi-door-open"></i>
-
                                                 <?= htmlspecialchars(
                                                     $patient['patient_room_no']
                                                 ) ?>
-
                                             </strong>
-
                                         <?php endif; ?>
-
 
                                         <?php if (
                                             !empty(
                                                 $patient['bed_no']
                                             )
                                         ): ?>
-
                                             <span>
-
                                                 Bed
-
                                                 <?= htmlspecialchars(
                                                     $patient['bed_no']
                                                 ) ?>
-
                                             </span>
-
                                         <?php endif; ?>
-
 
                                         <?php if (
                                             empty(
@@ -1469,125 +1487,76 @@ require_once "../includes/sidebar.php";
                                                 $patient['bed_no']
                                             )
                                         ): ?>
-
                                             <span class="muted-text">
                                                 Not assigned
                                             </span>
-
                                         <?php endif; ?>
-
-
                                     </div>
-
                                 </td>
 
-
                                 <!-- Contact -->
-
                                 <td>
-
                                     <?php if (
                                         !empty(
                                             $patient['contact_number']
                                         )
                                     ): ?>
-
                                         <span class="patient-contact">
-
                                             <i class="bi bi-telephone"></i>
-
                                             <?= htmlspecialchars(
                                                 $patient['contact_number']
                                             ) ?>
-
                                         </span>
-
                                     <?php else: ?>
-
                                         <span class="muted-text">
                                             Not provided
                                         </span>
-
                                     <?php endif; ?>
-
                                 </td>
 
-
                                 <!-- Actions -->
-
                                 <td>
-
                                     <?php if ($can_manage_patients): ?>
-
                                         <div class="patient-actions">
-
 											<div class="patient-actions">
-
-												<button
-													type="button"
-													class="patient-action-btn patient-edit-btn"
-													title="Edit patient"
-												>
-													<i class="bi bi-pencil-fill"></i>
-												</button>
-
-
-												<button
-													type="button"
-													class="patient-action-btn patient-delete-btn"
-													title="Delete patient"
-													data-bs-toggle="modal"
-													data-bs-target="#deletePatientModal"
-													data-id="<?= intval($patient['patient_id']) ?>"
-													data-name="<?= htmlspecialchars($full_patient_name, ENT_QUOTES) ?>"
-												>
-													<i class="bi bi-trash-fill"></i>
-												</button>
-
+											
+												<a href="patients.php?edit=<?= intval($patient['patient_id']) ?>"
+												class="patient-action-btn patient-edit-btn" 
+												title="Edit patient">
+												<i class="bi bi-pencil-fill"></i>
+												</a>
+																					
+												<a href="patients.php?delete=<?= intval($patient['patient_id']) ?>" 
+												class="patient-action-btn patient-delete-btn" 
+												title="Delete patient">
+												<i class="bi bi-trash-fill"></i>
+												</a>
+																
 											</div>
-
-
                                         </div>
-
                                     <?php else: ?>
-
                                         <span class="muted-text">
                                             View only
                                         </span>
-
                                     <?php endif; ?>
-
                                 </td>
-
-
                             </tr>
-
-
                         <?php endforeach; ?>
-
-
                     </tbody>
-
                 </table>
-
             </div>
-
-
         <?php endif; ?>
-
-
     </section>
-
-
 </main>
+
+
+
 
 
 <!-- =========================================================
      EDIT PATIENT MODAL
      ========================================================= -->
-
 <?php if ($edit_patient): ?>
-
 <div
     class="modal fade patient-edit-modal"
     id="editPatientModal"
@@ -1595,42 +1564,27 @@ require_once "../includes/sidebar.php";
     aria-labelledby="editPatientModalLabel"
     aria-hidden="true"
 >
-
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-
         <div class="modal-content">
 
-
             <!-- MODAL HEADER -->
-
             <div class="patient-modal-header">
-
                 <div class="patient-modal-heading">
-
                     <div class="patient-modal-icon">
-
                         <i class="bi bi-pencil-square"></i>
-
                     </div>
-
                     <div>
-
                         <div class="patient-modal-eyebrow">
                             PATIENT INFORMATION
                         </div>
-
                         <h2 id="editPatientModalLabel">
                             Edit Patient
                         </h2>
-
                         <p>
                             Update the patient's information below.
                         </p>
-
                     </div>
-
                 </div>
-
 
                 <button
                     type="button"
@@ -1638,705 +1592,368 @@ require_once "../includes/sidebar.php";
                     data-bs-dismiss="modal"
                     aria-label="Close"
                 >
-
                     <i class="bi bi-x-lg"></i>
-
                 </button>
-
             </div>
 
-
             <!-- MODAL FORM -->
-
             <form
                 method="POST"
                 action="patients.php"
                 autocomplete="off"
             >
-
                 <input
                     type="hidden"
                     name="action"
                     value="update"
                 >
-
                 <input
                     type="hidden"
                     name="patient_id"
-                    value="<?= intval(
-                        $edit_patient['patient_id']
-                    ) ?>"
+                    value="<?= intval($edit_patient['patient_id'] ?? 0) ?>"
                 >
-
 
                 <!-- =================================================
                      SECTION 01
                      ================================================= -->
-
                 <div class="patient-modal-section">
-
                     <div class="patient-section-title">
-
                         <div class="patient-section-number">
                             01
                         </div>
-
                         <div>
-
                             <h3>
                                 Registry Information
                             </h3>
-
                             <p>
                                 Patient registration and identification details.
                             </p>
-
                         </div>
-
                     </div>
 
-
                     <div class="patient-form-grid patient-form-grid-3">
-
-
                         <!-- Patient Number -->
-
                         <div class="patient-field">
-
                             <label>
                                 Patient Number
                                 <span>*</span>
                             </label>
-
                             <input
                                 type="text"
                                 name="patient_number"
                                 class="form-control"
-                                value="<?= htmlspecialchars(
-                                    $edit_patient['patient_number']
-                                ) ?>"
+                                value="<?= htmlspecialchars($edit_patient['patient_number'] ?? '') ?>"
                                 required
                             >
-
                         </div>
 
-
                         <!-- Registry Date -->
-
                         <div class="patient-field">
-
                             <label>
                                 Registry Date
                                 <span>*</span>
                             </label>
-
                             <input
                                 type="date"
                                 name="registry_date"
                                 class="form-control"
-                                value="<?= htmlspecialchars(
-                                    $edit_patient['registry_date']
-                                ) ?>"
+                                value="<?= htmlspecialchars($edit_patient['registry_date'] ?? '') ?>"
                                 required
                             >
-
                         </div>
 
-
                         <!-- Registry Type -->
-
                         <div class="patient-field">
-
                             <label>
                                 Registry Type
                             </label>
-
                             <input
                                 type="text"
                                 name="registry_type"
                                 class="form-control"
                                 placeholder="Enter registry type"
-                                value="<?= htmlspecialchars(
-                                    $edit_patient['registry_type'] ?? ''
-                                ) ?>"
+                                value="<?= htmlspecialchars($edit_patient['registry_type'] ?? '') ?>"
                             >
-
                         </div>
-
-
                     </div>
-
                 </div>
-
 
                 <!-- =================================================
                      SECTION 02
                      ================================================= -->
-
                 <div class="patient-modal-section">
-
                     <div class="patient-section-title">
-
                         <div class="patient-section-number">
                             02
                         </div>
-
                         <div>
-
                             <h3>
                                 Personal Information
                             </h3>
-
                             <p>
                                 Basic information of the registered patient.
                             </p>
-
                         </div>
-
                     </div>
 
-
                     <div class="patient-form-grid patient-form-grid-3">
-
-
                         <!-- First Name -->
-
                         <div class="patient-field">
-
                             <label>
                                 First Name
                                 <span>*</span>
                             </label>
-
                             <input
                                 type="text"
                                 name="first_name"
                                 class="form-control"
-                                value="<?= htmlspecialchars(
-                                    $edit_patient['first_name']
-                                ) ?>"
+                                value="<?= htmlspecialchars($edit_patient['first_name'] ?? '') ?>"
                                 required
                             >
-
                         </div>
 
-
                         <!-- Middle Name -->
-
                         <div class="patient-field">
-
                             <label>
                                 Middle Name
                             </label>
-
                             <input
                                 type="text"
                                 name="middle_name"
                                 class="form-control"
-                                value="<?= htmlspecialchars(
-                                    $edit_patient['middle_name'] ?? ''
-                                ) ?>"
+                                value="<?= htmlspecialchars($edit_patient['middle_name'] ?? '') ?>"
                             >
-
                         </div>
 
-
                         <!-- Last Name -->
-
                         <div class="patient-field">
-
                             <label>
                                 Last Name
                                 <span>*</span>
                             </label>
-
                             <input
                                 type="text"
                                 name="last_name"
                                 class="form-control"
-                                value="<?= htmlspecialchars(
-                                    $edit_patient['last_name']
-                                ) ?>"
+                                value="<?= htmlspecialchars($edit_patient['last_name'] ?? '') ?>"
                                 required
                             >
-
                         </div>
 
-
                         <!-- Birth Date -->
-
                         <div class="patient-field">
-
                             <label>
                                 Birth Date
                             </label>
-
                             <input
                                 type="date"
                                 name="birth_date"
                                 class="form-control"
-                                value="<?= htmlspecialchars(
-                                    $edit_patient['birth_date'] ?? ''
-                                ) ?>"
+                                value="<?= htmlspecialchars($edit_patient['birth_date'] ?? '') ?>"
                             >
-
                         </div>
 
-
                         <!-- Sex -->
-
                         <div class="patient-field">
-
                             <label>
                                 Sex
                             </label>
-
                             <select
                                 name="sex"
                                 class="form-select"
                             >
-
-                                <option value="">
-                                    Select sex
-                                </option>
-
-                                <option
-                                    value="Male"
-                                    <?= ($edit_patient['sex'] ?? '') === 'Male'
-                                        ? 'selected'
-                                        : '' ?>
-                                >
-                                    Male
-                                </option>
-
-                                <option
-                                    value="Female"
-                                    <?= ($edit_patient['sex'] ?? '') === 'Female'
-                                        ? 'selected'
-                                        : '' ?>
-                                >
-                                    Female
-                                </option>
-
+                                <option value="">Select sex</option>
+                                <option value="Male" <?= ($edit_patient['sex'] ?? '') === 'Male' ? 'selected' : '' ?>>Male</option>
+                                <option value="Female" <?= ($edit_patient['sex'] ?? '') === 'Female' ? 'selected' : '' ?>>Female</option>
                             </select>
-
                         </div>
-
-
                     </div>
-
                 </div>
-
 
                 <!-- =================================================
                      SECTION 03
                      ================================================= -->
-
                 <div class="patient-modal-section">
-
                     <div class="patient-section-title">
-
-                        <div class="patient-section-number">
+                       <div class="patient-section-number">
                             03
                         </div>
-
                         <div>
-
                             <h3>
                                 Room & Contact Information
                             </h3>
-
                             <p>
                                 Current room, bed, and contact information.
                             </p>
-
                         </div>
-
                     </div>
 
-
                     <div class="patient-form-grid patient-form-grid-4">
-
-
                         <!-- Room -->
-
                         <div class="patient-field">
-
                             <label>
                                 Patient Room No.
                             </label>
-
                             <input
                                 type="text"
                                 name="patient_room_no"
                                 class="form-control"
-                                value="<?= htmlspecialchars(
-                                    $edit_patient['patient_room_no'] ?? ''
-                                ) ?>"
+                                value="<?= htmlspecialchars($edit_patient['patient_room_no'] ?? '') ?>"
                             >
-
                         </div>
 
-
                         <!-- Bed -->
-
                         <div class="patient-field">
-
                             <label>
                                 Bed No.
                             </label>
-
                             <input
                                 type="text"
                                 name="bed_no"
                                 class="form-control"
-                                value="<?= htmlspecialchars(
-                                    $edit_patient['bed_no'] ?? ''
-                                ) ?>"
+                                value="<?= htmlspecialchars($edit_patient['bed_no'] ?? '') ?>"
                             >
-
                         </div>
 
-
                         <!-- Contact -->
-
                         <div class="patient-field">
-
                             <label>
                                 Contact Number
                             </label>
-
                             <input
                                 type="text"
                                 name="contact_number"
                                 class="form-control"
-                                value="<?= htmlspecialchars(
-                                    $edit_patient['contact_number'] ?? ''
-                                ) ?>"
+                                value="<?= htmlspecialchars($edit_patient['contact_number'] ?? '') ?>"
                             >
-
                         </div>
 
-
                         <!-- Address -->
-
                         <div class="patient-field">
-
                             <label>
                                 Address
                             </label>
-
                             <input
                                 type="text"
                                 name="address"
                                 class="form-control"
-                                value="<?= htmlspecialchars(
-                                    $edit_patient['address'] ?? ''
-                                ) ?>"
+                                value="<?= htmlspecialchars($edit_patient['address'] ?? '') ?>"
                             >
-
                         </div>
-
-
                     </div>
-
                 </div>
-
 
                 <!-- =================================================
                      MODAL ACTIONS
                      ================================================= -->
-
                 <div class="patient-modal-actions">
-
                     <div class="patient-form-note">
-
                         <i class="bi bi-info-circle"></i>
-
                         <span>
                             Review the updated patient information before saving.
                         </span>
-
                     </div>
 
-
                     <a
-                        href="patients.php<?= $search !== ''
-                            ? '?search=' . urlencode($search)
-                            : '' ?>"
+                        href="patients.php<?= $search !== '' ? '?search=' . urlencode($search) : '' ?>"
                         class="btn-patient-secondary"
                     >
-
                         <i class="bi bi-x-circle"></i>
-
                         Cancel
-
                     </a>
-
 
                     <button
                         type="submit"
                         class="btn-patient-primary"
                     >
-
                         <i class="bi bi-check-circle-fill"></i>
-
                         Save Changes
-
                     </button>
-
                 </div>
-
             </form>
-
         </div>
-
     </div>
-
 </div>
 
-
+<!-- Simple script to trigger the modal open automatically when PHP loads $edit_patient -->
 <script>
-
 document.addEventListener("DOMContentLoaded", function () {
-
-    const editModalElement =
-        document.getElementById("editPatientModal");
-
-    if (editModalElement) {
-
-        const editModal =
-            new bootstrap.Modal(editModalElement);
-
-        editModal.show();
-
-
-        editModalElement.addEventListener(
-            "hidden.bs.modal",
-            function () {
-
-                window.location.href =
-                    "patients.php<?= $search !== ''
-                        ? '?search=' . urlencode($search)
-                        : '' ?>";
-
-            }
-        );
-
-    }
-
+    var editModal = new bootstrap.Modal(document.getElementById('editPatientModal'));
+    editModal.show();
 });
-
 </script>
-
 <?php endif; ?>
 
 
+
+
+
+<?php if ($delete_patient): ?>
 <!-- =========================================================
      DELETE PATIENT MODAL
      ========================================================= -->
-
-<?php if ($can_manage_patients): ?>
-
-<div
-    class="modal fade"
-    id="deletePatientModal"
-    tabindex="-1"
-    aria-labelledby="deletePatientModalLabel"
-    aria-hidden="true"
->
-
+<div class="modal fade" id="deletePatientModal" tabindex="-1" aria-labelledby="deletePatientModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-
         <div class="modal-content">
 
-
             <!-- MODAL HEADER -->
-
             <div class="modal-header">
-
                 <div>
-
-                    <div
-                        style="
-                            font-size: 11px;
-                            font-weight: 700;
-                            letter-spacing: 1.2px;
-                            color: #4da985;
-                            margin-bottom: 4px;
-                        "
-                    >
+                    <div style="font-size: 11px; font-weight: 700; letter-spacing: 1.2px; color: #4da985; margin-bottom: 4px;">
                         CONFIRM ACTION
                     </div>
-
-                    <h5
-                        class="modal-title"
-                        id="deletePatientModalLabel"
-                    >
+                    <h5 class="modal-title" id="deletePatientModalLabel">
                         Delete Patient
                     </h5>
-
                 </div>
-
-
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                ></button>
-
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-
             <!-- DELETE FORM -->
+            <form method="POST" action="patients.php">
+                <input type="hidden" name="action" value="delete">
+                <input type="hidden" name="patient_id" value="<?= intval($delete_patient['patient_id'] ?? 0) ?>">
 
-            <form
-                method="POST"
-                action="patients.php"
-            >
-
-                <input
-                    type="hidden"
-                    name="action"
-                    value="delete"
-                >
-
-                <input
-                    type="hidden"
-                    name="patient_id"
-                    id="delete_patient_id"
-                >
-
-
-                <div
-                    class="modal-body"
-                    style="text-align: center; padding: 30px 25px;"
-                >
-
-                    <div
-                        style="
-                            width: 58px;
-                            height: 58px;
-                            margin: 0 auto 18px;
-                            border-radius: 50%;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            background: #fdecec;
-                            color: #dc3545;
-                            font-size: 24px;
-                        "
-                    >
-
+                <div class="modal-body" style="text-align: center; padding: 30px 25px;">
+                    <div style="width: 58px; height: 58px; margin: 0 auto 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #fdecec; color: #dc3545; font-size: 24px;">
                         <i class="bi bi-trash3"></i>
-
                     </div>
 
-
-                    <p
-                        style="
-                            margin-bottom: 8px;
-                            font-size: 15px;
-                            color: #42544d;
-                        "
-                    >
-
+                    <p style="margin-bottom: 8px; font-size: 15px; color: #42544d;">
                         Are you sure you want to delete
-                        <strong id="delete_patient_name"></strong>?
-
+                        <strong><?= htmlspecialchars(trim(($delete_patient['first_name'] ?? '') . ' ' . ($delete_patient['last_name'] ?? ''))) ?></strong>?
                     </p>
 
-
-                    <span
-                        style="
-                            font-size: 13px;
-                            color: #7b8b85;
-                        "
-                    >
+                    <span style="font-size: 13px; color: #7b8b85;">
                         This action cannot be undone.
                     </span>
-
                 </div>
-
 
                 <!-- MODAL FOOTER -->
-
                 <div class="modal-footer">
-
-                    <button
-                        type="button"
-                        class="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                    >
+                    <a href="patients.php<?= $search !== '' ? '?search=' . urlencode($search) : '' ?>" class="btn btn-secondary">
                         Cancel
-                    </button>
+                    </a>
 
-
-                    <button
-                        type="submit"
-                        class="btn btn-danger"
-                    >
-
+                    <button type="submit" class="btn btn-danger">
                         <i class="bi bi-trash3"></i>
-
                         Delete Patient
-
                     </button>
-
                 </div>
-
             </form>
-
         </div>
-
     </div>
-
 </div>
 
+<!-- Simple auto-opener script for delete modal -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    var deleteModal = new bootstrap.Modal(document.getElementById('deletePatientModal'));
+    deleteModal.show();
+});
+</script>
 <?php endif; ?>
 
-
-<script>
-
-document.addEventListener("DOMContentLoaded", function () {
-
-
-    /* =====================================================
-       DELETE PATIENT
-    ====================================================== */
-
-    const deletePatientButtons =
-        document.querySelectorAll(".patient-action-delete");
-
-
-    deletePatientButtons.forEach(function (button) {
-
-        button.addEventListener("click", function () {
-
-            const patientId =
-                this.dataset.id || "";
-
-            const patientName =
-                this.dataset.name || "this patient";
-
-
-            document.getElementById(
-                "delete_patient_id"
-            ).value = patientId;
-
-
-            document.getElementById(
-                "delete_patient_name"
-            ).textContent = patientName;
-
-        });
-
-    });
-
-});
-
-</script>
 
 
 <?php
