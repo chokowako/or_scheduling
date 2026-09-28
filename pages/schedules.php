@@ -110,7 +110,6 @@ if (
     $assistants =
         $_POST['assistant_doctor_ids'] ?? [];
 
-
     /*
      * Always make sure assistants is an array.
      */
@@ -607,15 +606,15 @@ if (
                  * or different capitalization in the database.
                  */
                 $verifyAssistantStmt =
-                    $pdo->prepare("
-                        SELECT
-                            doctor_id
-                        FROM doctors
-                        WHERE doctor_id = :doctor_id
-                          AND LOWER(TRIM(specialization)) = 'surgeon'
-                          AND status = 'Active'
-                        LIMIT 1
-                    ");
+				$pdo->prepare("
+					SELECT
+						doctor_id
+					FROM doctors
+					WHERE doctor_id = :doctor_id
+					  AND (LOWER(TRIM(specialization)) LIKE '%surgeon%' OR LOWER(TRIM(specialization)) LIKE '%surgery%')
+					  AND status = 'Active'
+					LIMIT 1
+						");
 
 
                 $assistantOrder = 1;
@@ -723,6 +722,7 @@ $stmt = $pdo->query("
         patient_room_no,
         bed_no
     FROM patients
+	WHERE STATUS = 'Active'
     ORDER BY last_name ASC, first_name ASC
 ");
 
@@ -1073,43 +1073,29 @@ require_once "../includes/sidebar.php";
          ======================================================== -->
 
     <header class="schedule-page-header">
-
         <div class="schedule-page-header-copy">
-
             <div class="schedule-kicker">
                 Operating Room Management
             </div>
-
             <div class="schedule-title-row">
-
                 <div class="schedule-title-icon">
                     <i class="bi bi-calendar2-plus"></i>
                 </div>
-
                 <div>
-
                     <h1>OR Scheduling</h1>
-
                     <p>
                         Create and manage operating room schedules,
                         surgical teams, procedures, and patient assignments.
                     </p>
-
                 </div>
-
             </div>
-
         </div>
 
 
         <div class="schedule-header-status">
-
             <span class="live-dot"></span>
-
             <span>Scheduling Workspace</span>
-
         </div>
-
     </header>
 
 
@@ -1118,44 +1104,33 @@ require_once "../includes/sidebar.php";
          ======================================================== -->
 
     <?php if ($success): ?>
-
         <div class="schedule-alert schedule-alert-success">
-
             <div class="schedule-alert-icon">
                 <i class="bi bi-check-circle-fill"></i>
             </div>
-
             <div>
                 <strong>Schedule saved successfully.</strong>
                 The operating room schedule has been added.
             </div>
-
         </div>
-
     <?php endif; ?>
 
 
     <?php if (!empty($error)): ?>
-
         <div class="schedule-alert schedule-alert-error">
-
             <div class="schedule-alert-icon">
                 <i class="bi bi-exclamation-triangle-fill"></i>
             </div>
-
             <div>
                 <?= htmlspecialchars($error) ?>
             </div>
-
         </div>
-
     <?php endif; ?>
 
 
     <!-- ========================================================
          CREATE SCHEDULE WORKSPACE
          ======================================================== -->
-
     <form
         method="POST"
         action="schedules.php"
@@ -1175,34 +1150,24 @@ require_once "../includes/sidebar.php";
              ==================================================== -->
 
         <div class="workspace-header">
-
             <div class="workspace-heading">
-
                 <div class="workspace-heading-icon">
                     <i class="bi bi-clipboard2-pulse"></i>
                 </div>
-
                 <div>
-
                     <div class="workspace-eyebrow">
                         New Schedule
                     </div>
-
                     <h2>Create Surgery Schedule</h2>
-
                     <p>
                         Complete the clinical and scheduling information below.
                     </p>
-
                 </div>
-
             </div>
-
 
             <div class="workspace-required">
                 <span>*</span> Required fields
             </div>
-
         </div>
 
 
@@ -1211,50 +1176,36 @@ require_once "../includes/sidebar.php";
              ==================================================== -->
 
         <section class="clinical-section">
-
             <div class="section-heading">
-
                 <div class="section-step">01</div>
-
                 <div class="section-icon">
                     <i class="bi bi-person-vcard"></i>
                 </div>
-
                 <div>
-
                     <h3>Patient Information</h3>
-
                     <p>
                         Select the patient who will undergo the procedure.
                     </p>
-
                 </div>
-
             </div>
 
 
             <div class="patient-selection-card">
-
                 <div class="patient-main-field">
-
                     <label
                         for="patient_id"
                         class="form-label"
                     >
                         Patient <span class="required">*</span>
                     </label>
-
                     <div class="input-icon-wrapper">
-
                         <i class="bi bi-search"></i>
-
                         <select
                             name="patient_id"
                             id="patient_id"
                             class="form-select"
                             required
                         >
-
                             <option value="">
                                 Search or select patient
                             </option>
@@ -1282,13 +1233,9 @@ require_once "../includes/sidebar.php";
                                     —
                                     <?= htmlspecialchars($patient['patient_number'] ?? '') ?>
                                 </option>
-
                             <?php endforeach; ?>
-
                         </select>
-
                     </div>
-
                 </div>
 
 
@@ -1296,37 +1243,28 @@ require_once "../includes/sidebar.php";
                     class="patient-quick-info"
                     id="patientQuickInfo"
                 >
-
                     <div class="patient-info-item">
-
                         <span class="patient-info-label">
                             Registry No.
                         </span>
-
                         <strong id="patientRegistryDisplay">
-                            —
+                           —
                         </strong>
-
                     </div>
 
                     <div class="patient-info-item">
-
                         <span class="patient-info-label">
                             Registry Type
                         </span>
-
                         <strong id="patientRegistryTypeDisplay">
                             —
                         </strong>
-
                     </div>
 
                     <div class="patient-info-item">
-
                         <span class="patient-info-label">
                             Birth Date
                         </span>
-
                         <strong id="patientBirthDisplay">
                             —
                         </strong>
@@ -1334,21 +1272,15 @@ require_once "../includes/sidebar.php";
                     </div>
 
                     <div class="patient-info-item">
-
                         <span class="patient-info-label">
                             Location
                         </span>
-
                         <strong id="patientLocationDisplay">
-                            —
+                           —
                         </strong>
-
                     </div>
-
                 </div>
-
             </div>
-
 
             <input
                 type="hidden"
@@ -1394,39 +1326,28 @@ require_once "../includes/sidebar.php";
              ==================================================== -->
 
         <section class="clinical-section clinical-section-soft">
-
             <div class="section-heading">
-
                 <div class="section-step">02</div>
-
                 <div class="section-icon">
                     <i class="bi bi-clock-history"></i>
                 </div>
-
                 <div>
 
                     <h3>Schedule Details</h3>
-
                     <p>
                         Set the surgery date, duration, operating room,
                         and scheduling priority.
                     </p>
-
                 </div>
-
             </div>
 
 
             <div class="schedule-planning-grid">
-
                 <div class="planning-card">
-
                     <div class="planning-card-icon">
                         <i class="bi bi-calendar-event"></i>
                     </div>
-
                     <div class="planning-card-content">
-
                         <span class="planning-card-label">
                             Surgery Date
                         </span>
@@ -1445,66 +1366,50 @@ require_once "../includes/sidebar.php";
                             class="form-control"
                             required
                         >
-
                     </div>
-
                 </div>
 
 
                 <div class="planning-card">
-
                     <div class="planning-card-icon">
                         <i class="bi bi-calendar-range"></i>
                     </div>
-
                     <div class="planning-card-content">
-
                         <span class="planning-card-label">
                             End Date
                         </span>
-
                         <label
                             for="date_end"
                             class="visually-hidden"
                         >
                             End Date
                         </label>
-
                         <input
                             type="date"
                             name="date_end"
                             id="date_end"
                             class="form-control"
                         >
-
                     </div>
-
                 </div>
 
 
                 <div class="planning-card planning-time-card">
-
                     <div class="planning-card-icon">
                         <i class="bi bi-stopwatch"></i>
                     </div>
-
                     <div class="planning-card-content">
-
                         <span class="planning-card-label">
                             Operating Time
                         </span>
-
                         <div class="time-inputs">
-
                             <div>
-
                                 <label
                                     for="start_time"
                                     class="visually-hidden"
                                 >
                                     Start Time
                                 </label>
-
                                 <input
                                     type="time"
                                     name="start_time"
@@ -1512,17 +1417,13 @@ require_once "../includes/sidebar.php";
                                     class="form-control"
                                     required
                                 >
-
                                 <small>Start</small>
 
                             </div>
-
                             <span class="time-separator">
-                                →
+                               →
                             </span>
-
                             <div>
-
                                 <label
                                     for="end_time"
                                     class="visually-hidden"
@@ -1539,41 +1440,28 @@ require_once "../includes/sidebar.php";
                                 >
 
                                 <small>End</small>
-
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
 
 
             <div class="room-priority-grid">
-
                 <div class="room-selection-panel">
-
                     <div class="room-panel-header">
-
                         <div class="room-panel-icon">
                             <i class="bi bi-hospital"></i>
                         </div>
-
                         <div>
-
                             <span class="panel-eyebrow">
                                 Operating Room
                             </span>
-
                             <h4>
                                 Select OR
                                 <span class="required">*</span>
                             </h4>
-
                         </div>
-
                     </div>
 
                     <label
@@ -1595,7 +1483,6 @@ require_once "../includes/sidebar.php";
                         </option>
 
                         <?php foreach ($rooms as $room): ?>
-
                             <option
                                 value="<?= (int)$room['room_id'] ?>"
                                 <?= ($room['status'] ?? '') === 'Inactive'
@@ -1610,41 +1497,28 @@ require_once "../includes/sidebar.php";
                                 <?php endif; ?>
 
                             </option>
-
                         <?php endforeach; ?>
-
                     </select>
 
                     <div class="room-helper">
-
                         <i class="bi bi-info-circle"></i>
-
                         Only available and active rooms should be assigned
                         for scheduled procedures.
-
                     </div>
-
                 </div>
 
 
                 <div class="priority-panel">
-
                     <div class="priority-panel-header">
-
                         <div class="priority-panel-icon">
                             <i class="bi bi-exclamation-diamond"></i>
                         </div>
-
                         <div>
-
                             <span class="panel-eyebrow">
                                 Clinical Priority
                             </span>
-
                             <h4>Priority</h4>
-
                         </div>
-
                     </div>
 
                     <label
@@ -1671,70 +1545,50 @@ require_once "../includes/sidebar.php";
                         <option value="Emergency">
                             Emergency
                         </option>
-
                     </select>
 
                     <div class="priority-description">
                         Select the clinical scheduling priority
                         for this procedure.
                     </div>
-
                 </div>
 
 
                 <div class="stat-panel">
-
                     <div class="stat-panel-header">
-
                         <div class="stat-panel-icon">
                             <i class="bi bi-lightning-charge"></i>
                         </div>
-
                         <div>
-
                             <span class="panel-eyebrow">
                                 Immediate Attention
                             </span>
-
                             <h4>STAT Procedure</h4>
-
                         </div>
-
                     </div>
 
                     <div class="stat-control">
-
                         <label class="stat-switch">
-
                             <input
                                 type="checkbox"
                                 name="is_stat"
                                 id="is_stat"
                                 value="1"
                             >
-
                             <span class="stat-slider"></span>
-
                         </label>
 
                         <div>
-
                             <strong id="statLabel">
                                 No
                             </strong>
-
                             <span>
                                 Mark this procedure as STAT
                             </span>
-
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
-
         </section>
 
 
@@ -1743,43 +1597,33 @@ require_once "../includes/sidebar.php";
              ==================================================== -->
 
         <section class="clinical-section">
-
             <div class="section-heading">
-
                 <div class="section-step">03</div>
-
                 <div class="section-icon">
                     <i class="bi bi-people"></i>
                 </div>
-
                 <div>
 
                     <h3>Surgical Team</h3>
-
                     <p>
                         Assign the primary surgeon, anesthesiologist,
                         and assistant surgeons.
                     </p>
-
                 </div>
 
             </div>
 
 
             <div class="team-primary-grid">
-
                 <div class="team-member-card primary-member">
-
                     <div class="member-avatar surgeon-avatar">
                         <i class="bi bi-person-check"></i>
                     </div>
 
                     <div class="member-content">
-
                         <span class="member-role">
                             PRIMARY SURGEON
                         </span>
-
                         <label
                             for="surgeon_doctor_id"
                             class="form-label"
@@ -1799,7 +1643,6 @@ require_once "../includes/sidebar.php";
                             </option>
 
                             <?php foreach ($surgeons as $doctor): ?>
-
                                 <option
                                     value="<?= (int)$doctor['doctor_id'] ?>"
                                 >
@@ -1807,24 +1650,18 @@ require_once "../includes/sidebar.php";
                                         doctorFullName($doctor)
                                     ) ?>
                                 </option>
-
                             <?php endforeach; ?>
-
                         </select>
-
                     </div>
-
                 </div>
 
 
                 <div class="team-member-card">
-
                     <div class="member-avatar anesthesia-avatar">
                         <i class="bi bi-heart-pulse"></i>
                     </div>
 
                     <div class="member-content">
-
                         <span class="member-role">
                             ANESTHESIOLOGY
                         </span>
@@ -1841,13 +1678,11 @@ require_once "../includes/sidebar.php";
                             id="anesthesiologist_doctor_id"
                             class="form-select"
                         >
-
                             <option value="">
                                 Select anesthesiologist
                             </option>
 
                             <?php foreach ($anesthesiologists as $doctor): ?>
-
                                 <option
                                     value="<?= (int)$doctor['doctor_id'] ?>"
                                 >
@@ -1855,45 +1690,30 @@ require_once "../includes/sidebar.php";
                                         doctorFullName($doctor)
                                     ) ?>
                                 </option>
-
                             <?php endforeach; ?>
-
                         </select>
-
                     </div>
-
                 </div>
-
             </div>
 
 
             <!-- ====================================================
                  ASSISTANT SURGEONS
                  ==================================================== -->
-
             <div class="assistants-workspace">
-
                 <div class="assistants-workspace-header">
-
                     <div class="assistant-heading">
-
                         <div class="assistant-heading-icon">
                             <i class="bi bi-person-plus"></i>
                         </div>
-
                         <div>
-
                             <h4>Assistant Surgeons</h4>
-
                             <p>
                                 Add additional doctors participating
                                 in the surgical procedure.
                             </p>
-
                         </div>
-
                     </div>
-
 
                     <button
                         type="button"
@@ -1903,7 +1723,6 @@ require_once "../includes/sidebar.php";
                         <i class="bi bi-plus-lg"></i>
                         Add Assistant
                     </button>
-
                 </div>
 
 
@@ -1913,17 +1732,13 @@ require_once "../includes/sidebar.php";
                 >
 
                     <div class="assistant-row">
-
                         <div class="assistant-number">
                             01
                         </div>
-
                         <div class="assistant-role-icon">
                             <i class="bi bi-person"></i>
                         </div>
-
                         <div class="assistant-select-wrapper">
-
                             <label
                                 class="visually-hidden"
                             >
@@ -1950,11 +1765,8 @@ require_once "../includes/sidebar.php";
                                     </option>
 
                                 <?php endforeach; ?>
-
                             </select>
-
                         </div>
-
                         <button
                             type="button"
                             class="btn-remove-assistant"
@@ -1962,14 +1774,11 @@ require_once "../includes/sidebar.php";
                         >
                             <i class="bi bi-x-lg"></i>
                         </button>
-
                     </div>
-
                 </div>
-
             </div>
-
         </section>
+
 
 
         <!-- ====================================================

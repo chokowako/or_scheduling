@@ -604,6 +604,94 @@ $page_title =
     "Patients";
 
 
+
+/* =========================================================
+   SEARCH & FETCH PATIENTS WITH STATUS FILTERING
+   ========================================================= */
+
+$search = trim($_GET['search'] ?? '');
+$status_filter = $_GET['status'] ?? 'active'; // Default to active records
+$limit = 5;
+$page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+$offset = ($page - 1) * $limit;
+
+$whereClauses = [];
+$params = [];
+
+// 1. Default rule: Hide completed records unless specifically filtered/searched
+if ($status_filter === 'active') {
+    $whereClauses[] = "status != 'Completed'"; 
+} elseif ($status_filter === 'completed') {
+    $whereClauses[] = "status = 'Completed'";
+}
+// If status_filter === 'all', we don't add a status restriction
+
+// 2. Search filter condition
+if ($search !== "") {
+    $whereClauses[] = "(
+        patient_number LIKE :search
+        OR first_name LIKE :search
+        OR middle_name LIKE :search
+        OR last_name LIKE :search
+        OR contact_number LIKE :search
+        OR patient_room_no LIKE :search
+        OR bed_no LIKE :search
+    )";
+    $params[':search'] = '%' . $search . '%';
+}
+
+// Combine WHERE clauses safely
+$whereSql = "";
+if (!empty($whereClauses)) {
+    $whereSql = "WHERE " . implode(" AND ", $whereClauses);
+}
+
+// Count total matching records for pagination
+$countSql = "SELECT COUNT(*) FROM patients " . $whereSql;
+$countStmt = $pdo->prepare($countSql);
+$countStmt->execute($params);
+$total_records = $countStmt->fetchColumn();
+$total_pages = ceil($total_records / $limit);
+
+// Fetch paginated patients
+$sql = "
+    SELECT
+        patient_id,
+        patient_number,
+        registry_date,
+        registry_type,
+        first_name,
+        middle_name,
+        last_name,
+        birth_date,
+        sex,
+        patient_room_no,
+        bed_no,
+        contact_number,
+        address,
+        status,
+        created_at
+    FROM patients
+    " . $whereSql . "
+    ORDER BY patient_id DESC
+    LIMIT :limit OFFSET :offset
+";
+
+$stmt = $pdo->prepare($sql);
+
+// Bind search and pagination parameters
+if ($search !== "") {
+    $stmt->bindValue(':search', $params[':search'], PDO::PARAM_STR);
+}
+$stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+$stmt->execute();
+
+$patients = $stmt->fetchAll();
+
+
+
+
 /* =========================================================
    SHARED HEADER
    ========================================================= */
@@ -1175,39 +1263,37 @@ require_once "../includes/sidebar.php";
                     >
 
                 </div>
-
+				
+				<!-- Status Filter Dropdown -->
+					<div class="col-md-3">
+						<select name="status" class="form-select" onchange="this.form.submit()">
+							<option value="active" <?= ($status_filter === 'active') ? 'selected' : '' ?>>Active Patients</option>
+							<option value="completed" <?= ($status_filter === 'completed') ? 'selected' : '' ?>>Completed</option>
+							<option value="all" <?= ($status_filter === 'all') ? 'selected' : '' ?>>All Records</option>
+						</select>
+					</div>
 
                 <button
                     type="submit"
                     class="btn-patient-search"
                 >
-
                     <i class="bi bi-search"></i>
-
                     Search
-
                 </button>
 
 
                 <?php if ($search !== ""): ?>
-
                     <a
                         href="patients.php"
                         class="btn-patient-clear"
                     >
-
                         <i class="bi bi-x-circle"></i>
-
                         Clear
-
                     </a>
-
                 <?php endif; ?>
-
-
-            </form>
-
+            </form>		
         </div>
+
 
 
         <!-- EMPTY STATE -->
@@ -1543,8 +1629,51 @@ require_once "../includes/sidebar.php";
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
-                </table>
-            </div>
+                </table>		 
+			</div>
+						<!-- PAGINATION CONTROLS -->
+							<?php if ($total_pages > 1): ?>
+								<div class="pagination-footer">
+									<div class="pagination-info">
+										Page <strong><?= $page ?></strong> of <strong><?= $total_pages ?></strong>
+									</div>
+
+									<div class="pagination-controls">
+										<?php 
+											$queryParams = $_GET;
+											unset($queryParams['page']);
+											$queryString = http_build_query($queryParams);
+											$queryPrefix = $queryString ? '&' . $queryString : '';
+										?>
+
+										<!-- First Page -->
+										<a href="patients.php?page=1<?= $queryPrefix ?>" class="page-link <?= ($page <= 1) ? 'disabled' : '' ?>">
+											<i class="bi bi-chevron-double-left"></i> First
+										</a>
+
+										<!-- Previous Page -->
+										<a href="patients.php?page=<?= max(1, $page - 1) ?><?= $queryPrefix ?>" class="page-link <?= ($page <= 1) ? 'disabled' : '' ?>">
+											<i class="bi bi-chevron-left"></i> Prev
+										</a>
+
+										<!-- Current Page Text -->
+										<span class="page-numbers-text">
+											Page <?= $page ?>
+										</span>
+
+										<!-- Next Page -->
+										<a href="patients.php?page=<?= min($total_pages, $page + 1) ?><?= $queryPrefix ?>" class="page-link <?= ($page >= $total_pages) ? 'disabled' : '' ?>">
+											Next <i class="bi bi-chevron-right"></i>
+										</a>
+
+										<!-- Last Page -->
+										<a href="patients.php?page=<?= $total_pages ?><?= $queryPrefix ?>" class="page-link <?= ($page >= $total_pages) ? 'disabled' : '' ?>">
+											Last <i class="bi bi-chevron-double-right"></i>
+										</a>
+									</div>
+								</div>
+							<?php endif; ?>
+						
         <?php endif; ?>
     </section>
 </main>

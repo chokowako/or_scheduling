@@ -313,6 +313,7 @@ $spec_filter_label = !empty($specialization_filter) ? "Specialization: " . htmls
                     <a href="?page=1<?= $queryPrefix ?>" class="page-link <?= ($current_page <= 1) ? 'disabled' : '' ?>">
                         <i class="bi bi-chevron-double-left"></i> First
                     </a>
+					
                     <a href="?page=<?= max(1, $current_page - 1) ?><?= $queryPrefix ?>" class="page-link <?= ($current_page <= 1) ? 'disabled' : '' ?>">
                         <i class="bi bi-chevron-left"></i> Prev
                     </a>
@@ -324,6 +325,7 @@ $spec_filter_label = !empty($specialization_filter) ? "Specialization: " . htmls
                     <a href="?page=<?= min($total_pages, $current_page + 1) ?><?= $queryPrefix ?>" class="page-link <?= ($current_page >= $total_pages) ? 'disabled' : '' ?>">
                         Next <i class="bi bi-chevron-right"></i>
                     </a>
+					
                     <a href="?page=<?= $total_pages ?><?= $queryPrefix ?>" class="page-link <?= ($current_page >= $total_pages) ? 'disabled' : '' ?>">
                         Last <i class="bi bi-chevron-double-right"></i>
                     </a>

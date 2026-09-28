@@ -1447,6 +1447,70 @@
 }
 
 
+
+
+
+
+
+/* ==========================================================================
+   PAGINATION FOOTER STYLING
+   ========================================================================== */
+.pagination-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px;
+    background-color: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+}
+
+.pagination-info {
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.page-link {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #0d4732;
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s ease;
+}
+
+.page-link:hover:not(.disabled) {
+    background-color: #f0fdf4;
+    border-color: #0d4732;
+}
+
+.page-link.disabled {
+    color: #94a3b8;
+    background-color: #f1f5f9;
+    border-color: #e2e8f0;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.page-numbers-text {
+    padding: 0 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #334155;
+}
+
+
 /* ============================================================
    RESPONSIVE — 900
    ============================================================ */

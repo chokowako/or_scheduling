@@ -217,12 +217,23 @@ if (isset($_GET["success"])) {
 
 
 /* =========================================================
-   GET PROCEDURES
-   ========================================================= */
+    GET PROCEDURES WITH PAGINATION
+    ========================================================= */
 
 try {
+    // 1. Define pagination parameters
+    $limit = 10; // Number of procedures per page
+    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+    $page = max($page, 1); // Ensure page is at least 1
+    $offset = ($page - 1) * $limit;
 
-    $stmt = $pdo->query("
+    // 2. Get total number of procedures for calculating total pages
+    $count_stmt = $pdo->query("SELECT COUNT(*) FROM procedures");
+    $total_rows = $count_stmt->fetchColumn();
+    $total_pages = ceil($total_rows / $limit);
+
+    // 3. Fetch paginated procedures
+    $stmt = $pdo->prepare("
         SELECT
             procedure_id,
             procedure_name,
@@ -233,13 +244,18 @@ try {
             created_at
         FROM procedures
         ORDER BY procedure_name ASC
+        LIMIT :limit OFFSET :offset
     ");
-
+    
+    $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+    $stmt->execute();
+    
     $procedures = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 } catch (PDOException $e) {
-
     $procedures = [];
+    $total_pages = 0;
     $message = "Unable to load procedures.";
     $message_type = "danger";
 }
@@ -266,18 +282,16 @@ foreach ($procedures as $procedure) {
 }
 
 ?>
-
 <?php require_once "../includes/header.php"; ?>
-
 <link
     rel="stylesheet"
     href="../assets/css/procedures.css?v=20260915"
 >
-
 <?php require_once "../includes/sidebar.php"; ?>
 
-
 <main class="procedures-page">
+
+
 
     <!-- =====================================================
          PAGE HEADER
@@ -681,41 +695,67 @@ foreach ($procedures as $procedure) {
                                         </span>
 
                                     <?php endif; ?>
-
                                 </td>
-
                             </tr>
 
                         <?php endforeach; ?>
 
                         <tr id="noSearchResults" style="display:none;">
-
                             <td colspan="6">
-
                                 <div class="empty-search">
-
                                     <i class="bi bi-search"></i>
-
                                     <span>
                                         No procedures match your search.
                                     </span>
-
                                 </div>
-
                             </td>
-
                         </tr>
-
                     <?php endif; ?>
-
                 </tbody>
-
             </table>
-
+			
         </div>
-
+		
+		
+					<?php if (isset($total_pages) && $total_pages > 1): ?>
+<div class="pagination-footer">
+    <!-- Left side info -->
+    <div class="pagination-info">
+        Page <strong><?= $page ?></strong> of <strong><?= $total_pages ?></strong>
     </div>
+    
+    <!-- Right side controls -->
+    <div class="pagination-controls">
+        <!-- First Page -->
+        <a href="?page=1" class="page-link <?= ($page <= 1) ? 'disabled' : '' ?>">
+            &laquo;&laquo; First
+        </a>
 
+        <!-- Previous Page -->
+        <a href="?page=<?= $page - 1 ?>" class="page-link <?= ($page <= 1) ? 'disabled' : '' ?>">
+            &lsaquo; Prev
+        </a>
+
+        <!-- Current Page Indicator Box -->
+        <span class="page-link" style="background-color: #f1f5f9; color: #334155; cursor: default; pointer-events: none;">
+            Page <?= $page ?>
+        </span>
+
+        <!-- Next Page -->
+        <a href="?page=<?= $page + 1 ?>" class="page-link <?= ($page >= $total_pages) ? 'disabled' : '' ?>">
+            Next &rsaquo;
+        </a>
+
+        <!-- Last Page -->
+        <a href="?page=<?= $total_pages ?>" class="page-link <?= ($page >= $total_pages) ? 'disabled' : '' ?>">
+            Last &raquo;&raquo;
+        </a>
+    </div>
+</div>
+<?php endif; ?>
+
+		
+    </div>
 </main>
 
 

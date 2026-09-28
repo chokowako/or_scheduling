@@ -75,6 +75,7 @@ $sql = "SELECT
 		
 		
 		
+		os.patient_room_no,
         r.room_name,
         
         os.cardiologist,
@@ -615,8 +616,13 @@ function statusClass($status) {
             </div>
 
             <div class="patient-name-container">
-                <span class="patient-label">Room:</span>
-                <span class="patient-value" id="det_operating_room"></span>
+                <span class="patient-label">Room No.:</span>
+                <span class="patient-value" id="det_patient_room_no"></span>
+            </div>
+			
+			 <div class="patient-name-container">
+                <span class="patient-label">OR Room.:</span>
+                <span class="patient-value" id="det_room_name"></span>
             </div>
         </div>
     </section>
@@ -866,7 +872,8 @@ function openDetailModal(data) {
 	document.getElementById('det_birth_date').innerText = data.birth_date || '—';
     document.getElementById('det_patient_no').innerText = data.patient_registry_no || data.patient_number || '—';
 	document.getElementById('det_registry_type').innerText = data.registry_type || '—';
-	document.getElementById('det_operating_room').innerText = data.operating_room || '—';
+	document.getElementById('det_patient_room_no').innerText = data.patient_room_no || '—'; 
+	document.getElementById('det_room_name').innerText = data.room_name || '—';	
 	
 	document.getElementById('det_surgery_date').innerText =  data.surgery_date + ' - ' + data.date_end ;
 	document.getElementById('det_surgery_time').innerText =  data.start_time + ' - ' + data.end_time ;
