@@ -10,50 +10,172 @@
    PAGE
    ============================================================ */
 
+  :root {
+   --green-50: #f1faf6;
+    --green-100: #e2f4ec;
+    --green-200: #c8e9db;
+    --green-300: #9dd4bc;
+    --green-400: #72bd9e;
+    --green-500: #4da985;
+    --green-600: #358e6c;
+    --green-700: #287256;
+    --green-800: #205b46;
+
+    --text-900: #20352d;
+    --text-800: #2d443b;
+    --text-700: #52665e;
+    --text-600: #687a73;
+    --text-500: #84938d;
+
+    --border: #e2ebe7;
+    --background: #f5f8f7;
+    --white: #ffffff;
+
+    --sidebar-width: 260px;
+}
+
+
 .surgeons-page {
-    width: calc(100% - 260px);
-    margin-left: 260px;
+    width: calc(100% - var(--sidebar-width));
+    margin-left: var(--sidebar-width);
     min-height: 100vh;
-
-    padding: 34px 38px 60px;
-
-    box-sizing: border-box;
-
-    background:
-        radial-gradient(
-            circle at 92% 0%,
-            rgba(73, 153, 115, 0.16),
-            transparent 27%
-        ),
-        radial-gradient(
-            circle at 4% 30%,
-            rgba(105, 177, 143, 0.10),
-            transparent 25%
-        ),
-        linear-gradient(
-            180deg,
-            #e4f2ec 0%,
-            #eef7f3 42%,
-            #e7f3ed 100%
-        );
-
-    font-family: Arial, sans-serif;
+    padding: 32px 40px 50px;
+    background: var(--background);
 }
 
 
-/* ============================================================
-   CENTER MAIN CONTENT
-   ============================================================ */
 
-.surgeons-page > .surgeon-alert,
-.surgeons-page > .surgeon-form-card,
-.surgeons-page > .surgeon-list-card {
-    width: 100%;
-    max-width: 1380px;
-
-    margin-left: auto;
-    margin-right: auto;
+/* =========================================================
+   EXACT COMMAND CENTER GRADIENT BANNER STYLE
+   ========================================================= */
+.topbar.dashboard-header-style {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* Smooth gradient from left to right matching your command center */
+   background: linear-gradient(135deg, #2f755f 0%, #438d73 55%, #5ca487 100%);
+    padding: 24px 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    margin-bottom: 24px;
+    gap: 20px;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
 }
+
+/* Optional: Subtle decorative background ring to mimic the command center right side */
+.topbar.dashboard-header-style::after {
+    content: '';
+    position: absolute;
+    right: -40px;
+    top: -50px;
+    width: 200px;
+    height: 200px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+/* Left Group */
+.header-left-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    flex: 1;
+    z-index: 1;
+}
+
+/* Mobile Menu Button */
+.mobile-menu-btn {
+    background: linear-gradient(135deg, #2f755f 0%, #438d73 55%, #5ca487 100%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    font-size: 1.25rem;
+    color: #ffffff;
+    cursor: pointer;
+    width: 44px;
+    height: 44px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s;
+}
+
+.mobile-menu-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.surgeon-form-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #e0f2f1;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-bottom: 8px;
+}
+
+.eyebrow-dot {
+    width: 6px;
+    height: 6px;
+    background-color: #ffffff;
+    border-radius: 50%;
+}
+
+/* Main Heading Title */
+.topbar.dashboard-header-style h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 4px 0;
+    line-height: 1.2;
+}
+
+
+
+/* Right Meta Note */
+.header-right-meta {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.9);
+    white-space: nowrap;
+    z-index: 1;
+}
+
+.required-note-badge {
+    background: rgba(255, 255, 255, 0.12);
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+
+/* =========================================================
+   RESPONSIVE DESIGN (MOBILE STYLING)
+   ========================================================= */
+@media (max-width: 768px) {
+    .topbar.dashboard-header-style {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 18px;
+        gap: 15px;
+    }
+
+    .mobile-menu-btn {
+        display: inline-flex;
+    }
+
+    .header-right-meta {
+        align-self: flex-start;
+    }
+}
+
 
 
 /* ============================================================
@@ -64,17 +186,12 @@
     display: flex;
     align-items: center;
     gap: 11px;
-
     padding: 13px 16px;
     margin-bottom: 20px;
-
     border-radius: 11px;
-
     font-size: 13px;
     line-height: 1.5;
-
-    box-shadow:
-        0 6px 18px rgba(39, 72, 57, .055);
+    box-shadow:0 6px 18px rgba(39, 72, 57, .055);
 }
 
 .surgeon-alert i {
@@ -89,12 +206,9 @@
 .surgeon-form-card,
 .surgeon-list-card {
     overflow: hidden;
-
     border: 1px solid #cbded5;
     border-radius: 20px;
-
     background: rgba(255,255,255,.96);
-
     box-shadow:
         0 18px 42px rgba(39, 78, 61, .085),
         0 3px 8px rgba(39, 78, 61, .035);
@@ -112,113 +226,18 @@
 
 
 /* ============================================================
-   FORM HEADER
-   ============================================================ */
-
-.surgeon-form-header {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-
-    gap: 13px;
-
-    padding: 22px 27px;
-
-    margin: 0;
-
-    background:
-        linear-gradient(
-            135deg,
-            #d9eee3 0%,
-            #eaf6f1 52%,
-            #f7fbf9 100%
-        );
-
-    border-bottom: 1px solid #c9ded4;
-}
-
-
-.surgeon-form-icon {
-    width: 45px;
-    height: 45px;
-
-    flex: 0 0 45px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 13px;
-
-    background: rgba(255,255,255,.88);
-
-    border: 1px solid #bdd9cc;
-
-    color: #337e60;
-
-    font-size: 19px;
-}
-
-
-.surgeon-form-eyebrow {
-    display: block;
-
-    color: #438568;
-
-    font-size: 10px;
-    font-weight: 850;
-
-    letter-spacing: .12em;
-
-    text-transform: uppercase;
-
-    margin-bottom: 0;
-}
-
-
-.surgeon-form-heading {
-    margin: 3px 0 0;
-
-    color: #203b2f;
-
-    font-size: 20px;
-    font-weight: 850;
-
-    letter-spacing: -.025em;
-}
-
-
-.surgeon-form-description {
-    margin: 4px 0 0;
-
-    color: #71877d;
-
-    font-size: 12px;
-
-    line-height: 1.5;
-}
-
-
-/* ============================================================
    SECTION
    ============================================================ */
 
 .surgeon-section-title {
     display: flex;
     align-items: center;
-
     gap: 11px;
-
     margin: 0;
-
     padding: 25px 27px 16px;
-
     box-sizing: border-box;
-
     border-top: 1px solid #dce9e4;
-
-    background:
-        linear-gradient(
+    background: linear-gradient(
             180deg,
             #ffffff 0%,
             #fbfdfc 100%
@@ -1882,95 +1901,6 @@
 }
 
 
-/* ============================================================
-   OLD MODAL SUPPORT
-   ============================================================ */
-
-.surgeon-modal {
-    border: 0;
-
-    border-radius: 18px;
-
-    overflow: hidden;
-}
-
-
-.surgeon-modal .modal-header {
-    padding: 22px 24px;
-
-    border-bottom: 1px solid #e7efeb;
-
-    background: #ffffff;
-}
-
-
-.surgeon-modal .modal-title {
-    margin: 0;
-
-    color: #263b34;
-
-    font-size: 18px;
-    font-weight: 850;
-}
-
-
-.surgeon-modal .modal-subtitle {
-    margin: 4px 0 0;
-
-    color: #8a9892;
-
-    font-size: 12px;
-}
-
-
-.surgeon-modal .modal-body {
-    padding: 24px;
-
-    background: #ffffff;
-}
-
-
-.surgeon-modal .modal-footer {
-    padding: 16px 24px;
-
-    border-top: 1px solid #e7efeb;
-
-    background: #fbfdfc;
-}
-
-
-.modal-section-title {
-    display: flex;
-    align-items: center;
-
-    gap: 8px;
-
-    margin-bottom: 16px;
-
-    color: #397c63;
-
-    font-size: 13px;
-    font-weight: 800;
-}
-
-
-.modal-section-title i {
-    width: 28px;
-    height: 28px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 8px;
-
-    background: #eaf6f1;
-}
-
-
-.modal-section-spacing {
-    margin-top: 28px;
-}
 
 
 /* ============================================================

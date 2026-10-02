@@ -1068,36 +1068,58 @@ require_once "../includes/sidebar.php";
 
 <main class="main-content schedule-main-content">
 
-    <!-- ========================================================
-         PAGE HEADER
-         ======================================================== -->
+					<!-- =====================================================
+							 PAGE HEADER
+						====================================================== -->
 
-    <header class="schedule-page-header">
-        <div class="schedule-page-header-copy">
-            <div class="schedule-kicker">
-                Operating Room Management
-            </div>
-            <div class="schedule-title-row">
-                <div class="schedule-title-icon">
-                    <i class="bi bi-calendar2-plus"></i>
-                </div>
-                <div>
-                    <h1>OR Scheduling</h1>
-                    <p>
-                        Create and manage operating room schedules,
-                        surgical teams, procedures, and patient assignments.
-                    </p>
-                </div>
-            </div>
-        </div>
+					<header class="topbar dashboard-header-style">      
+					<!-- Left Side: Mobile Menu Button + Title Group -->
+					<div class="header-left-group">
+						<button
+							type="button"
+							class="mobile-menu-btn"
+							onclick="document.querySelector('.sidebar')?.classList.toggle('show'); document.querySelector('.sidebar-overlay')?.classList.toggle('show');"
+							aria-label="Open menu"
+						>
+							<i class="bi bi-list"></i>
+						</button>
+						
+						<div class="header-text-block">
+							<div class="patient-form-eyebrow">                                
+								<span class="eyebrow-dot"></span> Operating Room Management
+							</div>
+							
+							<!-- Flex container to align icon and heading side-by-side -->
+							<div style="display: flex; align-items: center; gap: 12px; margin-top: 4px; margin-bottom: 4px;">
+								<div class="schedule-title-icon" style="margin-bottom: 0;">
+									<i class="bi bi-calendar2-plus"></i>
+								</div>
+								<h2 style="margin: 0;">                        
+									OR Scheduling
+								</h2>
+							</div>
 
+							<p class="header-subtitle">
+								Create and manage operating room schedules,
+								surgical teams, procedures, and patient assignments.
+							</p>
+						</div>
+					</div>
 
-        <div class="schedule-header-status">
-            <span class="live-dot"></span>
-            <span>Scheduling Workspace</span>
-        </div>
-    </header>
-
+					<!-- Right Side: Action Button -->
+					<div class="header-right-meta">
+						<div class="schedule-header-status">
+							<span class="live-dot"></span>
+							<span>Scheduling Workspace</span>
+						</div>
+					</div>
+				</header>
+	
+	
+	
+	
+	
+	
 
     <!-- ========================================================
          ALERTS

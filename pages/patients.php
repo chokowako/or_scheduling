@@ -47,7 +47,8 @@ if (isset($_GET['edit']) && $can_manage_patients) {
                 patient_room_no,
                 bed_no,
                 contact_number,
-                address
+                address,
+                Status AS status
             FROM patients
             WHERE patient_id = :patient_id
             LIMIT 1
@@ -60,7 +61,6 @@ if (isset($_GET['edit']) && $can_manage_patients) {
         $edit_patient = $stmt->fetch();
 
         if (!$edit_patient) {
-
             $message = "Patient record not found.";
             $message_type = "danger";
         }
@@ -139,6 +139,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $bed_no = trim($_POST['bed_no'] ?? '');
         $contact_number = trim($_POST['contact_number'] ?? '');
         $address = trim($_POST['address'] ?? '');
+		
+		// 1. Capture and validate status (defaults to 'Active')
+        $allowed_statuses = ['Active', 'Inactive', 'Completed'];
+        $posted_status = trim($_POST['status'] ?? 'Active');
+        $status = in_array($posted_status, $allowed_statuses, true) ? $posted_status : 'Active';
 
 
         if (
@@ -157,8 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             try {
 
-                $sql = "
-                    INSERT INTO patients
+                $sql = "INSERT INTO patients
                     (
                         patient_number,
                         registry_date,
@@ -171,7 +175,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         patient_room_no,
                         bed_no,
                         contact_number,
-                        address
+                        address,
+                        status
                     )
                     VALUES
                     (
@@ -186,11 +191,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         :patient_room_no,
                         :bed_no,
                         :contact_number,
-                        :address
-                    )
-                ";
+                        :address,
+                        :status
+                    )";
 
-                $stmt = $pdo->prepare($sql);
+              $stmt = $pdo->prepare($sql);
 
                 $stmt->execute([
                     ':patient_number' =>
@@ -243,7 +248,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ':address' =>
                         $address !== ""
                             ? $address
-                            : null
+                            : null,
+
+                    // 2. Bind the status parameter
+                    ':status' =>
+                        $status
                 ]);
 
                 header("Location: patients.php?success=added");
@@ -301,6 +310,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $sex =
             trim($_POST['sex'] ?? '');
+				
+		$status          
+		= trim($_POST['status'] ?? 'Active');
 
         $patient_room_no =
             trim($_POST['patient_room_no'] ?? '');
@@ -343,6 +355,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         last_name = :last_name,
                         birth_date = :birth_date,
                         sex = :sex,
+						status = :status,
                         patient_room_no = :patient_room_no,
                         bed_no = :bed_no,
                         contact_number = :contact_number,
@@ -384,6 +397,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $sex !== ""
                             ? $sex
                             : null,
+							
+					 'status'=>
+							$status,
 
                     ':patient_room_no' =>
                         $patient_room_no !== ""
@@ -409,7 +425,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $patient_id
                 ]);
 
-                header("Location: patients.php?success=updated");
+				// Build the redirect URL using the hidden POST values from the modal
+                $redirect_params = [];
+                
+                if (!empty($_POST['return_status'])) {
+                    $redirect_params['status'] = $_POST['return_status'];
+                }
+                if (!empty($_POST['return_search'])) {
+                    $redirect_params['search'] = $_POST['return_search'];
+                }
+                
+                $redirect_params['success'] = 'updated';
+                
+                $redirect_url = 'patients.php' . (!empty($redirect_params) ? '?' . http_build_query($redirect_params) : '');
+
+                header("Location: " . $redirect_url);
                 exit;
 
             } catch (PDOException $e) {
@@ -620,7 +650,9 @@ $params = [];
 
 // 1. Default rule: Hide completed records unless specifically filtered/searched
 if ($status_filter === 'active') {
-    $whereClauses[] = "status != 'Completed'"; 
+    $whereClauses[] = "status NOT IN ('Inactive', 'Completed')"; 
+} elseif ($status_filter === 'inactive') {
+    $whereClauses[] = "status = 'Inactive'";
 } elseif ($status_filter === 'completed') {
     $whereClauses[] = "status = 'Completed'";
 }
@@ -699,6 +731,9 @@ $patients = $stmt->fetchAll();
 require_once "../includes/header.php";
 require_once "../includes/sidebar.php";
 
+
+	
+
 ?>
 
 <link
@@ -735,27 +770,71 @@ require_once "../includes/sidebar.php";
         </div>
 
     <?php endif; ?>
+	
+	
+	
+	
+	
+		<!-- =====================================================
+			TOPBAR
+		 ===================================================== -->
+
+		<header class="topbar dashboard-header-style">                
+				<?php if ($can_manage_patients): ?>
+					
+					<!-- Left Side: Mobile Menu Button + Text Group -->
+					<div class="header-left-group">
+						<button
+							type="button"
+							class="mobile-menu-btn"
+							onclick="document.querySelector('.sidebar')?.classList.toggle('show')"
+							aria-label="Open menu"
+						>
+							<i class="bi bi-list"></i>
+						</button>
+						
+						<div class="header-text-block">
+								<div class="patient-form-eyebrow">
+									<span class="eyebrow-dot"></span> PATIENT REGISTRATION
+								</div>
+							<h2>
+								Add Patient
+							</h2>
+							<p class="header-subtitle">
+								Enter the patient's information below.
+							</p>
+						</div>
+						
+					</div>
+
+					<!-- Right Side: Required Note / Counter Element -->
+					<div class="header-right-meta">
+						<div class="required-note-badge">
+							<span class="required-asterisk">*</span> Required fields
+						</div>
+					</div>
+				<?php endif; ?>                            
+			</header>
+
+				
 
 
     <!-- =====================================================
          ADD PATIENT CARD
-         ===================================================== -->
+     ===================================================== -->
 
     <?php if ($can_manage_patients): ?>
 
         <section class="patient-form-card">
+		
 
-
-            <!-- FORM HEADER -->
+            <!-- FORM HEADER 
 
             <div class="patient-form-header">
-
+			
                 <div class="patient-form-heading">
-
                     <div class="patient-form-icon">
-
                         <i class="bi bi-person-plus-fill"></i>
-
                     </div>
 
                     <div>
@@ -771,20 +850,14 @@ require_once "../includes/sidebar.php";
                         <p>
                             Enter the patient's information below.
                         </p>
-
                     </div>
-
                 </div>
-
-
                 <div class="required-note">
 
                     <span>*</span>
                     Required fields
-
                 </div>
-
-            </div>
+            </div>  -->
 
 
             <!-- =================================================
@@ -1030,10 +1103,25 @@ require_once "../includes/sidebar.php";
                             </select>
 
                         </div>
-
-
+						
+						
+						<!-- Status Dropdown -->
+							<div class="patient-field">
+								<label>
+									Status
+									<span>*</span>
+								</label>
+								<select
+									name="status"
+									class="form-select"
+									required
+								>
+									<option value="Active" selected>Active</option>
+									<option value="Inactive">Inactive</option>
+									<option value="Completed">Completed</option>
+								</select>
+							</div>
                     </div>
-
                 </div>
 
 
@@ -1149,27 +1237,19 @@ require_once "../includes/sidebar.php";
                      ================================================= -->
 
                 <div class="patient-form-actions">
-
                     <div class="patient-form-note">
-
                         <i class="bi bi-info-circle"></i>
-
                         <span>
                             Make sure the patient information is correct before saving.
                         </span>
-
                     </div>
-
 
                     <button
                         type="reset"
                         class="btn-patient-secondary"
                     >
-
                         <i class="bi bi-arrow-counterclockwise"></i>
-
                         Clear
-
                     </button>
 
 
@@ -1177,11 +1257,8 @@ require_once "../includes/sidebar.php";
                         type="submit"
                         class="btn-patient-primary"
                     >
-
                         <i class="bi bi-person-plus-fill"></i>
-
                         Save Patient
-
                     </button>
 
                 </div>
@@ -1264,10 +1341,11 @@ require_once "../includes/sidebar.php";
 
                 </div>
 				
-				<!-- Status Filter Dropdown -->
+					<!-- Status Filter Dropdown -->
 					<div class="col-md-3">
 						<select name="status" class="form-select" onchange="this.form.submit()">
 							<option value="active" <?= ($status_filter === 'active') ? 'selected' : '' ?>>Active Patients</option>
+							<option value="inactive" <?= ($status_filter === 'inactive') ? 'selected' : '' ?>>Inactive Patients</option>
 							<option value="completed" <?= ($status_filter === 'completed') ? 'selected' : '' ?>>Completed</option>
 							<option value="all" <?= ($status_filter === 'all') ? 'selected' : '' ?>>All Records</option>
 						</select>
@@ -1601,31 +1679,38 @@ require_once "../includes/sidebar.php";
                                 </td>
 
                                 <!-- Actions -->
-                                <td>
-                                    <?php if ($can_manage_patients): ?>
-                                        <div class="patient-actions">
+									<td>
+										<?php if ($can_manage_patients): ?>
 											<div class="patient-actions">
-											
-												<a href="patients.php?edit=<?= intval($patient['patient_id']) ?>"
-												class="patient-action-btn patient-edit-btn" 
-												title="Edit patient">
-												<i class="bi bi-pencil-fill"></i>
-												</a>
-																					
-												<a href="patients.php?delete=<?= intval($patient['patient_id']) ?>" 
-												class="patient-action-btn patient-delete-btn" 
-												title="Delete patient">
-												<i class="bi bi-trash-fill"></i>
-												</a>
-																
+												<div class="patient-actions">
+													
+													<?php
+													// Dynamically build the edit URL to preserve current filters (status, search, etc.)
+													$edit_params = $_GET;
+													$edit_params['edit'] = intval($patient['patient_id']);
+													$edit_url = 'patients.php?' . http_build_query($edit_params);
+													?>
+													
+													<a href="<?= htmlspecialchars($edit_url) ?>"
+													   class="patient-action-btn patient-edit-btn" 
+													   title="Edit patient">
+													   <i class="bi bi-pencil-fill"></i>
+													</a>
+																						
+													<a href="patients.php?delete=<?= intval($patient['patient_id']) ?>" 
+													   class="patient-action-btn patient-delete-btn" 
+													   title="Delete patient">
+													   <i class="bi bi-trash-fill"></i>
+													</a>
+																	
+												</div>
 											</div>
-                                        </div>
-                                    <?php else: ?>
-                                        <span class="muted-text">
-                                            View only
-                                        </span>
-                                    <?php endif; ?>
-                                </td>
+										<?php else: ?>
+											<span class="muted-text">
+												View only
+											</span>
+										<?php endif; ?>
+									</td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -1741,6 +1826,12 @@ require_once "../includes/sidebar.php";
                     name="patient_id"
                     value="<?= intval($edit_patient['patient_id'] ?? 0) ?>"
                 >
+				
+				
+				<input type="hidden" name="return_status" value="<?= htmlspecialchars($_GET['status'] ?? '') ?>">
+                <input type="hidden" name="return_search" value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
+				
+				
 
                 <!-- =================================================
                      SECTION 01
@@ -1896,6 +1987,24 @@ require_once "../includes/sidebar.php";
                                 <option value="Female" <?= ($edit_patient['sex'] ?? '') === 'Female' ? 'selected' : '' ?>>Female</option>
                             </select>
                         </div>
+						
+									
+						<!-- Status Dropdown -->
+							<div class="patient-field">
+								<label>
+									Status
+									<span>*</span>
+								</label>
+								<select
+									name="status"
+									class="form-select"
+									required
+								>
+									<option value="Active" <?= (strcasecmp($edit_patient['status'] ?? '', 'Active') === 0) ? 'selected' : '' ?>>Active</option>
+									<option value="Inactive" <?= (strcasecmp($edit_patient['status'] ?? '', 'Inactive') === 0) ? 'selected' : '' ?>>Inactive</option>
+									<option value="Completed" <?= (strcasecmp($edit_patient['status'] ?? '', 'Completed') === 0) ? 'selected' : '' ?>>Completed</option>
+								</select>
+							</div>									
                     </div>
                 </div>
 
@@ -1972,7 +2081,7 @@ require_once "../includes/sidebar.php";
                     </div>
                 </div>
 
-                <!-- =================================================
+               <!-- =================================================
                      MODAL ACTIONS
                      ================================================= -->
                 <div class="patient-modal-actions">
@@ -1983,8 +2092,15 @@ require_once "../includes/sidebar.php";
                         </span>
                     </div>
 
+                    <?php
+                    // Build the cancel URL by keeping all current GET parameters (status, search, page, etc.) except 'edit'
+                    $cancel_params = $_GET;
+                    unset($cancel_params['edit']);
+                    $cancel_url = 'patients.php' . (!empty($cancel_params) ? '?' . http_build_query($cancel_params) : '');
+                    ?>
+
                     <a
-                        href="patients.php<?= $search !== '' ? '?search=' . urlencode($search) : '' ?>"
+                        href="<?= htmlspecialchars($cancel_url) ?>"
                         class="btn-patient-secondary"
                     >
                         <i class="bi bi-x-circle"></i>
@@ -2080,6 +2196,8 @@ document.addEventListener("DOMContentLoaded", function () {
     var deleteModal = new bootstrap.Modal(document.getElementById('deletePatientModal'));
     deleteModal.show();
 });
+
+
 </script>
 <?php endif; ?>
 

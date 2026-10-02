@@ -102,7 +102,7 @@ require_once "config/database.php";
 				/* Update Patient Record to Complete */
 				if ($patient_id) {
 					$stmt = $pdo->prepare("
-						UPDATE patients SET status = 'Complete'
+						UPDATE patients SET status = 'Completed'
 						WHERE patient_id = ?");
 					$stmt->execute([
 						$patient_id
@@ -715,12 +715,15 @@ $rooms = $roomsStmt->fetchAll(PDO::FETCH_ASSOC);
 						</a>
 
 						<a
-							href="pages/schedules.php"
+								href="/or_scheduling/pages/ORschedules.php"
+							target="_blank"
+							rel="noopener noreferrer"
 							class="hero-secondary-btn"
 						>
 							<i class="bi bi-calendar3"></i>
 							<span>View Schedule</span>
 						</a>
+					
 					</div>
 				</div>
 
@@ -1173,7 +1176,7 @@ $rooms = $roomsStmt->fetchAll(PDO::FETCH_ASSOC);
 
 
 					<div class="rooms-footer">
-						<a href="pages/facilities.php">
+						<a href="pages/rooms.php">
 							<i class="bi bi-plus-circle"></i>
 							<span>
 								Manage Operating Rooms

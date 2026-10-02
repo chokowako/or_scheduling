@@ -31,53 +31,112 @@
     box-sizing: border-box;
 }
 
-/* ---------------------------------------------------------
-   HERO HEADER SECTION
-   --------------------------------------------------------- */
-.reports-hero {
+
+
+
+/* =========================================================
+   EXACT COMMAND CENTER GRADIENT BANNER STYLE
+   ========================================================= */
+.topbar.dashboard-header-style {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: linear-gradient(135deg, #1b4d3e 0%, #287256 100%);
-    padding: 32px 36px;
-    border-radius: 20px;
+    /* Smooth gradient from left to right matching your command center */
+   background: linear-gradient(135deg, #2f755f 0%, #438d73 55%, #5ca487 100%);
+    padding: 24px 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    margin-bottom: 24px;
+    gap: 20px;
     color: #ffffff;
-    box-shadow: 0 10px 25px -5px rgba(32, 91, 70, 0.25);
-    margin-bottom: 32px;
-    animation: fadeInUp 0.45s ease-out forwards;
+    position: relative;
+    overflow: hidden;
 }
 
-.hero-kicker {
+/* Optional: Subtle decorative background ring to mimic the command center right side */
+.topbar.dashboard-header-style::after {
+    content: '';
+    position: absolute;
+    right: -40px;
+    top: -50px;
+    width: 200px;
+    height: 200px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+/* Left Group */
+.header-left-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    flex: 1;
+    z-index: 1;
+}
+
+/* Mobile Menu Button */
+.mobile-menu-btn {
+   background: linear-gradient(135deg, #2f755f 0%, #438d73 55%, #5ca487 100%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    font-size: 1.25rem;
+    color: #ffffff;
+    cursor: pointer;
+    width: 44px;
+    height: 44px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s;
+}
+
+.mobile-menu-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* Eyebrow Label with pill style */
+.patient-form-eyebrow {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-size: 11px;
+    font-size: 0.7rem;
     font-weight: 700;
-    letter-spacing: 0.08em;
+    color: #e0f2f1;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
     background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(4px);
-    padding: 4px 12px;
+    padding: 4px 10px;
     border-radius: 20px;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
-.hero-content h1 {
-    margin: 0 0 6px;
-    font-size: 30px;
-    font-weight: 800;
-    letter-spacing: -0.02em;
+.eyebrow-dot {
+    width: 6px;
+    height: 6px;
+    background-color: #ffffff;
+    border-radius: 50%;
 }
 
-.hero-content p {
-    margin: 0;
-    font-size: 14px;
+/* Main Heading Title */
+.topbar.dashboard-header-style h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 4px 0;
+    line-height: 1.2;
+}
+
+/* Subtitle description */
+.header-subtitle {
+    font-size: 0.85rem;
     color: rgba(255, 255, 255, 0.85);
-    max-width: 580px;
-    line-height: 1.5;
+    margin: 0;
 }
 
-.hero-badge {
+/* Right Meta Note */
+.header-right-meta {
     display: flex;
     align-items: center;
     gap: 14px;
@@ -88,21 +147,75 @@
     border-radius: 14px;
 }
 
-.hero-badge i {
+
+.header-right-meta i {
     font-size: 26px;
     color: #8be0be;
 }
 
-.hero-badge strong {
+.header-right-meta strong {
     display: block;
     font-size: 15px;
     font-weight: 700;
 }
 
-.hero-badge span {
+.header-right-meta span {
     font-size: 11px;
     color: rgba(255, 255, 255, 0.75);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   RESPONSIVE DESIGN (MOBILE STYLING)
+   ========================================================= */
+@media (max-width: 768px) {
+    .topbar.dashboard-header-style {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 18px;
+        gap: 15px;
+    }
+
+    .mobile-menu-btn {
+        display: inline-flex;
+    }
+
+    .header-right-meta {
+        align-self: flex-start;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* ---------------------------------------------------------
    PANEL & GRID
@@ -345,9 +458,15 @@
 .reports-grid .report-card:nth-child(5) { animation-delay: 0.25s; }
 .reports-grid .report-card:nth-child(6) { animation-delay: 0.30s; }
 
-/* ---------------------------------------------------------
-   RESPONSIVE LAYOUT
-   --------------------------------------------------------- */
+
+
+
+
+
+/* =========================================================
+   RESPONSIVE DESIGN (MOBILE & TABLET STYLING)
+   ========================================================= */
+
 @media (max-width: 1024px) {
     .reports-page {
         width: 100%;
@@ -355,14 +474,93 @@
         padding: 24px 20px;
     }
 
-    .reports-hero {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 20px;
+    .reports-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .reports-page {
+        padding: 16px 12px 40px;
     }
 
-    .hero-badge {
-        width: 100%;
-        box-sizing: border-box;
+    /* Topbar Banner Stack */
+    .topbar.dashboard-header-style {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 16px;
+        gap: 14px;
+        border-radius: 12px;
+    }
+
+    .mobile-menu-btn {
+        display: inline-flex;
+    }
+
+    .header-left-group {
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .topbar.dashboard-header-style h2 {
+        font-size: 1.25rem;
+    }
+
+    .header-subtitle {
+        font-size: 0.8rem;
+    }
+
+    /* Right Meta Note full width on mobile */
+    .header-right-meta {
+        align-self: stretch;
+        justify-content: flex-start;
+        padding: 10px 14px;
+        border-radius: 10px;
+    }
+
+    .header-right-meta i {
+        font-size: 22px;
+    }
+
+    .header-right-meta strong {
+        font-size: 13px;
+    }
+
+    .header-right-meta span {
+        font-size: 10px;
+    }
+
+    /* Panel Header adjustments */
+    .panel-header {
+        margin-bottom: 16px;
+    }
+
+    .panel-header h2 {
+        font-size: 18px;
+    }
+
+    .panel-header p {
+        font-size: 12px;
+    }
+
+    /* Single column grid for compact screens */
+    .reports-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    /* Report Cards padding for mobile thumb touch */
+    .report-card {
+        padding: 18px;
+    }
+
+    .report-card-content h3 {
+        font-size: 16px;
+    }
+
+    .report-card-content p {
+        font-size: 12px;
+        margin-bottom: 16px;
     }
 }

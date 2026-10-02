@@ -293,50 +293,7 @@ foreach ($procedures as $procedure) {
 
 
 
-    <!-- =====================================================
-         PAGE HEADER
-         ===================================================== -->
-
-    <div class="page-header">
-
-        <div>
-
-            <div class="page-title-row">
-
-                <div class="page-title-icon">
-                    <i class="bi bi-clipboard2-pulse-fill"></i>
-                </div>
-
-                <div>
-
-                    <h1>Procedures</h1>
-
-                    <p>
-                        Manage surgical procedures available in the hospital.
-                    </p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <?php if ($can_manage_procedures): ?>
-
-            <button
-                type="button"
-                class="btn-add-procedure"
-                data-bs-toggle="modal"
-                data-bs-target="#addProcedureModal"
-            >
-                <i class="bi bi-plus-lg"></i>
-                Add Procedure
-            </button>
-
-        <?php endif; ?>
-
-    </div>
+   
 
 
     <!-- =====================================================
@@ -362,6 +319,62 @@ foreach ($procedures as $procedure) {
         </div>
 
     <?php endif; ?>
+	
+	
+	
+			 <!-- =====================================================
+				 TOPBAR
+				 ===================================================== -->
+
+			<header class="topbar dashboard-header-style">    
+
+					<!-- Left Side: Mobile Menu Button + Text Group -->
+					<div class="header-left-group">
+						<button
+							type="button"
+							class="mobile-menu-btn"
+							onclick="document.querySelector('.sidebar')?.classList.toggle('show')"
+							aria-label="Open menu"
+						>
+							<i class="bi bi-list"></i>
+						</button>	
+						
+						
+						<div class="header-text-block">							
+							<h2>
+								Procedures
+							</h2>
+							<p class="header-subtitle">
+								Manage surgical procedures available in the hospital.
+							</p>
+						</div>
+						
+						
+					
+						
+					</div>
+
+						
+						<!-- Right Side: Required Note / Counter Element -->
+						<div class="header-right-meta">
+							<?php if ($can_manage_procedures): ?>
+
+								<button
+									type="button"
+									class="btn-add-procedure"
+									data-bs-toggle="modal"
+									data-bs-target="#addProcedureModal"
+								>
+									<i class="bi bi-plus-lg"></i>
+									Add Procedure
+								</button>
+
+							<?php endif; ?>
+						</div>
+			</header>
+	
+	
+	
 
 
     <!-- =====================================================

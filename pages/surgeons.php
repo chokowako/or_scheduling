@@ -348,12 +348,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				</div>
 			<?php endif; ?>
 
+
+				<!-- =====================================================
+					TOPBAR
+				 ===================================================== -->
+
+				<header class="topbar dashboard-header-style">                
+						<?php if ($can_manage_surgeons): ?>
+							
+							<!-- Left Side: Mobile Menu Button + Text Group -->
+							<div class="header-left-group">
+								<button
+									type="button"
+									class="mobile-menu-btn"
+									onclick="document.querySelector('.sidebar')?.classList.toggle('show')"
+									aria-label="Open menu"
+								>
+									<i class="bi bi-list"></i>
+								</button>
+								
+								<div class="header-text-block">
+									<div class="surgeon-form-eyebrow">
+										<span class="eyebrow-dot"></span> SURGEON MANAGEMENT
+									</div>
+									<h2>
+										Add Surgeon
+									</h2>
+									<p class="header-subtitle">
+										Register a surgeon for operating room scheduling.
+									</p>
+								</div>
+							</div>
+
+							<!-- Right Side: Required Note / Counter Element -->
+							<div class="header-right-meta">
+								<div class="required-note-badge">
+									<span class="required-asterisk">*</span> Required fields
+								</div>
+							</div>
+
+						<?php endif; ?>                            
+					</header>
+					
+
 			<!-- =========================================================
 			 SURGEON FORM
 			 ========================================================= -->
-
-			<?php if ($can_manage_surgeons): ?>
-				<section class="surgeon-form-card">
+			
+			<section class="surgeon-form-card">
+			
+			 <?php if ($can_manage_surgeons): ?>
+			
+			 <!-- FORM HEADER 
 					<div class="surgeon-form-header">
 						<div class="surgeon-form-icon">
 							<i class="bi bi-person-badge"></i>
@@ -375,8 +421,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 						<input
 							type="hidden"
 							name="action"
-							value="add"
-						>
+							value="add" > -->
+						
+						
+						
 							<!-- =================================================
 							 PERSONAL INFORMATION
 							 ================================================= -->

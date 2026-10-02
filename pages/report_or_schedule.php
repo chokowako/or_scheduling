@@ -186,16 +186,49 @@ $status_filter_label = !empty($status) ? htmlspecialchars(ucfirst($status)) : 'A
 
 <main class="schedule-report-page">
 
-    <div class="report-page-header">
-        <div>
-            <div class="report-breadcrumb">Reports / OR Schedule Report</div>
-            <h1>
-                <span class="page-title-icon"><i class="bi bi-calendar-event-fill"></i></span>
-                OR Schedule Report
-            </h1>
-            <p>View and filter operating room daily schedules and resource allocation.</p>
-        </div>
-    </div>
+
+
+
+	
+
+	
+	
+	<!-- =====================================================
+			TOPBAR
+		 ===================================================== -->
+
+		<header class="topbar dashboard-header-style">                
+					
+					<!-- Left Side: Mobile Menu Button + Text Group -->
+					<div class="header-left-group">
+						<button
+							type="button"
+							class="mobile-menu-btn"
+							onclick="document.querySelector('.sidebar')?.classList.toggle('show')"
+							aria-label="Open menu"
+						>
+							<i class="bi bi-list"></i>
+						</button>
+						
+						<div class="header-text-block"> 
+							<h2>
+								<i class="bi bi-calendar-event-fill"></i> OR Schedule Report
+							</h2>
+							
+							<p class="header-subtitle">
+								View and filter operating room daily schedules and resource allocation.
+							</p>
+						</div>					
+					</div>
+
+					<!-- Right Side: Required Note / Counter Element -->
+					<div class="header-right-meta">
+						<div class="required-note-badge">
+							<span class="required-asterisk">*</span> Required fields
+						</div>
+					</div>                           
+			</header>
+	
 
     <!-- Filter Form -->
     <section class="report-filter-card">

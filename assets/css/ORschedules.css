@@ -580,3 +580,432 @@ body {
     font-size: 12px;
     font-weight: 600;
 }
+
+
+
+
+
+
+
+
+/* ============================================================
+   MOBILE-ONLY VIEW OPTIMIZATION (max-width: 768px)
+   ============================================================ */
+@media (max-width: 768px) {
+    /* Lock the body and main wrapper to prevent full-page side-scrolling */
+    body, .or-dashboard {
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Compact Header for Mobile */
+    .dashboard-header {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 10px 14px;
+        gap: 8px;
+    }
+
+    .header-left {
+        gap: 10px;
+    }
+
+    .brand-badge {
+        width: 36px;
+        height: 36px;
+        font-size: 18px;
+        border-radius: 8px;
+    }
+
+    .header-title {
+        font-size: 14px;
+        letter-spacing: normal;
+    }
+
+    .header-subtitle {
+        font-size: 10px;
+    }
+
+    .header-right {
+        width: 100%;
+        justify-content: space-between;
+        gap: 6px;
+    }
+
+    .date-chip {
+        font-size: 11px;
+        padding: 4px 10px;
+    }
+
+    .clock-display {
+        font-size: 14px;
+    }
+
+    .sync-status, .live-pill {
+        font-size: 10px;
+        padding: 4px 8px;
+    }
+
+    /* STAT Banner text adjustments */
+    .stat-alert-banner {
+        padding: 8px 12px;
+    }
+
+    .stat-alert-content {
+        font-size: 11px;
+        text-align: center;
+    }
+
+    /* Metrics Bar - Stack cleanly or fit side-by-side */
+    .metrics-bar {
+        grid-template-columns: repeat(3, 1fr);
+        padding: 8px 12px;
+        gap: 6px;
+    }
+
+    .metric-card {
+        padding: 8px 10px;
+    }
+
+    .metric-value {
+        font-size: 18px;
+    }
+
+    .metric-label {
+        font-size: 9px;
+    }
+
+    /* Board Container - This becomes the dedicated smooth-scrolling area for all records */
+    .board-container {
+        flex: 1;
+        padding: 8px 12px 12px;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+        max-height: none !important;
+    }
+
+    /* Transform the desktop table into stacked mobile cards per room/record */
+    .schedule-table, 
+    .schedule-table tbody, 
+    .schedule-table tr, 
+    .schedule-table td {
+        display: block;
+        width: 100% !important;
+    }
+
+    .schedule-table thead {
+        display: none; /* Hide wide desktop column headers on mobile */
+    }
+
+    .schedule-table tbody tr {
+        margin-bottom: 12px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+        overflow: hidden;
+    }
+
+    /* Room Header block inside the mobile card */
+    .room-cell, 
+    .col-room {
+        width: 100% !important;
+        border-right: none !important;
+        border-bottom: 1px solid var(--border-color);
+        padding: 10px 12px;
+        background: #f8fafc;
+    }
+
+    .room-card {
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 10px;
+        padding: 4px;
+        border: none;
+        box-shadow: none;
+        background: transparent;
+    }
+
+    .room-card::before {
+        width: 100%;
+        height: 3px;
+        bottom: auto;
+        top: 0;
+    }
+
+    .room-icon-wrapper {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+
+    .room-title {
+        font-size: 1rem;
+    }
+
+    .case-badge {
+        font-size: 10px;
+        padding: 2px 8px;
+    }
+
+    /* Procedure Details block */
+    .details-cell {
+        padding: 10px 12px;
+    }
+
+    .case-card {
+        padding: 12px;
+        gap: 8px;
+    }
+
+    .card-main-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+
+    .card-procedure {
+        font-size: 16px;
+        line-height: 1.3;
+    }
+
+    .card-meta .surgeon-info {
+        font-size: 13px;
+        gap: 6px;
+    }
+
+    .card-meta .surgeon-info i {
+        font-size: 14px;
+    }
+
+    .card-meta .surgeon-info strong {
+        font-size: 11px;
+    }
+
+    .badge-priority {
+        font-size: 10px;
+        padding: 4px 10px;
+    }
+
+    /* Footer adjustments */
+    .dashboard-footer {
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        text-align: center;
+        padding: 8px 12px;
+        font-size: 10px;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ============================================================
+   HORIZONTAL SCROLLING MOBILE VIEW (max-width: 768px)
+   ============================================================ */
+@media (max-width: 768px) {
+    /* 1. App-like layout lock */
+    body, html {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background-color: #f1f5f9;
+        overflow: hidden;
+    }
+
+    .or-dashboard {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+    }
+
+    /* 2. Compact Header */
+    .dashboard-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 12px;
+        background: var(--bg-card);
+        border-bottom: 1px solid var(--border-color);
+        flex-shrink: 0;
+    }
+
+    .header-left {
+        gap: 8px;
+    }
+
+    .brand-badge {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+        border-radius: 6px;
+    }
+
+    .header-title-group .header-title {
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .header-title-group .header-subtitle {
+        font-size: 9px;
+    }
+
+    .header-right {
+        gap: 6px;
+    }
+
+    .date-chip, .sync-status, .live-pill {
+        display: none; /* Hide non-essentials to save space on mobile header */
+    }
+
+    .clock-display {
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    /* 3. Streamlined Emergency Banner */
+    .stat-alert-banner {
+        padding: 6px 12px;
+        flex-shrink: 0;
+    }
+
+    .stat-alert-content {
+        font-size: 10px;
+        text-align: center;
+    }
+
+    /* 4. Compact Metrics Bar */
+    .metrics-bar {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+        padding: 8px 12px;
+        background: #ffffff;
+        border-bottom: 1px solid var(--border-color);
+        flex-shrink: 0;
+    }
+
+    .metric-card {
+        padding: 6px 8px;
+        text-align: center;
+    }
+
+    .metric-value {
+        font-size: 16px;
+    }
+
+    .metric-label {
+        font-size: 8px;
+    }
+
+    /* 5. HORIZONTAL BOARD CONTAINER (Scrolls left/right & up/down) */
+    .board-container {
+        flex: 1;
+        padding: 12px;
+        overflow: auto !important; /* Enables both horizontal and vertical scrolling */
+        -webkit-overflow-scrolling: touch;
+        background: #f1f5f9;
+        max-height: none !important;
+    }
+
+    /* Keep the table structure intact for horizontal viewing */
+    .schedule-table-wrapper {
+        min-width: 650px; /* Forces the table to expand horizontally so users can swipe */
+        background: var(--bg-card);
+        border-radius: 8px;
+    }
+
+    .schedule-table {
+        width: 100%;
+        display: table !important;
+    }
+
+    .schedule-table thead {
+        display: table-header-group !important;
+    }
+
+    .schedule-table tbody {
+        display: table-row-group !important;
+    }
+
+    .schedule-table tr {
+        display: table-row !important;
+    }
+
+    .schedule-table th, 
+    .schedule-table td {
+        display: table-cell !important;
+    }
+
+    /* Table Header styling */
+    .schedule-table th {
+        padding: 10px 14px;
+        font-size: 11px;
+        white-space: nowrap;
+    }
+
+    /* Room and Details cells styling */
+    .room-cell, .col-room {
+        width: 200px !important;
+        padding: 12px;
+        vertical-align: middle;
+    }
+
+    .room-card {
+        padding: 10px;
+    }
+
+    .room-title {
+        font-size: 1.1rem;
+    }
+
+    .details-cell {
+        padding: 12px;
+        vertical-align: top;
+    }
+
+    .case-card {
+        padding: 12px;
+        min-width: 380px; /* Ensures procedure details have breathing room */
+    }
+
+    .card-procedure {
+        font-size: 15px;
+    }
+
+    .card-meta .surgeon-info {
+        font-size: 13px;
+    }
+
+    /* 6. Mini Footer */
+    .dashboard-footer {
+        padding: 6px 12px;
+        font-size: 9px;
+        text-align: center;
+        flex-shrink: 0;
+    }
+}

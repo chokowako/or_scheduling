@@ -10,9 +10,8 @@
    VARIABLES
 ========================================================= */
 
-:root {
-
-    --green-50: #f1faf6;
+   :root {
+   --green-50: #f1faf6;
     --green-100: #e2f4ec;
     --green-200: #c8e9db;
     --green-300: #9dd4bc;
@@ -27,7 +26,6 @@
     --text-700: #52665e;
     --text-600: #687a73;
     --text-500: #84938d;
-    --text-400: #a1ada8;
 
     --border: #e2ebe7;
     --background: #f5f8f7;
@@ -42,83 +40,163 @@
 ========================================================= */
 
 .rooms-page {
-
     width: calc(100% - var(--sidebar-width));
-
     margin-left: var(--sidebar-width);
-
     min-height: 100vh;
-
     padding: 32px 40px 50px;
-
-    background: var(--background);
-
-    color: var(--text-900);
-
-    box-sizing: border-box;
-}
-
-
-.rooms-page {
-
- 
-    width: calc(100% - var(--sidebar-width));
-
-    margin-left: var(--sidebar-width);
-
-    min-height: 100vh;
-
-    padding: 32px 40px 50px;
-
     background: var(--background);
 }
+
+
+
 
 
 /* =========================================================
-   PAGE HEADER
-========================================================= */
-
-.rooms-page-header {
+   EXACT COMMAND CENTER GRADIENT BANNER STYLE
+   ========================================================= */
+.topbar.dashboard-header-style {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 25px;
-    margin-bottom: 25px;
+    /* Smooth gradient from left to right matching your command center */
+   background: linear-gradient(135deg, #2f755f 0%, #438d73 55%, #5ca487 100%);
+    padding: 24px 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    margin-bottom: 24px;
+    gap: 20px;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
 }
 
+/* Optional: Subtle decorative background ring to mimic the command center right side */
+.topbar.dashboard-header-style::after {
+    content: '';
+    position: absolute;
+    right: -40px;
+    top: -50px;
+    width: 200px;
+    height: 200px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    pointer-events: none;
+}
 
-.rooms-kicker {
+/* Left Group */
+.header-left-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    flex: 1;
+    z-index: 1;
+}
 
-    font-size: 12px;
+/* Mobile Menu Button */
+.mobile-menu-btn {
+   background: linear-gradient(135deg, #2f755f 0%, #438d73 55%, #5ca487 100%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    font-size: 1.25rem;
+    color: #ffffff;
+    cursor: pointer;
+    width: 44px;
+    height: 44px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s;
+}
 
+.mobile-menu-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* Eyebrow Label with pill style */
+.patient-form-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.7rem;
     font-weight: 700;
-
-    letter-spacing: 1.4px;
-
-    color: var(--green-600);
-
-    margin-bottom: 6px;
+    color: #e0f2f1;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-bottom: 8px;
 }
 
+.eyebrow-dot {
+    width: 6px;
+    height: 6px;
+    background-color: #ffffff;
+    border-radius: 50%;
+}
 
-.rooms-page-header h1 {
-    margin: 0;
-    font-size: 28px;
+/* Main Heading Title */
+.topbar.dashboard-header-style h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 4px 0;
     line-height: 1.2;
-    font-weight: 700;
-    color: var(--text-900);
-    letter-spacing: -0.4px;
+}
+
+/* Subtitle description */
+.header-subtitle {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0;
+}
+
+/* Right Meta Note */
+.header-right-meta {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.9);
+    white-space: nowrap;
+    z-index: 1;
+}
+
+.required-note-badge {
+    background: rgba(255, 255, 255, 0.12);
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.required-asterisk {
+    color: #ffccbc;
+    font-weight: bold;
+}
+
+/* =========================================================
+   RESPONSIVE DESIGN (MOBILE STYLING)
+   ========================================================= */
+@media (max-width: 768px) {
+    .topbar.dashboard-header-style {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 18px;
+        gap: 15px;
+    }
+
+    .mobile-menu-btn {
+        display: inline-flex;
+    }
+
+    .header-right-meta {
+        align-self: flex-start;
+    }
 }
 
 
-.rooms-page-header p {
 
-    margin: 8px 0 0;
 
-    color: var(--text-600);
 
-    font-size: 14px;
-}
+
 
 
 /* =========================================================
@@ -126,13 +204,9 @@
 ========================================================= */
 
 .rooms-add-btn {
-
     border: none;
-
     border-radius: 10px;
-
     background: var(--green-600);
-
     color: #ffffff;
 
     padding: 11px 18px;

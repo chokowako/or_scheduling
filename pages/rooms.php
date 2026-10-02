@@ -239,44 +239,7 @@ require_once "../includes/sidebar.php";
 <main class="rooms-page">
 
 
-    <!-- =====================================================
-         PAGE HEADER
-    ====================================================== -->
 
-    <div class="rooms-page-header">
-
-        <div>
-
-            <div class="rooms-kicker">
-                OPERATING ROOMS
-            </div>
-
-            <h1>
-                Operating Rooms
-            </h1>
-
-            <p>
-                Manage operating rooms, availability, and room status.
-            </p>
-
-        </div>
-
-
-        <?php if ($can_manage_rooms): ?>
-
-            <button
-                type="button"
-                class="rooms-add-btn"
-                data-bs-toggle="modal"
-                data-bs-target="#addRoomModal"
-            >
-                <i class="bi bi-plus-lg"></i>
-                Add Operating Room
-            </button>
-
-        <?php endif; ?>
-
-    </div>
 
 
     <!-- =====================================================
@@ -284,15 +247,59 @@ require_once "../includes/sidebar.php";
     ====================================================== -->
 
     <?php if ($message !== ""): ?>
-
         <div
             class="alert alert-<?= htmlspecialchars($message_type) ?> rooms-alert"
             role="alert"
         >
             <?= htmlspecialchars($message) ?>
         </div>
-
     <?php endif; ?>
+	
+	
+						<!-- =====================================================
+							 PAGE HEADER
+						====================================================== -->
+
+					<header class="topbar dashboard-header-style">      
+						<!-- Left Side: Mobile Menu Button + Title Group -->
+						<div class="header-left-group">
+							<button
+								type="button"
+								class="mobile-menu-btn"
+								onclick="document.querySelector('.sidebar')?.classList.toggle('show'); document.querySelector('.sidebar-overlay')?.classList.toggle('show');"
+								aria-label="Open menu"
+							>
+								<i class="bi bi-list"></i>
+							</button>
+							
+							<div class="header-text-block">
+								<div class="patient-form-eyebrow">
+									<span class="eyebrow-dot"></span> OPERATING ROOMS
+								</div>
+								<h2>
+									Operating Rooms
+								</h2>
+								<p class="header-subtitle">
+									Manage operating rooms, availability, and room status.
+								</p>
+							</div>
+						</div>
+
+						<!-- Right Side: Action Button -->
+						<?php if ($can_manage_rooms): ?>
+							<div class="header-right-meta">
+								<button
+									type="button"
+									class="rooms-add-btn"
+									data-bs-toggle="modal"
+									data-bs-target="#addRoomModal"
+								>
+									<i class="bi bi-plus-lg"></i>
+									Add Operating Room
+								</button>
+							</div>
+						<?php endif; ?>
+					</header>
 
 
     <!-- =====================================================
@@ -301,17 +308,12 @@ require_once "../includes/sidebar.php";
 
     <div class="rooms-summary">
 
-
         <!-- TOTAL -->
 
         <div class="room-summary-card total">
-
             <div class="room-summary-icon">
-
                 <i class="bi bi-building-fill"></i>
-
             </div>
-
             <div class="room-summary-info">
 
                 <span>

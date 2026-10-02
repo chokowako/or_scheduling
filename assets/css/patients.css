@@ -9,125 +9,184 @@
 /* ============================================================
    PAGE
    ============================================================ */
+   :root {
+   --green-50: #f1faf6;
+    --green-100: #e2f4ec;
+    --green-200: #c8e9db;
+    --green-300: #9dd4bc;
+    --green-400: #72bd9e;
+    --green-500: #4da985;
+    --green-600: #358e6c;
+    --green-700: #287256;
+    --green-800: #205b46;
+
+    --text-900: #20352d;
+    --text-800: #2d443b;
+    --text-700: #52665e;
+    --text-600: #687a73;
+    --text-500: #84938d;
+
+    --border: #e2ebe7;
+    --background: #f5f8f7;
+    --white: #ffffff;
+
+    --sidebar-width: 260px;
+}
+   
 
 .patients-page {
-    width: calc(100% - 260px);
-    margin-left: 260px;
+    width: calc(100% - var(--sidebar-width));
+    margin-left: var(--sidebar-width);
     min-height: 100vh;
-    padding: 34px 38px 60px;
-    box-sizing: border-box;
-
-    background:
-        radial-gradient(
-            circle at 92% 0%,
-            rgba(73, 153, 115, 0.16),
-            transparent 27%
-        ),
-        radial-gradient(
-            circle at 4% 30%,
-            rgba(105, 177, 143, 0.10),
-            transparent 25%
-        ),
-        linear-gradient(
-            180deg,
-            #e4f2ec 0%,
-            #eef7f3 42%,
-            #e7f3ed 100%
-        );
-    font-family: Arial, sans-serif;
-}
-
-.patients-page > * {
-    width: 100%;
-    max-width: 1380px;
-    margin-left: auto;
-    margin-right: auto;
+    padding: 32px 40px 50px;
+    background: var(--background);
 }
 
 
-/* ============================================================
-   PAGE HEADER
-   ============================================================ */
 
-.patients-page-header {
+
+
+/* =========================================================
+   EXACT COMMAND CENTER GRADIENT BANNER STYLE
+   ========================================================= */
+.topbar.dashboard-header-style {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 25px;
+    /* Smooth gradient from left to right matching your command center */
+   background: linear-gradient(135deg, #2f755f 0%, #438d73 55%, #5ca487 100%);
+    padding: 24px 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     margin-bottom: 24px;
+    gap: 20px;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
 }
 
-.patients-header-copy {
-    min-width: 0;
-}
-
-.patients-kicker {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-
-    margin-bottom: 10px;
-    color: #34795d;
-    font-size: 11px;
-    font-weight: 850;
-    letter-spacing: .16em;
-    text-transform: uppercase;
-}
-
-.patients-kicker::before {
-    content: "";
-    width: 8px;
-    height: 8px;
-    flex: 0 0 8px;
+/* Optional: Subtle decorative background ring to mimic the command center right side */
+.topbar.dashboard-header-style::after {
+    content: '';
+    position: absolute;
+    right: -40px;
+    top: -50px;
+    width: 200px;
+    height: 200px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 50%;
-    background: #45a276;
-    box-shadow:
-        0 0 0 4px rgba(69, 162, 118, .14);
+    pointer-events: none;
 }
 
-.patients-title-row {
+/* Left Group */
+.header-left-group {
     display: flex;
-    align-items: center;
-    gap: 15px;
+    align-items: flex-start;
+    gap: 18px;
+    flex: 1;
+    z-index: 1;
 }
 
-.patients-title-icon {
-    width: 57px;
-    height: 57px;
-    flex: 0 0 57px;
-    display: flex;
+/* Mobile Menu Button */
+.mobile-menu-btn {
+   background: linear-gradient(135deg, #2f755f 0%, #438d73 55%, #5ca487 100%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    font-size: 1.25rem;
+    color: #ffffff;
+    cursor: pointer;
+    width: 44px;
+    height: 44px;
+    display: none;
     align-items: center;
     justify-content: center;
-    border-radius: 16px;
-    background:
-        linear-gradient(
-            145deg,
-            #d0ebde,
-            #f4fbf7
-        );
-
-    border: 1px solid #b9dccb;
-    color: #2f7d5e;
-    font-size: 23px;
-    box-shadow:
-        0 10px 25px rgba(45, 107, 80, .10);
+    flex-shrink: 0;
+    transition: background 0.2s;
 }
 
-.patients-page-header h1 {
+.mobile-menu-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* Eyebrow Label with pill style */
+.patient-form-eyebrow {
+  display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #e0f2f1;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-bottom: 8px;
+}
+
+.eyebrow-dot {
+    width: 6px;
+    height: 6px;
+    background-color: #ffffff;
+    border-radius: 50%;
+}
+
+/* Main Heading Title */
+.topbar.dashboard-header-style h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 4px 0;
+    line-height: 1.2;
+}
+
+/* Subtitle description */
+.header-subtitle {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.85);
     margin: 0;
-    color: #18382b;
-    font-size: 31px;
-    font-weight: 850;
-    letter-spacing: -.045em;
-    line-height: 1.1;
 }
 
-.patients-page-header p {
-    margin: 7px 0 0;
-    color: #657d72;
-    font-size: 13px;
-    line-height: 1.6;
+/* Right Meta Note */
+.header-right-meta {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.9);
+    white-space: nowrap;
+    z-index: 1;
 }
+
+.required-note-badge {
+    background: rgba(255, 255, 255, 0.12);
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+
+
+/* =========================================================
+   RESPONSIVE DESIGN (MOBILE STYLING)
+   ========================================================= */
+@media (max-width: 768px) {
+    .topbar.dashboard-header-style {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 18px;
+        gap: 15px;
+    }
+
+    .mobile-menu-btn {
+        display: inline-flex;
+    }
+
+    .header-right-meta {
+        align-self: flex-start;
+    }
+}
+
+
+
+
 
 
 /* ============================================================
@@ -271,7 +330,6 @@
     font-size: 19px;
 }
 
-.patient-form-eyebrow,
 .patient-list-eyebrow {
     display: block;
     color: #438568;
@@ -1451,6 +1509,75 @@
 
 
 
+/* ============================================================
+   CLEAN & SAFE MOBILE MODAL SCROLLING FIX
+   ============================================================ */
+
+/* Ensure the modal dialog has room to scroll on mobile */
+.patient-edit-modal .modal-dialog {
+    max-width: 1120px;
+    margin: 1.75rem auto;
+}
+
+/* On mobile views, make the modal fit the screen height nicely */
+@media (max-width: 768px) {
+    .patient-edit-modal .modal-dialog {
+        max-width: 100% !important;
+        margin: 8px;
+        height: calc(100vh - 16px);
+    }
+
+    .patient-edit-modal .modal-content {
+        height: 100%;
+        max-height: calc(100vh - 16px);
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Let the form fill the available space and allow the browser to scroll natively */
+    .patient-edit-modal form {
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        flex: 1 1 auto;
+    }
+
+    /* Stack footer buttons vertically on mobile so they are easy to click */
+    .patient-modal-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+        padding: 14px 18px;
+        gap: 10px;
+        background: #e3f1eb;
+    }
+
+    .patient-modal-actions .patient-form-note {
+        margin-right: 0;
+        text-align: center;
+        font-size: 0.75rem;
+    }
+
+    .patient-modal-actions .btn-patient-primary,
+    .patient-modal-actions .btn-patient-secondary {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* ==========================================================================
    PAGINATION FOOTER STYLING
@@ -1511,131 +1638,8 @@
 }
 
 
-/* ============================================================
-   RESPONSIVE — 900
-   ============================================================ */
-
-@media (max-width: 900px) {
-
-    .patient-edit-modal .modal-dialog {
-        max-width: calc(100% - 30px);
-
-        margin: 15px auto;
-    }
-
-    .patient-edit-modal .modal-dialog-scrollable .modal-content {
-        max-height: calc(100vh - 30px);
-    }
-
-    .patient-modal-section {
-        padding: 21px 20px 22px;
-    }
-
-    .patient-modal-header {
-        padding: 20px;
-    }
-
-    .patient-modal-actions {
-        padding: 17px 20px;
-    }
-
-}
 
 
-/* ============================================================
-   RESPONSIVE — 768
-   ============================================================ */
-
-@media (max-width: 768px) {
-
-    .patient-edit-modal .modal-dialog {
-        max-width: calc(100% - 20px);
-        margin: 10px auto;
-    }
-
-    .patient-edit-modal .modal-dialog-scrollable .modal-content {
-        max-height: calc(100vh - 20px);
-    }
-
-    .patient-modal-header {
-        padding: 18px;
-    }
-
-    .patient-modal-section {
-        padding: 20px 18px 21px;
-    }
-
-    .patient-modal-actions {
-        padding: 17px 18px;
-        flex-wrap: wrap;
-    }
-
-    .patient-modal-actions .patient-form-note {
-        flex-basis: 100%;
-        margin-right: 0;
-        margin-bottom: 3px;
-    }
-
-}
-
-
-/* ============================================================
-   RESPONSIVE — 600
-   ============================================================ */
-
-@media (max-width: 600px) {
-
-    .patient-edit-modal .modal-dialog {
-        max-width: calc(100% - 12px);
-        margin: 6px auto;
-    }
-
-    .patient-edit-modal .modal-dialog-scrollable .modal-content {
-        max-height: calc(100vh - 12px);
-        border-radius: 16px;
-    }
-
-    .patient-modal-header {
-        align-items: flex-start;
-        padding: 17px 15px;
-    }
-
-    .patient-modal-heading {
-        align-items: flex-start;
-    }
-
-    .patient-modal-icon {
-        width: 42px;
-        height: 42px;
-        flex-basis: 42px;
-        border-radius: 11px;
-        font-size: 17px;
-    }
-
-    .patient-modal-heading h2 {
-        font-size: 19px;
-    }
-
-    .patient-modal-heading p {
-        font-size: 11px;
-    }
-
-    .patient-modal-section {
-        padding: 18px 15px 20px;
-    }
-
-    .patient-modal-actions {
-        flex-direction: column;
-        align-items: stretch;
-        padding: 16px 15px;
-    }
-
-    .patient-modal-actions .btn-patient-secondary,
-    .patient-modal-actions .btn-patient-primary {
-        width: 100%;
-    }
-
-}
 
 
 /* ============================================================
@@ -1801,3 +1805,6 @@
     }
 
 }
+
+
+

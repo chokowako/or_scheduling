@@ -1,79 +1,157 @@
-/* ==========================================================================
-   SURGEON REPORTS MODULE STYLING
-   ========================================================================== */
+/* =========================================================
+   PATIENT REPORTS MODULE - SPECIFIC STYLES
+   ========================================================= */
+
+/* =========================================================
+   VARIABLES
+   ========================================================= */
+:root {
+    --green-50: #f1faf6;
+    --green-100: #e2f4ec;
+    --green-200: #c8e9db;
+    --green-300: #9dd4bc;
+    --green-400: #72bd9e;
+    --green-500: #4da985;
+    --green-600: #358e6c;
+    --green-700: #287256;
+    --green-800: #205b46;
+
+    --text-900: #20352d;
+    --text-800: #2d443b;
+    --text-700: #52665e;
+    --text-600: #687a73;
+    --text-500: #84938d;
+    --text-400: #a1ada8;
+
+    --border: #e2ebe7;
+    --background: #f5f8f7;
+    --white: #ffffff;
+
+    --sidebar-width: 260px;
+}
 
 .reports-page {
-    padding: 24px;
-    background-color: #f8fafc;
-    min-height: calc(100vh - 60px);
+    width: calc(100% - var(--sidebar-width));
+    margin-left: var(--sidebar-width);
+    min-height: 100vh;
+    padding: 32px 40px 50px;
+    background: var(--background);
+    color: var(--text-900);
+    box-sizing: border-box;
 }
 
-.reports-hero {
-    background: linear-gradient(135deg, #0d4732 0%, #1b5e20 100%);
-    color: #ffffff;
-    border-radius: 12px;
-    padding: 28px 32px;
-    margin-bottom: 24px;
+/* =========================================================
+   EXACT COMMAND CENTER GRADIENT BANNER STYLE
+   ========================================================= */
+.topbar.dashboard-header-style {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    justify-content: space-between;
+    background: linear-gradient(135deg, #0d4732 0%, #1b5e20 100%);
+    padding: 24px 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    margin-bottom: 24px;
+    gap: 20px;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
 }
 
-.hero-content .hero-kicker {
+.topbar.dashboard-header-style::after {
+    content: '';
+    position: absolute;
+    right: -40px;
+    top: -50px;
+    width: 200px;
+    height: 200px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.header-left-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    flex: 1;
+    z-index: 1;
+}
+
+.mobile-menu-btn {
+    background: linear-gradient(135deg, #2f755f 0%, #438d73 55%, #5ca487 100%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    font-size: 1.25rem;
+    color: #ffffff;
+    cursor: pointer;
+    width: 44px;
+    height: 44px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s;
+}
+
+.mobile-menu-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.patient-form-eyebrow {
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #e0f2f1;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
     background: rgba(255, 255, 255, 0.15);
     padding: 4px 10px;
     border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 500;
     margin-bottom: 8px;
-    letter-spacing: 0.5px;
 }
 
-.reports-hero h1 {
-    font-size: 1.75rem;
+.eyebrow-dot {
+    width: 6px;
+    height: 6px;
+    background-color: #ffffff;
+    border-radius: 50%;
+}
+
+.topbar.dashboard-header-style h2 {
+    font-size: 1.5rem;
     font-weight: 700;
-    margin: 0 0 6px 0;
+    color: #ffffff;
+    margin: 0 0 4px 0;
+    line-height: 1.2;
 }
 
-.reports-hero p {
-    font-size: 0.95rem;
+.header-subtitle {
+    font-size: 0.85rem;
     color: rgba(255, 255, 255, 0.85);
     margin: 0;
 }
 
-.hero-badge {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: rgba(255, 255, 255, 0.1);
+.header-right-meta {
+    background: rgba(255, 255, 255, 0.12);
     border: 1px solid rgba(255, 255, 255, 0.2);
     padding: 12px 18px;
     border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
-.hero-badge i {
+.header-right-meta i {
     font-size: 1.8rem;
     color: #4ade80;
 }
 
-.hero-badge div {
-    display: flex;
-    flex-direction: column;
-}
-
-.hero-badge strong {
-    font-size: 0.95rem;
-}
-
-.hero-badge span {
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.7);
-}
-
+/* =========================================================
+   KPI SUMMARY METRICS GRID
+   ========================================================= */
 .stats-overview {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -120,7 +198,9 @@
     color: #1e293b;
 }
 
-/* Toolbar Panel & Filters */
+/* =========================================================
+   TOOLBAR PANEL & FILTERS
+   ========================================================= */
 .toolbar-panel {
     background: #ffffff;
     border-radius: 10px;
@@ -134,7 +214,6 @@
     width: 100%;
 }
 
-/* Places inputs and buttons horizontally in a single fluid row */
 .filter-horizontal-row {
     display: flex;
     gap: 16px;
@@ -146,7 +225,7 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
-    flex: 1; /* Distributes clean equal width */
+    flex: 1;
 }
 
 .filter-group label {
@@ -172,7 +251,6 @@
     box-shadow: 0 0 0 3px rgba(13, 71, 50, 0.15);
 }
 
-/* Inline Actions Container */
 .filter-actions-inline {
     display: flex;
     flex-direction: column;
@@ -198,6 +276,7 @@
     cursor: pointer;
     transition: all 0.2s ease;
     white-space: nowrap;
+    text-decoration: none;
 }
 
 .btn-primary { 
@@ -236,7 +315,9 @@
     background-color: #1d4ed8; 
 }
 
-/* Data Table Card */
+/* =========================================================
+   DATA TABLE CARD
+   ========================================================= */
 .table-card {
     background: #ffffff;
     border-radius: 10px;
@@ -288,6 +369,7 @@
     padding: 12px 16px;
     border: none;
     text-transform: uppercase;
+    white-space: nowrap;
 }
 
 .report-table td {
@@ -313,7 +395,67 @@
 .badge-scheduled { background-color: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
 .status-cancelled { background-color: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
 
-/* Modal layout */
+/* =========================================================
+   PAGINATION FOOTER STYLING
+   ========================================================= */
+.pagination-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px;
+    background-color: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+}
+
+.pagination-info {
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.page-link {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #0d4732;
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s ease;
+}
+
+.page-link:hover:not(.disabled) {
+    background-color: #f0fdf4;
+    border-color: #0d4732;
+}
+
+.page-link.disabled {
+    color: #94a3b8;
+    background-color: #f1f5f9;
+    border-color: #e2e8f0;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.page-numbers-text {
+    padding: 0 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #334155;
+}
+
+/* =========================================================
+   MODAL LAYOUT
+   ========================================================= */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -438,74 +580,87 @@
     background: #cbd5e1;
 }
 
-
-
-/* ==========================================================================
-   PAGINATION FOOTER STYLING
-   ========================================================================== */
-.pagination-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 14px 20px;
-    background-color: #f8fafc;
-    border-top: 1px solid #e2e8f0;
-}
-
-.pagination-info {
-    font-size: 0.85rem;
-    color: #64748b;
-}
-
-.pagination-controls {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.page-link {
-    padding: 6px 12px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #0d4732;
-    background-color: #ffffff;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    transition: all 0.2s ease;
-}
-
-.page-link:hover:not(.disabled) {
-    background-color: #f0fdf4;
-    border-color: #0d4732;
-}
-
-.page-link.disabled {
-    color: #94a3b8;
-    background-color: #f1f5f9;
-    border-color: #e2e8f0;
-    cursor: not-allowed;
-    pointer-events: none;
-}
-
-.page-numbers-text {
-    padding: 0 8px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #334155;
-}
-
-
-
-
+/* =========================================================
+   RESPONSIVE DESIGN (TABLETS & MOBILES)
+   ========================================================= */
 @media (max-width: 1200px) {
     .filter-horizontal-row {
         flex-wrap: wrap;
     }
     .filter-group {
         min-width: 200px;
+    }
+}
+
+@media (max-width: 992px) {
+    .reports-page {
+        width: 100%;
+        margin-left: 0;
+        padding: 16px 20px 30px;
+    }
+
+    .topbar.dashboard-header-style {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 20px;
+    }
+
+    .header-right-meta {
+        width: 100%;
+        box-sizing: border-box;
+        align-self: stretch;
+    }
+
+    .mobile-menu-btn {
+        display: inline-flex;
+    }
+
+    .stats-overview {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .filter-horizontal-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-group {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .filter-actions-inline {
+        width: 100%;
+    }
+
+    .btn-group-inline {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        width: 100%;
+    }
+
+    .btn-primary, 
+    .reset-btn-custom, 
+    .export-btn-custom, 
+    .print-btn-custom {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .modal-container {
+        max-width: 90%;
+        margin: 16px;
+    }
+}
+
+@media (max-width: 576px) {
+    .stats-overview {
+        grid-template-columns: 1fr;
+    }
+
+    .btn-group-inline {
+        grid-template-columns: 1fr;
     }
 }

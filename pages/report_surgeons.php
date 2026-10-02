@@ -152,23 +152,70 @@ $spec_filter_label = !empty($specialization_filter) ? "Specialization: " . htmls
 
 <main class="reports-page">
 
-    <!-- HERO HEADER SECTION -->
-    <header class="reports-hero">
-        <div class="hero-content">
-            <span class="hero-kicker">
-                <i class="bi bi-person-badge-fill"></i> Surgical Workload Module
-            </span>
-            <h1>Surgeon Performance Report</h1>
-            <p>Analyze surgical workload, assigned procedures, case statuses, and individual surgeon schedules.</p>
-        </div>
-        <div class="hero-badge">
-            <i class="bi bi-clipboard2-pulse-fill"></i>
-            <div>
-                <strong>Surgeon Analytics</strong>
-                <span>OR Intelligence System</span>
-            </div>
-        </div>
-    </header>
+
+	
+	
+	<!-- =====================================================
+			TOPBAR
+		 ===================================================== -->
+
+		<header class="topbar dashboard-header-style">                
+					
+					<!-- Left Side: Mobile Menu Button + Text Group -->
+					<div class="header-left-group">
+						<button
+							type="button"
+							class="mobile-menu-btn"
+							onclick="document.querySelector('.sidebar')?.classList.toggle('show')"
+							aria-label="Open menu"
+						>
+							<i class="bi bi-list"></i>
+						</button>
+						
+						<div class="header-text-block">
+							<div class="patient-form-eyebrow">
+								<span class="eyebrow-dot"></span> Surgeon Performance Report
+							</div>
+							<h2>
+								Patient Reporting </span>
+							</h2>
+							<p class="header-subtitle">
+								Analyze surgical workload, assigned procedures, case statuses, and individual surgeon schedules.
+							</p>
+						</div>
+
+						
+					</div>
+
+					<!-- Right Side: Required Note / Counter Element -->
+				  <div class="header-right-meta">
+					<i class="bi bi-clipboard2-pulse-fill"></i>
+					<div>
+						<strong>Surgeon Analytics</strong>
+						<span>OR Intelligence System</span>
+					</div>
+				</div>                         
+			</header>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
     <!-- METRICS OVERVIEW -->
     <section class="stats-overview">

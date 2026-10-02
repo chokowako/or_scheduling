@@ -45,38 +45,110 @@
     box-sizing: border-box;
 }
 
-/* Page Header */
-.report-page-header {
-    margin-bottom: 1.5rem;
-}
 
-.report-breadcrumb {
-    font-size: 0.85rem;
-    color: #64748b;
-    margin-bottom: 0.25rem;
-    font-weight: 500;
-}
 
-.report-page-header h1 {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: #0f172a;
+/* =========================================================
+   EXACT COMMAND CENTER GRADIENT BANNER STYLE
+   ========================================================= */
+.topbar.dashboard-header-style {
     display: flex;
     align-items: center;
-    gap: 0.50rem;
-    margin: 0 0 0.25rem 0;
+    justify-content: space-between;
+    /* Smooth gradient from left to right matching your command center */
+background: linear-gradient(135deg, #0d4732 0%, #1b5e20 100%);
+    padding: 24px 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    margin-bottom: 24px;
+    gap: 20px;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
 }
 
-.page-title-icon {
-    color: #0284c7;
+/* Optional: Subtle decorative background ring to mimic the command center right side */
+.topbar.dashboard-header-style::after {
+    content: '';
+    position: absolute;
+    right: -40px;
+    top: -50px;
+    width: 200px;
+    height: 200px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+/* Left Group */
+.header-left-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    flex: 1;
+    z-index: 1;
+}
+
+/* Mobile Menu Button */
+.mobile-menu-btn {
+   background: linear-gradient(135deg, #2f755f 0%, #438d73 55%, #5ca487 100%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    font-size: 1.25rem;
+    color: #ffffff;
+    cursor: pointer;
+    width: 44px;
+    height: 44px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s;
+}
+
+.mobile-menu-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+
+/* Main Heading Title */
+.topbar.dashboard-header-style h2 {
     font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 4px 0;
+    line-height: 1.2;
 }
 
-.report-page-header p {
-    color: #64748b;
-    font-size: 0.95rem;
+/* Subtitle description */
+.header-subtitle {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.85);
     margin: 0;
 }
+
+/* Right Meta Note */
+.header-right-meta {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.9);
+    white-space: nowrap;
+    z-index: 1;
+}
+
+.required-note-badge {
+    background: rgba(255, 255, 255, 0.12);
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.required-asterisk {
+    color: #ffccbc;
+    font-weight: bold;
+}
+
+
+
+
 
 /* Filter Card */
 .report-filter-card {
@@ -606,7 +678,6 @@
 
 
 
-
       
 /* ==========================================================================
    PATIENT DETAILS SECTION STYLING
@@ -685,8 +756,6 @@
     font-weight: 600;
     color: #0284c7;
 }
-
-
 
 
 
@@ -772,10 +841,6 @@
     color: #0284c7;
     white-space: nowrap;
 }
-
-
-
-
 
 
 /* ==========================================================================
@@ -1452,8 +1517,8 @@
 
 @media print {
     @page {
-        size: landscape;
-        margin: 8mm;
+    size: letter portrait; /* Use 'landscape' if your surgery report has many columns */
+        margin: 0.5in;         /* Adjust margins as needed (e.g., 0.4in, 0.5in) */
     }
 
     body {
@@ -1567,3 +1632,147 @@
     }
 }
 
+
+
+
+/* ==========================================================================
+   COMPLETE MOBILE RESPONSIVE STYLES
+   ========================================================================== */
+
+@media (max-width: 1200px) {
+    .filter-actions-inline {
+        margin-left: 0;
+        width: 100%;
+        justify-content: flex-start;
+        margin-top: 0.5rem;
+    }
+}
+
+@media (max-width: 992px) {
+    /* Layout & Container */
+    .surgery-report-page {
+        width: 100%;
+        margin-left: 0;
+        padding: 16px 20px 30px;
+    }
+
+    .mobile-menu-btn {
+        display: flex;
+    }
+
+    .topbar.dashboard-header-style {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px;
+    }
+
+    .header-right-meta {
+        width: 100%;
+        white-space: normal;
+    }
+
+    /* Filter Form */
+    .report-filter-form-inline {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .report-filter-form-inline .filter-field,
+    .report-filter-form-inline .filter-field-wide {
+        flex: 1 1 100%;
+        min-width: 100%;
+    }
+
+    .filter-actions-inline {
+        margin-left: 0;
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .filter-btn-custom,
+    .reset-btn-custom,
+    .export-btn-custom,
+    .print-btn-custom {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Patient Detail Section */
+    .Patient_detail .patient-detail-grid {
+        padding-left: 0;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        grid-auto-flow: row;
+        gap: 12px;
+    }
+
+    /* Schedule Details */
+    .Schedule-Details .schedule-inline-layout {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .Schedule-Details .schedule-detail-grid {
+        justify-content: flex-start;
+        grid-template-columns: repeat(2, 1fr);
+        width: 100%;
+        gap: 12px 24px;
+    }
+
+    /* Info Cards Section */
+    .info-cards-section .info-cards-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .info-cards-section .schedule-value {
+        padding-left: 0;
+    }
+
+    /* Surgical Team, Procedure, Medical Staff, & Clinical Assessment Grids (3 cols -> 2 cols) */
+    .surgical-team-section .surgical-team-grid,
+    .procedure-details-section .procedure-3col-grid,
+    .medical-staff-section .medical-staff-grid,
+    .clinical-assessment-section .clinical-assessment-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px 16px;
+    }
+
+    .clinical-assessment-section .surgical-team-field.full-width {
+        grid-column: span 2;
+    }
+
+    /* Modals */
+    .modal-container {
+        max-width: 90%;
+        padding: 20px;
+        margin: 16px;
+    }
+}
+
+@media (max-width: 576px) {
+    .filter-actions-inline {
+        grid-template-columns: 1fr;
+    }
+
+    /* Stack multi-column detail sections into 1 single column on mobile phones */
+    .Schedule-Details .schedule-detail-grid,
+    .surgical-team-section .surgical-team-grid,
+    .procedure-details-section .procedure-3col-grid,
+    .medical-staff-section .medical-staff-grid,
+    .clinical-assessment-section .clinical-assessment-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .clinical-assessment-section .surgical-team-field.full-width {
+        grid-column: span 1;
+    }
+
+    /* Modal padding adjustment */
+    .modal-container {
+        padding: 16px;
+    }
+}

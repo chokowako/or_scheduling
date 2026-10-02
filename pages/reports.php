@@ -18,23 +18,47 @@ require_once "../includes/sidebar.php";
 
 <main class="reports-page">
 
-    <!-- HERO HEADER SECTION -->
-    <header class="reports-hero">
-        <div class="hero-content">
-            <span class="hero-kicker">
-                <i class="bi bi-shield-check"></i> System Analytics & Audit
-            </span>
-            <h1>Reports Hub</h1>
-            <p>Access real-time operating room schedules, clinical logs, room utilization metrics, and surgeon analytics.</p>
-        </div>
-        <div class="hero-badge">
-            <i class="bi bi-bar-chart-line-fill"></i>
-            <div>
-                <strong>6 Active Modules</strong>
-                <span>OR Intelligence System</span>
-            </div>
-        </div>
-    </header>
+		<!-- HERO HEADER SECTION -->
+		<header class="topbar dashboard-header-style">  
+		
+			<!-- Left Side: Mobile Menu Button + Text Group -->
+		<div class="header-left-group">
+				<button
+					type="button"
+					class="mobile-menu-btn"
+					onclick="document.querySelector('.sidebar')?.classList.toggle('show')"
+					aria-label="Open menu"
+				>
+					<i class="bi bi-list"></i>
+				</button>
+				
+				<div class="header-text-block">
+					<div class="patient-form-eyebrow">
+						<i class="bi bi-shield-check"></i> System Analytics & Audit
+					</div>
+					<h2>Reports Hub</h2>
+						<p class="header-subtitle"> Access real-time operating room schedules, clinical logs, room utilization metrics, and surgeon analytics.</p>
+				</div>
+	
+			</div>
+			
+			<!-- Right Side: Required Note / Counter Element -->
+			<div class="header-right-meta">
+				<i class="bi bi-bar-chart-line-fill"></i>
+				<div>
+					<strong>6 Active Modules</strong>
+					<span>OR Intelligence System</span>
+				</div>
+			</div>
+		</header>
+		
+		
+		
+		
+	
+	
+	
+	
 
     <!-- REPORT SELECTION PANEL -->
     <section class="reports-panel">

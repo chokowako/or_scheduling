@@ -42,35 +42,136 @@
     box-sizing: border-box;
 }
 
-.report-page-header {
-    margin-bottom: 1.5rem;
-}
 
-.report-breadcrumb {
-    font-size: 0.85rem;
-    color: #6b7280;
-    margin-bottom: 0.25rem;
-}
 
-.report-page-header h1 {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: #111827;
+
+
+
+
+
+/* =========================================================
+   EXACT COMMAND CENTER GRADIENT BANNER STYLE
+   ========================================================= */
+.topbar.dashboard-header-style {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    margin: 0 0 0.25rem 0;
+    justify-content: space-between;
+    /* Smooth gradient from left to right matching your command center */
+    background: linear-gradient(135deg, #0d4732 0%, #1b5e20 100%);
+    padding: 24px 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    margin-bottom: 24px;
+    gap: 20px;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
 }
 
-.page-title-icon {
-    color: #0f4c3a;
+/* Optional: Subtle decorative background ring to mimic the command center right side */
+.topbar.dashboard-header-style::after {
+    content: '';
+    position: absolute;
+    right: -40px;
+    top: -50px;
+    width: 200px;
+    height: 200px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    pointer-events: none;
 }
 
-.report-page-header p {
-    color: #4b5563;
-    font-size: 0.95rem;
+/* Left Group */
+.header-left-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    flex: 1;
+    z-index: 1;
+}
+
+/* Mobile Menu Button */
+.mobile-menu-btn {
+   background: linear-gradient(135deg, #2f755f 0%, #438d73 55%, #5ca487 100%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    font-size: 1.25rem;
+    color: #ffffff;
+    cursor: pointer;
+    width: 44px;
+    height: 44px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s;
+}
+
+.mobile-menu-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+
+
+/* Main Heading Title */
+.topbar.dashboard-header-style h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 4px 0;
+    line-height: 1.2;
+}
+
+/* Subtitle description */
+.header-subtitle {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.85);
     margin: 0;
 }
+
+/* Right Meta Note */
+.header-right-meta {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.9);
+    white-space: nowrap;
+    z-index: 1;
+}
+
+.required-note-badge {
+    background: rgba(255, 255, 255, 0.12);
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.required-asterisk {
+    color: #ffccbc;
+    font-weight: bold;
+}
+
+/* =========================================================
+   RESPONSIVE DESIGN (MOBILE STYLING)
+   ========================================================= */
+@media (max-width: 768px) {
+    .topbar.dashboard-header-style {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 18px;
+        gap: 15px;
+    }
+
+    .mobile-menu-btn {
+        display: inline-flex;
+    }
+
+    .header-right-meta {
+        align-self: flex-start;
+    }
+}
+
+
+
+
 
 /* --------------------------------------------------------------------------
    Filter Card & Actions
@@ -760,5 +861,122 @@
 
     .schedule-report-table tr {
         page-break-inside: avoid;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ==========================================================================
+   MOBILE-RESPONSIVE STYLING FOR OR SCHEDULE REPORT (max-width: 768px)
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    /* 1. Page Container Adjustment */
+    .schedule-report-page {
+        width: 100% !important;
+        margin-left: 0 !important;
+        padding: 16px 12px 40px !important;
+    }
+
+    /* 2. Header Adjustments */
+    .report-page-header h1 {
+        font-size: 1.35rem;
+    }
+
+    .report-page-header p {
+        font-size: 0.85rem;
+    }
+
+    /* 3. Filter Form Stacking */
+    .report-filter-form {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .filter-field,
+    .filter-field-wide {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .filter-actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .filter-actions .btn-action {
+        width: 100%;
+    }
+
+    /* 4. Summary Cards Grid */
+    .summary-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px;
+    }
+
+    .summary-card {
+        padding: 10px;
+        gap: 8px;
+    }
+
+    .summary-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+    }
+
+    .summary-content strong {
+        font-size: 1.25rem;
+    }
+
+    .summary-content span {
+        font-size: 0.75rem;
+    }
+
+    /* 5. Table Card & Header Stack */
+    .table-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 14px;
+    }
+
+    .table-card-header h2 {
+        font-size: 1rem;
+    }
+
+    /* 6. Export Modal Adjustments for Mobile */
+    .modal-container {
+        max-width: 90%;
+        padding: 18px 20px;
+        margin: 0 auto;
+    }
+
+    .modal-header h3 {
+        font-size: 1.15rem;
+    }
+}
+
+/* Extra small devices (phones under 480px) */
+@media (max-width: 480px) {
+    .summary-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .filter-actions {
+        grid-template-columns: 1fr;
     }
 }

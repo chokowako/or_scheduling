@@ -141,23 +141,61 @@ $status_filter_label = !empty($status) ? htmlspecialchars(ucfirst($status)) : 'A
 
 <main class="reports-page">
 
-    <!-- HERO HEADER SECTION -->
-    <header class="reports-hero">
-        <div class="hero-content">
-            <span class="hero-kicker">
-                <i class="bi bi-people-fill"></i> Clinical Module
-            </span>
-            <h1>Patient Reporting</h1>
-            <p>Track surgical histories, procedure statuses, clinical logs, and patient records.</p>
-        </div>
-        <div class="hero-badge">
-            <i class="bi bi-file-earmark-medical-fill"></i>
-            <div>
-                <strong>Patient Registry</strong>
-                <span>OR Intelligence System</span>
-            </div>
-        </div>
-    </header>
+  	
+	<!-- =====================================================
+			TOPBAR
+		 ===================================================== -->
+
+		<header class="topbar dashboard-header-style">                
+					
+					<!-- Left Side: Mobile Menu Button + Text Group -->
+					<div class="header-left-group">
+						<button
+							type="button"
+							class="mobile-menu-btn"
+							onclick="document.querySelector('.sidebar')?.classList.toggle('show')"
+							aria-label="Open menu"
+						>
+							<i class="bi bi-list"></i>
+						</button>
+						
+						<div class="header-text-block">
+							<div class="patient-form-eyebrow">
+								<span class="eyebrow-dot"></span> Clinical Module
+							</div>
+							<h2>
+								Patient Reporting </span>
+							</h2>
+							<p class="header-subtitle">
+								Track surgical histories, procedure statuses, clinical logs, and patient records.
+							</p>
+						</div>
+
+						
+					</div>
+
+					<!-- Right Side: Required Note / Counter Element -->
+				  <div class="header-right-meta">
+					<i class="bi bi-file-earmark-medical-fill"></i>
+					<div>
+						<strong>Patient Registry</strong>
+						<span>OR Intelligence System</span>
+					</div>
+				  </div>                          
+			</header>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
     <!-- METRICS OVERVIEW -->
     <section class="stats-overview">

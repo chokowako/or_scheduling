@@ -279,22 +279,59 @@ function statusClass($status) {
 
 <main class="surgery-report-page">
 
-<div class="report-page-header">
-    <div>
-        <div class="report-breadcrumb">
-            Reports / Surgery Report
-        </div>
-        <h1>
-            <span class="page-title-icon">
-                <i class="bi bi-heart-pulse-fill"></i>
-            </span>
-            Surgery Report
-        </h1>
-        <p>
-            Review completed procedures, post-operative outcomes, clinical logs, and historical surgical case details over a selected period.
-        </p>
-    </div>
-</div>
+
+
+		<!-- =====================================================
+			TOPBAR
+		 ===================================================== -->
+
+		<header class="topbar dashboard-header-style">                
+					
+					<!-- Left Side: Mobile Menu Button + Text Group -->
+					<div class="header-left-group">
+						<button
+							type="button"
+							class="mobile-menu-btn"
+							onclick="document.querySelector('.sidebar')?.classList.toggle('show')"
+							aria-label="Open menu"
+						>
+							<i class="bi bi-list"></i>
+						</button>
+						
+						<div class="header-text-block"> 
+							<h2>
+								<i class="bi bi-heart-pulse-fill"></i> OR Schedule Report
+							</h2>
+							
+							<p class="header-subtitle">
+								Review completed procedures, post-operative outcomes, clinical logs, and historical surgical case details over a selected period.
+							</p>
+						</div>					
+					</div>
+
+					<!-- Right Side: Required Note / Counter Element -->
+					<div class="header-right-meta">
+						<div class="required-note-badge">
+							<span class="required-asterisk">*</span> Required fields
+						</div>
+					</div>                           
+			</header>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <section class="report-filter-card">
     <div class="filter-card-header">

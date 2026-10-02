@@ -41,54 +41,129 @@
     background: var(--background);
 }
 
-
 /* =========================================================
-   PAGE HEADER
+   EXACT COMMAND CENTER GRADIENT BANNER STYLE
    ========================================================= */
-
-.page-header {
+.topbar.dashboard-header-style {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 25px;
-    margin-bottom: 25px;
+    /* Smooth gradient from left to right matching your command center */
+   background: linear-gradient(135deg, #2f755f 0%, #438d73 55%, #5ca487 100%);
+    padding: 24px 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    margin-bottom: 24px;
+    gap: 20px;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
 }
 
-
-.page-title-row {
-    display: flex;
-    align-items: center;
-    gap: 16px;
+/* Optional: Subtle decorative background ring to mimic the command center right side */
+.topbar.dashboard-header-style::after {
+    content: '';
+    position: absolute;
+    right: -40px;
+    top: -50px;
+    width: 200px;
+    height: 200px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    pointer-events: none;
 }
 
-
-.page-title-icon {
-    width: 58px;
-    height: 58px;
+/* Left Group */
+.header-left-group {
     display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    flex: 1;
+    z-index: 1;
+}
+
+/* Mobile Menu Button */
+.mobile-menu-btn {
+   background: linear-gradient(135deg, #2f755f 0%, #438d73 55%, #5ca487 100%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    font-size: 1.25rem;
+    color: #ffffff;
+    cursor: pointer;
+    width: 44px;
+    height: 44px;
+    display: none;
     align-items: center;
     justify-content: center;
-    border-radius: 16px;
-    background: var(--green-100);
-    color: var(--green-600);
-    font-size: 25px;
+    flex-shrink: 0;
+    transition: background 0.2s;
+}
+
+.mobile-menu-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
 }
 
 
-.page-header h1 {
-    margin: 0;
-    color: var(--text-900);
-    font-size: 28px;
+
+
+/* Main Heading Title */
+.topbar.dashboard-header-style h2 {
+    font-size: 1.5rem;
     font-weight: 700;
-    letter-spacing: -0.4px;
+    color: #ffffff;
+    margin: 0 0 4px 0;
+    line-height: 1.2;
+}
+
+/* Subtitle description */
+.header-subtitle {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0;
+}
+
+/* Right Meta Note */
+.header-right-meta {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.9);
+    white-space: nowrap;
+    z-index: 1;
 }
 
 
-.page-header p {
-    margin: 4px 0 0;
-    color: var(--text-500);
-    font-size: 14px;
+
+
+/* =========================================================
+   RESPONSIVE DESIGN (MOBILE STYLING)
+   ========================================================= */
+@media (max-width: 768px) {
+    .topbar.dashboard-header-style {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 18px;
+        gap: 15px;
+    }
+
+    .mobile-menu-btn {
+        display: inline-flex;
+    }
+
+    .header-right-meta {
+        align-self: flex-start;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /* =========================================================

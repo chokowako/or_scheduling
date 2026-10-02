@@ -68,7 +68,11 @@
 
     --shadow-lg:
         0 15px 38px rgba(50, 100, 80, 0.16);
+		
+		:root {
+    --sidebar-width: 280px; /* Increased width to prevent text wrapping */
 }
+
 
 
 /* =========================================================
@@ -133,46 +137,34 @@ img {
 /* =========================================================
    SIDEBAR
    ========================================================= */
-
 .sidebar {
     position: fixed;
-
     inset: 0 auto 0 0;
-
     width: var(--sidebar-width);
     height: 100vh;
-
-    background:
-        linear-gradient(
-            180deg,
-            #ffffff 0%,
-            #f9fcfa 100%
-        );
-
+    background: linear-gradient(180deg, #ffffff 0%, #f9fcfa 100%);
     border-right: 1px solid var(--border);
-
     z-index: 1000;
-
     overflow-y: auto;
-
-    box-shadow:
-        8px 0 30px rgba(35, 75, 60, 0.035);
-
+    box-shadow: 8px 0 30px rgba(35, 75, 60, 0.035);
     scrollbar-width: thin;
     scrollbar-color: #dce8e2 transparent;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .sidebar-brand {
     min-height: 92px;
-
-    padding: 22px;
-
+    padding: 22px 18px;
     display: flex;
     align-items: center;
-
-    gap: 13px;
-
+    gap: 12px;
     border-bottom: 1px solid #edf2ef;
+    position: relative;
+}
+
+.brand-text {
+    flex-grow: 1;
+    white-space: nowrap; /* Prevents text from breaking into multiple lines */
 }
 
 .brand-icon {
@@ -222,6 +214,9 @@ img {
 .sidebar-menu {
     padding: 22px 13px 30px;
 }
+
+
+
 
 .menu-label {
     padding: 13px 11px 8px;
@@ -304,6 +299,86 @@ img {
 .sidebar::-webkit-scrollbar-thumb {
     background: #dce8e2;
     border-radius: 10px;
+}
+
+
+.sidebar-menu a .nav-icon i {
+    transition: transform 0.2s ease, font-size 0.2s ease;
+}
+body.sidebar-collapsed .sidebar-menu a:hover i {
+    transform: scale(1.15); /* Slightly pops the icon out on hover when collapsed */
+}
+
+
+
+
+
+/* =========================================================
+   SIDEBAR COLLAPSE EXTENSION
+   ========================================================= */
+
+.sidebar {
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Toggle Button Styling */
+.sidebar-toggle-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-500);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.sidebar-toggle-btn:hover {
+    background: var(--green-50);
+    color: var(--green-700);
+}
+
+/* ================= COLLAPSED STATES ================= */
+
+body.sidebar-collapsed {
+    --sidebar-width: 80px; 
+}
+
+/* Hide brand text, subtitles, category headings, and text labels */
+body.sidebar-collapsed .sidebar .brand-text,
+body.sidebar-collapsed .sidebar .menu-label,
+body.sidebar-collapsed .sidebar .nav-text {
+    display: none !important;
+}
+
+/* Center the brand icon when collapsed */
+body.sidebar-collapsed .sidebar .sidebar-brand {
+    padding: 22px 0;
+    justify-content: center;
+    gap: 0;
+}
+
+/* Center menu links and icons */
+body.sidebar-collapsed .sidebar .sidebar-menu {
+    padding: 22px 8px 30px;
+}
+
+body.sidebar-collapsed .sidebar .sidebar-menu a {
+    justify-content: center;
+    padding: 0;
+    gap: 0;
+}
+
+body.sidebar-collapsed .sidebar .sidebar-menu a i {
+    width: auto;
+    font-size: 19px;
+}
+
+body.sidebar-collapsed .sidebar .sidebar-menu a:hover {
+    transform: none;
 }
 
 
@@ -545,13 +620,7 @@ img {
     border-radius: 20px;
     overflow: hidden;
 
-    background:
-        linear-gradient(
-            135deg,
-            #2f755f 0%,
-            #438d73 55%,
-            #5ca487 100%
-        );
+   background: linear-gradient(135deg, #0d4732 0%, #1b5e20 100%);
 
     box-shadow:
         0 10px 28px rgba(48, 112, 91, 0.14);
@@ -3701,6 +3770,8 @@ button:focus-visible {
 }
 
 
+
+
 /* =========================================================
    MODAL — MOBILE
    ========================================================= */
@@ -3721,3 +3792,37 @@ button:focus-visible {
 
 }
 
+
+/* =========================================================
+   MOBILE HAMBURGER MENU BUTTON FIX
+   ========================================================= */
+
+.mobile-menu-btn {
+    display: none; /* Hidden by default on desktop */
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    background: var(--green-50, #f2f7f5);
+    border: 1px solid var(--border, #edf2f0);
+    border-radius: 10px;
+    color: var(--green-700, #358e6c);
+    font-size: 18px;
+    cursor: pointer;
+    position: relative;   /* Crucial for z-index */
+    z-index: 9999;        /* Brings it completely to the front layer */
+    pointer-events: auto; /* Guarantees click events register */
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.mobile-menu-btn:hover {
+    background: var(--green-100, #e2f4ec);
+    border-color: var(--green-350, #93cca8);
+}
+
+/* Force it to show as flex when screen is 768px or less */
+@media (max-width: 768px) {
+    .mobile-menu-btn {
+        display: flex !important;
+    }
+}
