@@ -282,103 +282,8 @@ $rooms = $roomsStmt->fetchAll(PDO::FETCH_ASSOC);
 	}
 
 
-/* =========================================================
-   SURGERY OVERVIEW
-   ========================================================= */
 
-	$general_surgery_count = 0;
-	$obstetrics_count = 0;
-	$orthopedic_count = 0;
-	$other_surgery_count = 0;
-
-	foreach ($today_schedules as $schedule) {
-		$procedure_name = strtolower(
-			trim($schedule['procedure_name'] ?? '')
-		);
-
-		if ($procedure_name === '') {
-			$other_surgery_count++;
-			continue;
-		}
-
-		if (
-			str_contains($procedure_name, 'general')
-			|| str_contains($procedure_name, 'append')
-			|| str_contains($procedure_name, 'hernia')
-			|| str_contains($procedure_name, 'gallbladder')
-			|| str_contains($procedure_name, 'cholecyst')
-		) {
-
-			$general_surgery_count++;
-
-		} elseif (
-			str_contains($procedure_name, 'obstetric')
-			|| str_contains($procedure_name, 'cesarean')
-			|| str_contains($procedure_name, 'c-section')
-			|| str_contains($procedure_name, 'caesarean')
-			|| str_contains($procedure_name, 'delivery')
-			|| str_contains($procedure_name, 'maternity')
-		) {
-			$obstetrics_count++;
-		} elseif (
-			str_contains($procedure_name, 'orthopedic')
-			|| str_contains($procedure_name, 'orthopaedic')
-			|| str_contains($procedure_name, 'fracture')
-			|| str_contains($procedure_name, 'knee')
-			|| str_contains($procedure_name, 'hip')
-			|| str_contains($procedure_name, 'bone')
-			|| str_contains($procedure_name, 'joint')
-		) {
-			$orthopedic_count++;
-		} else {
-			$other_surgery_count++;
-		}
-	}
-
-/* =========================================================
-   SURGERY OVERVIEW PERCENTAGES
-   ========================================================= */
-
-	if ($total_today_surgeries > 0) {
-		$general_percent =
-			round(
-				($general_surgery_count / $total_today_surgeries) * 100
-			);
-		$obstetrics_percent =
-			round(
-				($obstetrics_count / $total_today_surgeries) * 100
-			);
-		$orthopedic_percent =
-			round(
-				($orthopedic_count / $total_today_surgeries) * 100
-			);
-		$other_percent =
-			max(
-				0,
-				100
-				- $general_percent
-				- $obstetrics_percent
-				- $orthopedic_percent
-			);
-	} else {
-		$general_percent = 0;
-		$obstetrics_percent = 0;
-		$orthopedic_percent = 0;
-		$other_percent = 0;
-	}
-
-
-/* =========================================================
-   DONUT CHART ANGLES
-   ========================================================= */
-	$general_angle =
-		($general_percent / 100) * 360;
-	$obstetrics_angle =
-		$general_angle +
-		(($obstetrics_percent / 100) * 360);
-	$orthopedic_angle =
-		$obstetrics_angle +
-		(($orthopedic_percent / 100) * 360);
+	
 
 /* =========================================================
    SCHEDULE HELPERS
@@ -598,11 +503,77 @@ $rooms = $roomsStmt->fetchAll(PDO::FETCH_ASSOC);
 				return 'bi-check-circle';
 		}
 	}
+	
+/* =========================================================
+   TODAY'S CASE STATUS BREAKDOWN (Integer Hour/Minute Match)
+   ========================================================= */
+	date_default_timezone_set('Asia/Manila'); 
+	$status_scheduled_count = 0;
+	$status_inprogress_count = 0;
+	$status_completed_count = 0;
+	$status_cancelled_count = 0;
 
+	$today_date = date('Y-m-d');
+
+	// 1. Get Completed and Cancelled counts from DB directly
+	$ccStmt = $pdo->prepare("
+		SELECT status, COUNT(*) as cnt 
+		FROM or_schedules 
+		WHERE surgery_date = ? 
+		AND status IN ('Completed', 'Cancelled', 'Delayed')
+		GROUP BY status
+	");
+	$ccStmt->execute([$today_date]);
+	while ($row = $ccStmt->fetch(PDO::FETCH_ASSOC)) {
+		$st = strtolower(trim($row['status']));
+		if (str_contains($st, 'complet')) {
+			$status_completed_count = (int)$row['cnt'];
+		} elseif (str_contains($st, 'cancel') || str_contains($st, 'delay')) {
+			$status_cancelled_count = (int)$row['cnt'];
+		}
+	}
+
+	// 2. Get current time as an integer (e.g., 2:01 PM becomes 1401)
+	$current_time_num = (int)date('Hi');
+	
+	// 3. Loop through $today_schedules for Scheduled vs In Progress
+	foreach ($today_schedules as $schedule) {
+		$raw_start = trim($schedule['start_time'] ?? '');
+		$raw_end = trim($schedule['end_time'] ?? '');
+
+		if (!empty($raw_start)) {
+			// Convert start and end times to numeric format (HHMM)
+			$start_num = (int)date('Hi', strtotime($raw_start));
+			$end_num = !empty($raw_end) ? (int)date('Hi', strtotime($raw_end)) : ($start_num + 100);
+
+			// Compare numbers directly
+			if ($current_time_num >= $start_num && $current_time_num <= $end_num) {
+				$status_inprogress_count++;
+			} elseif ($current_time_num < $start_num) {
+				$status_scheduled_count++;
+			} else {
+				$status_inprogress_count++;
+			}
+		} else {
+			$status_scheduled_count++;
+		}
+	}
+
+	
 	?>
+	
+	
+	
+	
+
+	
 	<?php require_once "includes/header.php"; ?>
 	<?php require_once "includes/sidebar.php"; ?>
 	<div class="main-wrapper">
+	
+	
+	
+	
 
 
 		<!-- =====================================================
@@ -1198,97 +1169,48 @@ $rooms = $roomsStmt->fetchAll(PDO::FETCH_ASSOC);
 					 SURGERY OVERVIEW
 					 ============================================= -->
 				<section class="panel">
-					<div class="panel-header">
-						<div>
-							<span class="panel-kicker">
-								PROCEDURE MIX
-							</span>
-							<h3>
-								Surgery Overview
-							</h3>
+													
+					<div class="report-card" style="background: #ffffff; border: 1px solid #e2ebe7; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+						
+						<!-- Card Header -->
+						<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+							<div>
+								<h3 style="margin: 0; font-size: 16px; font-weight: 700; color: #1e293b;">Today’s Case Status</h3>
+								<span style="font-size: 12px; color: #64748b;">Real-time operational breakdown</span>
+							</div>
+							<span style="background: #e2f4ec; color: #287256; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 6px;">Live</span>
 						</div>
-						<span class="period-label">
-							Today
-						</span>
-					</div>
-
-					<div class="overview-content">
-						<div class="overview-chart">
-							<?php
-							if ($total_today_surgeries > 0) {
-
-								$donut_style =
-									"background: conic-gradient("
-									. "var(--green-500) 0deg {$general_angle}deg, "
-									. "var(--blue-500) {$general_angle}deg {$obstetrics_angle}deg, "
-									. "var(--purple-500) {$obstetrics_angle}deg {$orthopedic_angle}deg, "
-									. "#d7e1dd {$orthopedic_angle}deg 360deg"
-									. ");";}
-									else {
-								$donut_style =
-									"background: #d7e1dd;";
-							}
-
-							?>
-
-							<div
-								class="donut-chart"
-								style="<?= htmlspecialchars($donut_style) ?>"
-							>
-								<div class="donut-center">
-									<strong>
-										<?= $total_today_surgeries ?>
-									</strong>
-									<span>
-										Operations
-									</span>
-								</div>
+						
+						<!-- Status Breakdown List -->
+						<div style="display: flex; flex-direction: column; gap: 10px;">
+							
+							<!-- Scheduled / Pending -->
+							<div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: #f8fafc; border-radius: 8px; border-left: 4px solid #3b82f6;">
+								<span style="font-size: 13px; font-weight: 600; color: #334155;">Scheduled / Pending</span>
+								<strong style="font-size: 15px; color: #3b82f6;"><?php echo $status_scheduled_count; ?></strong>
 							</div>
-						</div>
-
-
-						<div class="overview-legend">
-							<div class="legend-item">
-								<div class="legend-label">
-									<span class="legend-dot general"></span>
-									General Surgery
-								</div>
-								<strong>
-									<?= $general_surgery_count ?>
-								</strong>
+							
+							<!-- In Progress (Intraop) -->
+							<div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: #fffbeb; border-radius: 8px; border-left: 4px solid #f59e0b;">
+								<span style="font-size: 13px; font-weight: 600; color: #334155;">In Progress (Intraop)</span>
+								<strong style="font-size: 15px; color: #f59e0b;"><?php echo $status_inprogress_count; ?></strong>
+							</div>
+							
+							<!-- Completed / PACU -->
+							<div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: #f0fdf4; border-radius: 8px; border-left: 4px solid #10b981;">
+								<span style="font-size: 13px; font-weight: 600; color: #334155;">Completed / PACU</span>
+								<strong style="font-size: 15px; color: #10b981;"><?php echo $status_completed_count; ?></strong>
 							</div>
 
-							<div class="legend-item">
-								<div class="legend-label">
-									<span class="legend-dot obstetrics"></span>
-									Obstetrics
-								</div>
-								<strong>
-									<?= $obstetrics_count ?>
-								</strong>
+							<!-- Cancelled / Delayed -->
+							<div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: #fef2f2; border-radius: 8px; border-left: 4px solid #ef4444;">
+								<span style="font-size: 13px; font-weight: 600; color: #334155;">Cancelled / Delayed</span>
+								<strong style="font-size: 15px; color: #ef4444;"><?php echo $status_cancelled_count; ?></strong>
 							</div>
 
-							<div class="legend-item">
-								<div class="legend-label">
-									<span class="legend-dot orthopedic"></span>
-									Orthopedic
-								</div>
-								<strong>
-									<?= $orthopedic_count ?>
-								</strong>
-							</div>
-
-							<div class="legend-item">
-								<div class="legend-label">
-									<span class="legend-dot other"></span>
-									Other
-								</div>
-								<strong>
-									<?= $other_surgery_count ?>
-								</strong>
-							</div>
 						</div>
 					</div>
+					
 				</section>
 
 

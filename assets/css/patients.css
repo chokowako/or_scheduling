@@ -1507,6 +1507,64 @@
 
 
 
+/* ============================================================
+   125% & 100% ZOOM-FRIENDLY DESKTOP MODAL FIX
+   ============================================================ */
+
+@media (min-width: 769px) {
+    .patient-edit-modal .modal-dialog {
+        max-width: 950px !important;
+        width: 90% !important;
+        margin: 30px auto !important;
+        height: auto !important;
+        min-height: unset !important;
+    }
+
+    .patient-edit-modal .modal-content {
+        width: 100% !important;
+        height: auto !important;
+        max-height: none !important; /* Removes strict height locking so it flows naturally with zoom */
+        display: block !important;
+        overflow: visible !important;
+        border-radius: 16px !important;
+        background: #ffffff !important;
+        border: 1px solid #bdd7ca !important;
+        box-shadow: 0 25px 50px rgba(24, 61, 46, 0.25) !important;
+    }
+
+    .patient-edit-modal form {
+        display: block !important;
+    }
+
+    .patient-edit-modal .modal-header,
+    .patient-modal-header {
+        padding: 16px 24px !important;
+    }
+
+    /* Allow the body to display all content normally without clipping */
+    .patient-edit-modal .modal-body {
+        max-height: none !important;
+        overflow-y: visible !important;
+        padding: 24px !important;
+    }
+
+    /* Ensure footer sits cleanly at the bottom of the content stack */
+    .patient-edit-modal .modal-footer,
+    .patient-modal-actions {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+        gap: 10px !important;
+        padding: 16px 24px !important;
+        background: linear-gradient(185deg, #edf7f2, #e3f1eb) !important;
+        border-top: 1px solid #cddfd7 !important;
+        position: relative !important;
+        z-index: 10 !important;
+    }
+}
+
+
+
 
 
 /* ============================================================

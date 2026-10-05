@@ -1,6 +1,6 @@
 /* =========================================================
    OR SCHEDULING SYSTEM
-   LOGIN PAGE - HOSPITAL GREEN THEME
+   LOGIN PAGE - HOSPITAL GREEN THEME (ENHANCED)
    ========================================================= */
 
 :root {
@@ -17,27 +17,17 @@
 
 
 /* =========================================================
-   PAGE
+   PAGE BACKGROUND
    ========================================================= */
 
 body {
     min-height: 100vh;
-
     margin: 0;
-
-    background:
-        linear-gradient(
-            135deg,
-            #f4f8f6 0%,
-            #eaf6f1 100%
-        );
-
+    background: linear-gradient(135deg, #e4f2ee 0%, #f4f8f6 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-
     font-family: "Segoe UI", Arial, sans-serif;
-
     color: var(--text-dark);
 }
 
@@ -48,8 +38,7 @@ body {
 
 .login-container {
     width: 100%;
-    max-width: 430px;
-
+    max-width: 440px;
     padding: 20px;
 }
 
@@ -60,24 +49,24 @@ body {
 
 .login-card {
     border: 1px solid var(--border-color);
-
     border-radius: 20px;
-
     background: #ffffff;
-
-    box-shadow:
-        0 15px 40px rgba(50, 100, 80, 0.10);
-
+    box-shadow: 0 15px 40px rgba(50, 100, 80, 0.12);
     overflow: hidden;
 }
 
 
 /* =========================================================
-   CARD BODY
+   HEADER BANNER
    ========================================================= */
 
-.login-card .card-body {
-    padding: 45px !important;
+.login-header-banner {
+    background: linear-gradient(135deg, var(--hospital-green-dark), var(--hospital-green-deep));
+    padding: 35px 20px 40px 20px;
+    text-align: center;
+    position: relative;
+    border-bottom-left-radius: 50% 20px;
+    border-bottom-right-radius: 50% 20px;
 }
 
 
@@ -86,98 +75,120 @@ body {
    ========================================================= */
 
 .system-icon {
-    width: 76px;
-    height: 76px;
-
+    width: 72px;
+    height: 72px;
     border-radius: 18px;
-
-    background: var(--hospital-green-light);
-
+    background: #ffffff;
     color: var(--hospital-green-deep);
-
     display: flex;
     align-items: center;
     justify-content: center;
-
-    font-size: 34px;
-
-    margin: 0 auto 22px;
-
-    box-shadow:
-        0 6px 18px rgba(79, 155, 125, 0.12);
+    font-size: 32px;
+    margin: 0 auto;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    position: relative;
+    top: 5px;
 }
 
 
 /* =========================================================
-   TITLE
+   TITLE & SUBTITLE
    ========================================================= */
 
 .login-card h3 {
     color: var(--text-dark);
-
-    font-size: 24px;
-
+    font-size: 22px;
     letter-spacing: -0.3px;
+    margin-top: 15px;
 }
-
-
-/* =========================================================
-   SUBTITLE
-   ========================================================= */
 
 .login-card p {
     color: var(--text-muted) !important;
-
-    font-size: 14px;
+    font-size: 13px;
 }
 
 
 /* =========================================================
-   FORM LABELS
+   FORM LABELS & INPUT GROUPS
    ========================================================= */
 
 .form-label {
     color: #53665e;
-
     font-size: 13px;
-
     font-weight: 600;
-
-    margin-bottom: 7px;
+    margin-bottom: 5px;
 }
 
+.input-group {
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
 
-/* =========================================================
-   INPUTS
-   ========================================================= */
+.input-group:focus-within {
+    border-color: var(--hospital-green);
+    box-shadow: 0 0 0 0.20rem rgba(121, 191, 163, 0.20);
+}
+
+.input-group-text {
+    background: #f8faf9;
+    border: none;
+    color: var(--hospital-green-dark);
+    padding-left: 14px;
+    padding-right: 14px;
+    font-size: 16px;
+}
+
+.toggle-password {
+    cursor: pointer;
+    background: #f8faf9;
+    color: var(--text-muted);
+    transition: color 0.2s ease;
+}
+
+.toggle-password:hover {
+    color: var(--hospital-green-deep);
+}
 
 .form-control {
-    border: 1px solid var(--border-color);
-
-    border-radius: 10px;
-
+    border: none;
     color: var(--text-dark);
-
     background: #ffffff;
+    padding: 12px 14px;
+    font-size: 14px;
+}
 
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
+.form-control:focus {
+    box-shadow: none;
+    border-color: transparent;
+    background: #ffffff;
 }
 
 .form-control::placeholder {
     color: #a2afaa;
 }
 
-.form-control:hover {
-    border-color: #bfd8ce;
+
+/* =========================================================
+   LINKS & EXTRAS
+   ========================================================= */
+
+.forgot-link {
+    font-size: 13px;
+    color: var(--hospital-green-deep);
+    text-decoration: none;
+    font-weight: 500;
 }
 
-.form-control:focus {
-    border-color: var(--hospital-green);
+.forgot-link:hover {
+    text-decoration: underline;
+    color: var(--hospital-green-dark);
+}
 
-    box-shadow:
-        0 0 0 0.20rem rgba(121, 191, 163, 0.20);
+.form-check-input:checked {
+    background-color: var(--hospital-green-dark);
+    border-color: var(--hospital-green-dark);
 }
 
 
@@ -187,35 +198,17 @@ body {
 
 .btn-primary {
     border: none;
-
     border-radius: 10px;
-
     background: var(--hospital-green-dark);
-
     font-weight: 600;
-
     letter-spacing: 0.2px;
-
-    transition:
-        background 0.2s ease,
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
+    transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .btn-primary:hover {
     background: var(--hospital-green-deep);
-
     transform: translateY(-1px);
-
-    box-shadow:
-        0 6px 15px rgba(57, 124, 99, 0.20);
-}
-
-.btn-primary:focus {
-    background: var(--hospital-green-deep);
-
-    box-shadow:
-        0 0 0 0.20rem rgba(121, 191, 163, 0.30);
+    box-shadow: 0 6px 15px rgba(57, 124, 99, 0.20);
 }
 
 .btn-primary:active {
@@ -229,7 +222,6 @@ body {
 
 .login-card small {
     color: #9aa9a3 !important;
-
     font-size: 11px;
 }
 
@@ -239,24 +231,25 @@ body {
    ========================================================= */
 
 @media (max-width: 576px) {
-
     .login-container {
         padding: 15px;
     }
 
     .login-card .card-body {
-        padding: 30px !important;
+        padding: 25px !important;
+    }
+
+    .login-header-banner {
+        padding: 20px 20px 35px 20px;
     }
 
     .system-icon {
-        width: 68px;
-        height: 68px;
-
-        font-size: 30px;
+        width: 62px;
+        height: 62px;
+        font-size: 26px;
     }
 
     .login-card h3 {
-        font-size: 21px;
+        font-size: 20px;
     }
-
 }
