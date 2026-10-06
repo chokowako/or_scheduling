@@ -1162,57 +1162,85 @@ $rooms = $roomsStmt->fetchAll(PDO::FETCH_ASSOC);
 			<!-- =================================================
 			 LOWER GRID
 			 ================================================= -->
-
+		
+			
 			<section class="dashboard-lower-grid">
 
 					<!-- =============================================
 					 SURGERY OVERVIEW
 					 ============================================= -->
-				<section class="panel">
-													
-					<div class="report-card" style="background: #ffffff; border: 1px solid #e2ebe7; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-						
-						<!-- Card Header -->
-						<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-							<div>
-								<h3 style="margin: 0; font-size: 16px; font-weight: 700; color: #1e293b;">Today’s Case Status</h3>
-								<span style="font-size: 12px; color: #64748b;">Real-time operational breakdown</span>
+		
+					<div class="report-card widget-card">
+							<!-- Card Header -->
+							<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+								<div>
+									<h3 class="widget-title">Today’s Case Status</h3>
+									<span class="widget-subtitle">Real-time operational breakdown</span>
+								</div>
+								<span class="live-badge">Live</span>
 							</div>
-							<span style="background: #e2f4ec; color: #287256; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 6px;">Live</span>
+							
+							<!-- Status Breakdown List -->
+							<div class="status-list">
+								
+								<!-- 1. Scheduled / Pending -->
+								<div class="status-row row-scheduled">
+								<span class="status-label ecg-wrapper">
+									<span class="status-icon-box">
+										<svg id="js-clock-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#3b82f6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+											<circle cx="12" cy="12" r="9"></circle>
+											<polyline points="12 6 12 12 16 14"></polyline>
+										</svg>
+									</span>
+									Scheduled / Pending
+								</span>
+								<strong class="status-count"><?php echo $status_scheduled_count; ?></strong>
+							</div>
+								
+								<!-- 2. In Progress (Intraop) -->
+								<div class="status-row row-inprogress pulse-inprogress">
+									<span class="status-label ecg-wrapper">
+										<span class="status-icon-box">
+											<svg id="js-ecg-monitor" viewBox="0 0 100 24" width="65" height="22" style="overflow: visible;">
+												<path id="ecg-dynamic-path" d="M0,12 L20,12 L26,4 L32,20 L38,8 L44,16 L50,12 L100,12" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+											</svg>
+										</span>
+										In Progress (Intraop)
+									</span>
+									<strong id="inprogress-count" class="status-count"><?php echo $status_inprogress_count; ?></strong>
+								</div>
+								
+								<!-- 3. Completed / PACU -->
+								<div class="status-row row-completed">
+									<span class="status-label ecg-wrapper">
+										<span class="status-icon-box">
+											<svg id="js-completed-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+												<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+												<polyline points="22 4 12 14.01 9 11.01"></polyline>
+											</svg>
+										</span>
+										Completed / PACU
+									</span>
+									<strong class="status-count"><?php echo $status_completed_count; ?></strong>
+								</div>
+
+								<!-- 4. Cancelled / Delayed -->
+								<div class="status-row row-cancelled">
+									<span class="status-label ecg-wrapper">
+										<span class="status-icon-box">
+											<svg id="js-cancelled-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+												<circle cx="12" cy="12" r="10"></circle>
+												<line x1="15" y1="9" x2="9" y2="15"></line>
+												<line x1="9" y1="9" x2="15" y2="15"></line>
+											</svg>
+										</span>
+										Cancelled / Delayed
+									</span>
+									<strong class="status-count"><?php echo $status_cancelled_count; ?></strong>
+								</div>
+							</div>
 						</div>
-						
-						<!-- Status Breakdown List -->
-						<div style="display: flex; flex-direction: column; gap: 10px;">
-							
-							<!-- Scheduled / Pending -->
-							<div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: #f8fafc; border-radius: 8px; border-left: 4px solid #3b82f6;">
-								<span style="font-size: 13px; font-weight: 600; color: #334155;">Scheduled / Pending</span>
-								<strong style="font-size: 15px; color: #3b82f6;"><?php echo $status_scheduled_count; ?></strong>
-							</div>
-							
-							<!-- In Progress (Intraop) -->
-							<div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: #fffbeb; border-radius: 8px; border-left: 4px solid #f59e0b;">
-								<span style="font-size: 13px; font-weight: 600; color: #334155;">In Progress (Intraop)</span>
-								<strong style="font-size: 15px; color: #f59e0b;"><?php echo $status_inprogress_count; ?></strong>
-							</div>
-							
-							<!-- Completed / PACU -->
-							<div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: #f0fdf4; border-radius: 8px; border-left: 4px solid #10b981;">
-								<span style="font-size: 13px; font-weight: 600; color: #334155;">Completed / PACU</span>
-								<strong style="font-size: 15px; color: #10b981;"><?php echo $status_completed_count; ?></strong>
-							</div>
-
-							<!-- Cancelled / Delayed -->
-							<div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: #fef2f2; border-radius: 8px; border-left: 4px solid #ef4444;">
-								<span style="font-size: 13px; font-weight: 600; color: #334155;">Cancelled / Delayed</span>
-								<strong style="font-size: 15px; color: #ef4444;"><?php echo $status_cancelled_count; ?></strong>
-							</div>
-
-						</div>
-					</div>
-					
-				</section>
-
+			
 
 
 					<!-- =============================================
@@ -1662,6 +1690,116 @@ document.addEventListener('DOMContentLoaded', function () {
         return hour + ':' + minute + ' ' + period;
     }
 
+});
+
+
+
+    setInterval(function() {
+        fetch('get_status_counts.php?t=' + Date.now())
+            .then(response => response.json())
+            .then(data => {
+                console.log("?? Data updated successfully:", data);
+                document.getElementById('scheduled-count').innerText = data.scheduled;
+                document.getElementById('inprogress-count').innerText = data.inprogress;
+                document.getElementById('completed-count').innerText = data.completed;
+                document.getElementById('cancelled-count').innerText = data.cancelled;
+            })
+            .catch(error => console.error("? Fetch error:", error));
+    }, 5000);
+	
+	
+	
+	
+	
+    // Helper function to update numbers with a pop effect
+    function updateCounter(elementId, newValue) {
+        const el = document.getElementById(elementId);
+        if (el && el.innerText != newValue) {
+            el.innerText = newValue;
+            // Trigger the pop animation
+            el.classList.add('pop-animation');
+            setTimeout(() => {
+                el.classList.remove('pop-animation');
+            }, 400); // Removes class after animation finishes
+        }
+    }
+
+    // Background fetch loop every 5 seconds
+    setInterval(function() {
+        fetch('get_status_counts.php?t=' + Date.now())
+            .then(response => response.json())
+            .then(data => {
+                updateCounter('scheduled-count', data.scheduled);
+                updateCounter('inprogress-count', data.inprogress);
+                updateCounter('completed-count', data.completed);
+                updateCounter('cancelled-count', data.cancelled);
+            })
+            .catch(error => console.error('Fetch error:', error));
+    }, 5000);
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    const inProgressRow = document.querySelector('.row-inprogress');
+    if (inProgressRow) {
+        let isLight = true;
+        setInterval(() => {
+            if (isLight) {
+                // High-visibility active pulse state (deeper amber + strong glow)
+                inProgressRow.style.backgroundColor = '#fcd34d';
+                inProgressRow.style.boxShadow = '0 6px 16px rgba(245, 158, 11, 0.5)';
+            } else {
+                // Base subtle state
+                inProgressRow.style.backgroundColor = '#fffbeb';
+                inProgressRow.style.boxShadow = '0 0 0 rgba(245, 158, 11, 0)';
+            }
+            isLight = !isLight;
+        }, 1000); // 1-second interval
+    }
+});
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    // 1. ECG Sweeping Line Animation
+    const ecgPath = document.getElementById("ecg-dynamic-path");
+    const length = 150;
+    if (ecgPath) {
+        ecgPath.style.strokeDasharray = length;
+        ecgPath.style.strokeDashoffset = length;
+    }
+    let ecgOffset = length;
+
+    // 2. Elements for multi-icon pulsing
+    const clockIcon = document.getElementById("js-clock-icon");
+    const completedIcon = document.getElementById("js-completed-icon");
+    const cancelledIcon = document.getElementById("js-cancelled-icon");
+
+    let angle = 0;
+
+    function runGlobalAnimations() {
+        // Sweep ECG path
+        if (ecgPath) {
+            ecgOffset -= 3;
+            if (ecgOffset <= -length) {
+                ecgOffset = length;
+            }
+            ecgPath.style.strokeDashoffset = ecgOffset;
+        }
+
+        // Smooth sinusoidal scaling pulse for the other 3 icons using math
+        angle += 0.04;
+        const scaleValue = 1 + Math.sin(angle) * 0.12; // Scales between 0.88 and 1.12
+
+        if (clockIcon) clockIcon.style.transform = `scale(${scaleValue})`;
+        if (completedIcon) completedIcon.style.transform = `scale(${scaleValue})`;
+        if (cancelledIcon) cancelledIcon.style.transform = `scale(${scaleValue})`;
+
+        requestAnimationFrame(runGlobalAnimations);
+    }
+
+    runGlobalAnimations();
 });
 
 </script>

@@ -3653,6 +3653,146 @@ button:focus-visible {
 
 
 
+
+
+
+
+
+/* =========================================================
+   IN-PROGRESS WIDGET & BREATHING ANIMATION
+   ========================================================= */
+
+/* Widget Container */
+.widget-card {
+    background: #ffffff !important;
+    border: 1px solid #e2ebe7 !important;
+    border-radius: 12px !important;
+    padding: 20px !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+}
+
+.widget-title {
+    margin: 0 !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+}
+
+.widget-subtitle {
+    font-size: 12px !important;
+    color: #64748b !important;
+}
+
+.live-badge {
+    background: #e2f4ec !important;
+    color: #287256 !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    padding: 4px 10px !important;
+    border-radius: 6px !important;
+}
+
+.status-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+}
+
+/* Base Status Row with Hover Lift Effect */
+.status-row {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 12px 14px !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    transition: all 0.25s ease-in-out !important;
+}
+
+.status-row:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Row Color Definitions */
+.row-scheduled {
+    background: #f8fafc !important;
+    border-left: 4px solid #3b82f6 !important;
+}
+.row-scheduled .status-label { color: #334155 !important; font-size: 13px !important; font-weight: 600 !important; }
+.row-scheduled .status-count { color: #3b82f6 !important; font-size: 15px !important; }
+
+
+.row-inprogress {
+    background-color: #fffbeb !important;
+    border-left: 4px solid #f59e0b !important;
+    transition: background-color 1s ease-in-out, box-shadow 1s ease-in-out !important;
+}
+.row-inprogress .status-label { color: #334155 !important; font-size: 13px !important; font-weight: 600 !important; }
+.row-inprogress .status-count { color: #f59e0b !important; font-size: 15px !important; }
+
+
+
+
+.row-completed {
+    background: #f0fdf4 !important;
+    border-left: 4px solid #10b981 !important;
+}
+.row-completed .status-label { color: #334155 !important; font-size: 13px !important; font-weight: 600 !important; }
+.row-completed .status-count { color: #10b981 !important; font-size: 15px !important; }
+
+.row-cancelled {
+    background: #fef2f2 !important;
+    border-left: 4px solid #ef4444 !important;
+}
+.row-cancelled .status-label { color: #334155 !important; font-size: 13px !important; font-weight: 600 !important; }
+.row-cancelled .status-count { color: #ef4444 !important; font-size: 15px !important; }
+
+
+
+
+
+
+
+
+/* =========================================================
+   FOOLPROOF CLINICAL ECG HEARTBEAT INDICATOR
+   ========================================================= */
+.ecg-wrapper {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+}
+
+.status-icon-box {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 65px;
+    height: 22px;
+    text-align: center;
+}
+
+/* Ensure transform scales smoothly from their centers */
+#js-clock-icon, #js-completed-icon, #js-cancelled-icon {
+    transform-origin: center;
+    transition: transform 0.1s ease-out;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* =========================================================
    MODAL — MOBILE
    ========================================================= */
