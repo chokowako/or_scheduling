@@ -719,24 +719,23 @@ require_once "../includes/sidebar.php";
                  SYSTEM SETTINGS
                  ================================================= -->
 
-            <div
-                class="settings-card settings-card-blue settings-card-disabled"
-            >
+            <!-- =================================================
+                SYSTEM SETTINGS (ACTIVE)
+                ================================================= -->
+
+            <a href="system-settings.php" class="settings-card settings-card-blue" style="text-decoration: none; color: inherit; display: block;">
 
                 <div class="card-top">
 
                     <div class="settings-card-icon">
-
                         <i class="bi bi-sliders2"></i>
-
                     </div>
 
-                    <span class="module-status coming">
-                        COMING SOON
+                    <span class="module-status active">
+                        ACTIVE
                     </span>
 
                 </div>
-
 
                 <div class="settings-card-content">
 
@@ -756,22 +755,19 @@ require_once "../includes/sidebar.php";
 
                 </div>
 
-
                 <div class="card-footer">
 
                     <span class="card-action">
-                        Configuration module
+                        Open Configuration
                     </span>
 
                     <span class="card-arrow">
-
-                        <i class="bi bi-lock-fill"></i>
-
+                        <i class="bi bi-arrow-up-right"></i>
                     </span>
 
                 </div>
 
-            </div>
+            </a>
 
 
 

@@ -5,6 +5,8 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 require_once "../config/database.php";
+require_once "../includes/notifications.php"; // <-- Add this line
+
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: /or_scheduling/login.php");
@@ -680,6 +682,70 @@ if (
                ---------------------------------------------------- */
 
             $pdo->commit();
+			
+			
+			
+			
+			/* ====================================================
+               SEND EMAIL NOTIFICATION (IF ENABLED)
+               ==================================================== */
+            try {
+                $details_stmt = $pdo->prepare("
+                    SELECT 
+                        d.email AS surgeon_email,
+                        CONCAT('Dr. ', d.first_name, ' ', d.last_name) AS surgeon_name,
+                        r.room_name,
+                        p.first_name AS p_first,
+                        p.last_name AS p_last
+                    FROM doctors d
+                    JOIN operating_rooms r ON r.room_id = :room_id
+                    JOIN patients p ON p.patient_id = :patient_id
+                    WHERE d.doctor_id = :surgeon_id
+                ");
+
+                $details_stmt->execute([
+                    ':room_id'    => $room_id,
+                    ':patient_id' => $patient_id,
+                    ':surgeon_id' => $surgeon_doctor_id
+                ]);
+
+                $info = $details_stmt->fetch();
+
+                if ($info && !empty($info['surgeon_email'])) {
+                    $patient_full_name = trim($info['p_last'] . ', ' . $info['p_first']);
+                    
+                    sendScheduleEmail(
+                        $pdo,
+                        $info['surgeon_email'],
+                        $info['surgeon_name'],
+                        $patient_full_name,
+                        $info['room_name'],
+                        'Scheduled',
+                        $surgery_date,
+                        'created'
+                    );
+                }
+            } catch (Exception $mailEx) {
+                // Fail silently or log error so it doesn't break the redirect if mail server fails
+            }
+
+            header(
+                "Location: schedules.php?success=1"
+            );
+
+            exit;
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
 
 
             header(
