@@ -14,49 +14,54 @@ $patient_search = trim($_GET['patient_search'] ?? '');
 $status_filter = trim($_GET['status'] ?? '');
 
 $sql = "SELECT
-	
-        os.schedule_id,
-        os.surgery_date,
-        os.date_end,
-        os.start_time,
-        os.end_time,
-        os.patient_registry_no,
-        os.priority,
-        os.is_stat,
-        os.status,
-      
-        p.patient_number,
-        p.first_name,
-        p.middle_name,
-        p.last_name,
-		os.birth_date,
-		os.registry_type,
+    os.schedule_id,
+    os.surgery_date,
+    os.date_end,
+    os.start_time,
+    os.end_time,
+    os.patient_registry_no,
+    os.priority,
+    os.is_stat,
+    os.status,
+   
+    p.patient_number,
+    p.first_name,
+    p.middle_name,
+    p.last_name,
+    os.birth_date,
+    os.registry_type,
 
-        pr.procedure_name,
-        pr.surgical_type AS procedure_surgical_type,
-        os.anesthetic,
-        
+    pr.procedure_name,
+    pr.surgical_type AS procedure_surgical_type,
+    os.anesthetic,
 
-        surgeon.first_name AS surgeon_first_name,
-        surgeon.middle_name AS surgeon_middle_name,
-        surgeon.last_name AS surgeon_last_name,
-        surgeon.suffix_name AS surgeon_suffix_name,
+    surgeon.first_name AS surgeon_first_name,
+    surgeon.middle_name AS surgeon_middle_name,
+    surgeon.last_name AS surgeon_last_name,
+    surgeon.suffix_name AS surgeon_suffix_name,
 
-        anesthesiologist.first_name AS anesthesiologist_first_name,
-        anesthesiologist.middle_name AS anesthesiologist_middle_name,
-        anesthesiologist.last_name AS anesthesiologist_last_name,
-        anesthesiologist.suffix_name AS anesthesiologist_suffix_name,
-		
-		-- CONCATENATED ANESTHESIOLOGIST NAME (Left join handled with COALESCE)
-		TRIM(CONCAT(
+    anesthesiologist.first_name AS anesthesiologist_first_name,
+    anesthesiologist.middle_name AS anesthesiologist_middle_name,
+    anesthesiologist.last_name AS anesthesiologist_last_name,
+    anesthesiologist.suffix_name AS anesthesiologist_suffix_name,
+    
+    -- CONCATENATED ANESTHESIOLOGIST NAME
+    TRIM(CONCAT(
         COALESCE(anesthesiologist.first_name, ''), ' ',
         CASE WHEN anesthesiologist.middle_name IS NOT NULL AND anesthesiologist.middle_name != '' THEN CONCAT(LEFT(anesthesiologist.middle_name, 1), '. ') ELSE '' END,
         COALESCE(anesthesiologist.last_name, ''),
         CASE WHEN anesthesiologist.suffix_name IS NOT NULL AND anesthesiologist.suffix_name != '' THEN CONCAT(', ', anesthesiologist.suffix_name) ELSE '' END
-		)) AS anesthesiologist_full_name,
-		
-		
-		-- ASSISTANT SURGEONS (Stacked vertically with <br>)
+    )) AS anesthesiologist_full_name,
+    
+    -- CONCATENATED CARDIOLOGIST NAME (Using the new cardiologist_id foreign key)
+    TRIM(CONCAT(
+        COALESCE(cardiologist.first_name, ''), ' ',
+        CASE WHEN cardiologist.middle_name IS NOT NULL AND cardiologist.middle_name != '' THEN CONCAT(LEFT(cardiologist.middle_name, 1), '. ') ELSE '' END,
+        COALESCE(cardiologist.last_name, ''),
+        CASE WHEN cardiologist.suffix_name IS NOT NULL AND cardiologist.suffix_name != '' THEN CONCAT(', ', cardiologist.suffix_name) ELSE '' END
+    )) AS cardiologist,
+    
+    -- ASSISTANT SURGEONS (Stacked vertically with <br>)
     (
         SELECT GROUP_CONCAT(
             TRIM(CONCAT(
@@ -72,47 +77,43 @@ $sql = "SELECT
         INNER JOIN doctors asst_doc ON osa.doctor_id = asst_doc.doctor_id
         WHERE osa.schedule_id = os.schedule_id
     ) AS assistant_surgeon_full_name,
-		
-		
-		
-		os.patient_room_no,
-        r.room_name,
         
-        os.cardiologist,
-        os.circulating_nurse,
-		os.instrument_nurse,
-            
-        os.pre_op_diagnosis,
-        os.post_op_diagnosis,
-        os.drains,
-        os.specimen_lab_exam,
-        os.sponge_count_verified,
-        os.remarks,
-        os.infections
+    os.patient_room_no,
+    r.room_name,
+    
+    os.circulating_nurse,
+    os.instrument_nurse,
         
-	
+    os.pre_op_diagnosis,
+    os.post_op_diagnosis,
+    os.drains,
+    os.specimen_lab_exam,
+    os.sponge_count_verified,
+    os.remarks,
+    os.infections
 
-    FROM or_schedules os
+FROM or_schedules os
 
-    INNER JOIN patients p
-        ON os.patient_id = p.patient_id
+INNER JOIN patients p
+    ON os.patient_id = p.patient_id
 
-    INNER JOIN procedures pr
-        ON os.procedure_id = pr.procedure_id
+INNER JOIN procedures pr
+    ON os.procedure_id = pr.procedure_id
 
-    INNER JOIN doctors surgeon
-        ON os.surgeon_doctor_id = surgeon.doctor_id
+INNER JOIN doctors surgeon
+    ON os.surgeon_doctor_id = surgeon.doctor_id
 
-    LEFT JOIN doctors anesthesiologist
-        ON os.anesthesiologist_doctor_id = anesthesiologist.doctor_id
-		
+LEFT JOIN doctors anesthesiologist
+    ON os.anesthesiologist_doctor_id = anesthesiologist.doctor_id
 
-    INNER JOIN operating_rooms r
-        ON os.room_id = r.room_id
-		
-		
+-- Added LEFT JOIN for the Cardiologist table using your new foreign key
+LEFT JOIN doctors cardiologist
+    ON os.cardiologist_id = cardiologist.doctor_id
 
-    WHERE os.surgery_date BETWEEN :date_from AND :date_to
+INNER JOIN operating_rooms r
+    ON os.room_id = r.room_id
+
+WHERE os.surgery_date BETWEEN :date_from AND :date_to
 ";
 
 $params = [

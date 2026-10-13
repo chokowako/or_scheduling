@@ -1,6 +1,14 @@
 <?php
 require_once __DIR__ . '/../config/database.php';
 
+// Include PHPMailer library files
+require_once __DIR__ . '/phpmailer/src/Exception.php';
+require_once __DIR__ . '/phpmailer/src/PHPMailer.php';
+require_once __DIR__ . '/phpmailer/src/SMTP.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 /**
  * Check if a system setting is enabled
  */
@@ -16,23 +24,23 @@ function isSettingEnabled($key, $pdo) {
 }
 
 /**
- * Send Email Notification on Schedule Creation or Status Update
+ * Send Email Notification using PHPMailer & Gmail SMTP
  */
-function sendScheduleEmail($pdo, $recipient_email, $recipient_name, $patient_name, $or_room, $status, $procedure_date, $action_type = 'created') {
-    // 1. Check if Email Alerts are enabled in System Settings
+function sendScheduleEmail($pdo, $recipient_email, $recipient_name, $patient_name, $or_room, $status, $procedure_date, $procedure_time = '', $procedure_name = '', $clinical_priority = '', $is_stat = 0, $action_type = 'created') {
+    
     if (!isSettingEnabled('enable_email_alerts', $pdo)) {
-        return false; // Email alerts disabled
+        return false;
     }
 
-    // 2. Email Subject & Title
     $title = ($action_type === 'created') ? "New OR Schedule Created" : "OR Schedule Updated";
     $subject = "{$title}: {$patient_name} - {$or_room}";
 
-    $headers  = "MIME-Version: 1.0" . "\r\n";
-    $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-    $headers .= "From: OR Scheduling System <no-reply@hospital.com>" . "\r\n";
+    $time_display = !empty($procedure_time) ? date('h:i A', strtotime($procedure_time)) : '';
+    $datetime_str = trim($procedure_date . ' ' . $time_display);
 
-    // 3. Email Body Template
+    // Format 1 or 0 cleanly for the email body
+    $stat_badge = ($is_stat == 1) ? "<span style='color: #dc2626; font-weight: bold;'>STAT / EMERGENCY</span>" : "Routine";
+
     $body = "
     <html>
     <head>
@@ -55,8 +63,11 @@ function sendScheduleEmail($pdo, $recipient_email, $recipient_name, $patient_nam
                 
                 <table style='width: 100%; border-collapse: collapse; margin: 15px 0;'>
                     <tr><td style='padding: 6px 0;'><strong>Patient:</strong></td><td>" . htmlspecialchars($patient_name) . "</td></tr>
+                    <tr><td style='padding: 6px 0;'><strong>Procedure:</strong></td><td>" . htmlspecialchars($procedure_name) . "</td></tr>
                     <tr><td style='padding: 6px 0;'><strong>Operating Room:</strong></td><td>" . htmlspecialchars($or_room) . "</td></tr>
-                    <tr><td style='padding: 6px 0;'><strong>Scheduled Date:</strong></td><td>" . htmlspecialchars($procedure_date) . "</td></tr>
+                    <tr><td style='padding: 6px 0;'><strong>Scheduled Date & Time:</strong></td><td>" . htmlspecialchars($datetime_str) . "</td></tr>
+                    <tr><td style='padding: 6px 0;'><strong>Clinical Priority:</strong></td><td>" . htmlspecialchars($clinical_priority) . "</td></tr>
+                    <tr><td style='padding: 6px 0;'><strong>Stat Status:</strong></td><td>" . $stat_badge . "</td></tr>
                     <tr><td style='padding: 6px 0;'><strong>Status:</strong></td><td><span class='badge'>" . htmlspecialchars($status) . "</span></td></tr>
                 </table>
 
@@ -70,5 +81,30 @@ function sendScheduleEmail($pdo, $recipient_email, $recipient_name, $patient_nam
     </html>
     ";
 
-    return mail($recipient_email, $subject, $body, $headers);
+    // 4. Send via PHPMailer SMTP
+    $mail = new PHPMailer(true);
+
+    try {
+        $mail->isSMTP();
+        $mail->Host       = 'smtp.gmail.com';
+        $mail->SMTPAuth   = true;
+        $mail->Username   = 'boomzdummy@gmail.com';
+        $mail->Password   = 'drflkxbklevikmvf';
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port       = 587;
+
+        // Recipients
+        $mail->setFrom('boomzdummy@gmail.com', 'OR Scheduling System');
+        $mail->addAddress($recipient_email, $recipient_name);
+
+        // Content
+        $mail->isHTML(true);
+        $mail->Subject = $subject;
+        $mail->Body    = $body;
+
+        return $mail->send();
+    } catch (Exception $e) {
+        error_log("Mailer Error: {$mail->ErrorInfo}");
+        return false;
+    }
 }

@@ -84,8 +84,7 @@ if (
     $anesthetic =
         trim($_POST['anesthetic'] ?? '');
 
-    $cardiologist =
-        trim($_POST['cardiologist'] ?? '');
+	$cardiologist_id = !empty($_POST['cardiologist_id']) ? $_POST['cardiologist_id'] : null;
 
     $circulating_nurse =
         trim($_POST['circulating_nurse'] ?? '');
@@ -354,6 +353,11 @@ if (
         }
     }
 
+	
+
+	
+	
+	
 
     /* ------------------------------------------------------------
        SAVE
@@ -375,159 +379,90 @@ if (
                     INSERT INTO or_schedules
                     (
                         patient_id,
-
                         patient_registry_no,
                         registry_date,
                         birth_date,
                         registry_type,
                         patient_room_no,
                         bed_no,
-
                         surgery_date,
                         date_end,
                         start_time,
                         end_time,
-
                         room_id,
-
                         is_stat,
                         priority,
-
                         surgeon_doctor_id,
                         anesthesiologist_doctor_id,
-
                         anesthetic,
-                        cardiologist,
+                        cardiologist_id, -- <--- Changed from cardiologist text to ID
                         circulating_nurse,
                         instrument_nurse,
-
                         procedure_id,
                         surgical_type,
-
                         remarks,
                         infections,
-
                         status,
                         created_by
                     )
                     VALUES
                     (
                         :patient_id,
-
                         :patient_registry_no,
                         :registry_date,
                         :birth_date,
                         :registry_type,
                         :patient_room_no,
                         :bed_no,
-
                         :surgery_date,
                         :date_end,
                         :start_time,
                         :end_time,
-
                         :room_id,
-
                         :is_stat,
                         :priority,
-
                         :surgeon_doctor_id,
                         :anesthesiologist_doctor_id,
-
                         :anesthetic,
-                        :cardiologist,
+                        :cardiologist_id, -- <--- Bind parameter placeholder
                         :circulating_nurse,
                         :instrument_nurse,
-
                         :procedure_id,
                         :surgical_type,
-
                         :remarks,
                         :infections,
-
                         'Scheduled',
                         :created_by
                     )
                 ");
 
 
-            $stmt->execute([
-
-                ':patient_id' =>
-                    $patient_id,
-
-                ':patient_registry_no' =>
-                    $patient_registry_no ?: null,
-
-                ':registry_date' =>
-                    $registry_date ?: null,
-
-                ':birth_date' =>
-                    $birth_date ?: null,
-
-                ':registry_type' =>
-                    $registry_type ?: null,
-
-                ':patient_room_no' =>
-                    $patient_room_no ?: null,
-
-                ':bed_no' =>
-                    $bed_no ?: null,
-
-                ':surgery_date' =>
-                    $surgery_date,
-
-                ':date_end' =>
-                    $date_end,
-
-                ':start_time' =>
-                    $start_time,
-
-                ':end_time' =>
-                    $end_time,
-
-                ':room_id' =>
-                    $room_id,
-
-                ':is_stat' =>
-                    $is_stat,
-
-                ':priority' =>
-                    $priority,
-
-                ':surgeon_doctor_id' =>
-                    $surgeon_doctor_id,
-
-                ':anesthesiologist_doctor_id' =>
-                    $anesthesiologist_doctor_id,
-
-                ':anesthetic' =>
-                    $anesthetic ?: null,
-
-                ':cardiologist' =>
-                    $cardiologist ?: null,
-
-                ':circulating_nurse' =>
-                    $circulating_nurse ?: null,
-
-                ':instrument_nurse' =>
-                    $instrument_nurse ?: null,
-
-                ':procedure_id' =>
-                    $procedure_id,
-
-                ':surgical_type' =>
-                    $surgical_type ?: null,
-
-                ':remarks' =>
-                    $remarks ?: null,
-
-                ':infections' =>
-                    $infections ?: null,
-
-                ':created_by' =>
-                    $_SESSION['user_id']
-
+           $stmt->execute([
+                ':patient_id' => $patient_id,
+                ':patient_registry_no' => $patient_registry_no ?: null,
+                ':registry_date' => $registry_date ?: null,
+                ':birth_date' => $birth_date ?: null,
+                ':registry_type' => $registry_type ?: null,
+                ':patient_room_no' => $patient_room_no ?: null,
+                ':bed_no' => $bed_no ?: null,
+                ':surgery_date' => $surgery_date,
+                ':date_end' => $date_end,
+                ':start_time' => $start_time,
+                ':end_time' => $end_time,
+                ':room_id' => $room_id,
+                ':is_stat' => $is_stat,
+                ':priority' => $priority,
+                ':surgeon_doctor_id' => $surgeon_doctor_id,
+                ':anesthesiologist_doctor_id' => $anesthesiologist_doctor_id,
+                ':anesthetic' => $anesthetic ?: null,
+                ':cardiologist_id' => $cardiologist_id, // <--- Passing the integer ID or null
+                ':circulating_nurse' => $circulating_nurse ?: null,
+                ':instrument_nurse' => $instrument_nurse ?: null,
+                ':procedure_id' => $procedure_id,
+                ':surgical_type' => $surgical_type ?: null,
+                ':remarks' => $remarks ?: null,
+                ':infections' => $infections ?: null,
+                ':created_by' => $_SESSION['user_id']
             ]);
 
 
@@ -687,53 +622,112 @@ if (
 			
 			
 			/* ====================================================
-               SEND EMAIL NOTIFICATION (IF ENABLED)
-               ==================================================== */
-            try {
-                $details_stmt = $pdo->prepare("
-                    SELECT 
-                        d.email AS surgeon_email,
-                        CONCAT('Dr. ', d.first_name, ' ', d.last_name) AS surgeon_name,
-                        r.room_name,
-                        p.first_name AS p_first,
-                        p.last_name AS p_last
-                    FROM doctors d
-                    JOIN operating_rooms r ON r.room_id = :room_id
-                    JOIN patients p ON p.patient_id = :patient_id
-                    WHERE d.doctor_id = :surgeon_id
-                ");
+			   SEND EMAIL NOTIFICATION (IF ENABLED)
+			   ==================================================== */
+			try {
+				$details_stmt = $pdo->prepare("
+					SELECT 
+						-- Primary Surgeon
+						d.email AS surgeon_email,
+						CONCAT('Dr. ', d.first_name, ' ', d.last_name) AS surgeon_name,
+						
+						-- Anesthesiologist
+						anes.email AS anesthesiologist_email,
+						CONCAT('Dr. ', anes.first_name, ' ', anes.last_name) AS anesthesiologist_name,
+						
+						-- Cardiologist
+						card.email AS cardiologist_email,
+						CONCAT('Dr. ', card.first_name, ' ', card.last_name) AS cardiologist_name,
+						
+						-- Other Schedule Details
+						r.room_name,
+						p.first_name AS p_first,
+						p.last_name AS p_last,
+						pr.procedure_name AS procedure_name,
+						s.priority AS Clinical_Priority,
+						s.is_stat AS is_stat,
+						s.start_time AS procedure_time
+					FROM or_schedules s
+					JOIN doctors d ON d.doctor_id = s.surgeon_doctor_id
+					LEFT JOIN doctors anes ON anes.doctor_id = s.anesthesiologist_doctor_id  
+					LEFT JOIN doctors card ON card.doctor_id = s.cardiologist_id  
+					JOIN operating_rooms r ON r.room_id = s.room_id
+					JOIN patients p ON p.patient_id = s.patient_id
+					LEFT JOIN procedures pr ON pr.procedure_id = s.procedure_id
+					WHERE s.schedule_id = :schedule_id
+				");
 
-                $details_stmt->execute([
-                    ':room_id'    => $room_id,
-                    ':patient_id' => $patient_id,
-                    ':surgeon_id' => $surgeon_doctor_id
-                ]);
+				$details_stmt->execute([':schedule_id' => $schedule_id]);
+				$info = $details_stmt->fetch();
 
-                $info = $details_stmt->fetch();
+				// Fetch assistant surgeons separately in case there are multiple
+				$assistants_stmt = $pdo->prepare("
+					SELECT 
+						d.email AS assistant_email,
+						CONCAT('Dr. ', d.first_name, ' ', d.last_name) AS assistant_name
+					FROM or_schedule_assistants osa
+					JOIN doctors d ON d.doctor_id = osa.doctor_id
+					WHERE osa.schedule_id = :schedule_id
+				");
+				$assistants_stmt->execute([':schedule_id' => $schedule_id]);
+				$assistants = $assistants_stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                if ($info && !empty($info['surgeon_email'])) {
-                    $patient_full_name = trim($info['p_last'] . ', ' . $info['p_first']);
-                    
-                    sendScheduleEmail(
-                        $pdo,
-                        $info['surgeon_email'],
-                        $info['surgeon_name'],
-                        $patient_full_name,
-                        $info['room_name'],
-                        'Scheduled',
-                        $surgery_date,
-                        'created'
-                    );
-                }
-            } catch (Exception $mailEx) {
-                // Fail silently or log error so it doesn't break the redirect if mail server fails
-            }
+				if ($info) {
+					$patient_full_name = trim($info['p_last'] . ', ' . $info['p_first']);
 
-            header(
-                "Location: schedules.php?success=1"
-            );
+					// Group the core team members together
+					$core_team = [
+						['email' => $info['surgeon_email'], 'name' => $info['surgeon_name']],
+						['email' => $info['anesthesiologist_email'], 'name' => $info['anesthesiologist_name']],
+						['email' => $info['cardiologist_email'], 'name' => $info['cardiologist_name']]
+					];
 
-            exit;
+					// Send email to core team members if they have a valid email
+					foreach ($core_team as $member) {
+						if (!empty($member['email'])) {
+							sendScheduleEmail(
+								$pdo,
+								$member['email'],
+								$member['name'],
+								$patient_full_name,
+								$info['room_name'],
+								'Scheduled',
+								$surgery_date,
+								$info['procedure_time'],
+								$info['procedure_name'],
+								$info['Clinical_Priority'],
+								$info['is_stat'],
+								'created'
+							);
+						}
+					}
+
+					// Send email to all assigned assistant surgeons
+					foreach ($assistants as $assistant) {
+						if (!empty($assistant['assistant_email'])) {
+							sendScheduleEmail(
+								$pdo,
+								$assistant['assistant_email'],
+								$assistant['assistant_name'],
+								$patient_full_name,
+								$info['room_name'],
+								'Scheduled',
+								$surgery_date,
+								$info['procedure_time'],
+								$info['procedure_name'],
+								$info['Clinical_Priority'],
+								$info['is_stat'],
+								'created'
+							);
+						}
+					}
+				}
+			} catch (Exception $mailEx) {
+				// Silently catch so it doesn't break redirect
+			}
+
+			header("Location: schedules.php?success=1");
+			exit;
 			
 			
 			
@@ -2026,42 +2020,35 @@ require_once "../includes/sidebar.php";
                 </div>
 
 
-                <div>
+               <div>
+				<label
+					for="cardiologist_id"
+					class="form-label"
+				>
+					Cardiologist
+				</label>
 
-                    <label
-                        for="cardiologist"
-                        class="form-label"
-                    >
-                        Cardiologist
-                    </label>
+				<select
+					name="cardiologist_id"
+					id="cardiologist_id"
+					class="form-select"
+				>
+					<option value="">
+						Select cardiologist
+					</option>
 
-                    <select
-                        name="cardiologist"
-                        id="cardiologist"
-                        class="form-select"
-                    >
+					<?php foreach ($cardiologists as $doctor): ?>
 
-                        <option value="">
-                            Select cardiologist
-                        </option>
+						<option
+							value="<?= htmlspecialchars($doctor['doctor_id']) ?>"
+						>
+							<?= htmlspecialchars(doctorFullName($doctor)) ?>
+						</option>
 
-                        <?php foreach ($cardiologists as $doctor): ?>
+					<?php endforeach; ?>
 
-                            <option
-                                value="<?= htmlspecialchars(
-                                    doctorFullName($doctor)
-                                ) ?>"
-                            >
-                                <?= htmlspecialchars(
-                                    doctorFullName($doctor)
-                                ) ?>
-                            </option>
-
-                        <?php endforeach; ?>
-
-                    </select>
-
-                </div>
+				</select>
+			</div>
 
 
                 <div>
