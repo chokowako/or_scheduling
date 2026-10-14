@@ -354,6 +354,8 @@ function renderDashboard(data) {
     });
 
     tbody.innerHTML = html;
+	
+
 }
 
 // AJAX Polling

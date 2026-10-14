@@ -17,17 +17,17 @@ require_once "config/database.php";
 
 	if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			
-	$action = $_POST['schedule_action'] ?? '';
-	$schedule_id = (int)($_POST['schedule_id'] ?? 0);
+		$action = $_POST['schedule_action'] ?? '';
+		$schedule_id = (int)($_POST['schedule_id'] ?? 0);
 
-	$user_id = $_SESSION['user_id'] ?? null;
-	
-	// Capture the new fields
-	$pre_op_diagnosis       = $_POST['pre_op_diagnosis'] ?? '';
-	$post_op_diagnosis      = $_POST['post_op_diagnosis'] ?? '';
-	$drains                 = $_POST['drains'] ?? '';
-	$specimen_lab_exam      = $_POST['specimen_lab_exam'] ?? '';
-	$sponge_count_verified  = $_POST['sponge_count_verified'] ?? '';
+		$user_id = $_SESSION['user_id'] ?? null;
+		
+		// Capture the new fields
+		$pre_op_diagnosis       = $_POST['pre_op_diagnosis'] ?? '';
+		$post_op_diagnosis      = $_POST['post_op_diagnosis'] ?? '';
+		$drains                 = $_POST['drains'] ?? '';
+		$specimen_lab_exam      = $_POST['specimen_lab_exam'] ?? '';
+		$sponge_count_verified  = $_POST['sponge_count_verified'] ?? '';
 
 	if ($schedule_id > 0 && $user_id) {
 
@@ -154,6 +154,66 @@ require_once "config/database.php";
 							$room_id
 						]);
 					}
+					
+					
+
+				/* -------------------------------------------------
+               RESCHEDULE SCHEDULE
+               ------------------------------------------------- */
+            elseif ($action === 'reschedule') {
+
+                $new_date  = $_POST['new_surgery_date'] ?? '';
+                $new_room  = !empty($_POST['new_operating_room']) ? (int)$_POST['new_operating_room'] : null; 
+                $new_start = $_POST['new_start_time'] ?? '';
+                $new_end   = $_POST['new_end_time'] ?? '';
+
+                if (empty($new_date) || empty($new_start) || empty($new_end) || empty($new_room)) {
+                    throw new Exception('New surgery date, start time, end time, and operating room are required.');
+                }
+
+                // 1. Update the schedule with new date, time, room, and status
+                $stmt = $pdo->prepare("
+                    UPDATE or_schedules
+                    SET
+                        surgery_date = ?,
+                        start_time = ?,
+                        end_time = ?,
+                        room_id = ?,
+                        status = 'Rescheduled'
+                    WHERE schedule_id = ?
+                ");
+
+                $stmt->execute([
+                    $new_date,
+                    $new_start,
+                    $new_end,
+                    $new_room,
+                    $schedule_id
+                ]);
+
+                // 2. If the room has changed, update room statuses accordingly
+                if ($room_id !== $new_room) {
+                    // Free up the old room
+                    $stmt = $pdo->prepare("
+                        UPDATE operating_rooms 
+                        SET status = 'Available' 
+                        WHERE room_id = ?
+                    ");
+                    $stmt->execute([$room_id]);
+
+                    // Set the newly selected room to Occupied
+                    $stmt = $pdo->prepare("
+                        UPDATE operating_rooms 
+                        SET status = 'Occupied' 
+                        WHERE room_id = ?
+                    ");
+                    $stmt->execute([$new_room]);
+                }
+            }
+
+
+
+
 
 					/* Save changes */
 					$pdo->commit();
@@ -172,6 +232,9 @@ require_once "config/database.php";
 			header("Location: dashboard.php");
 			exit;
 		}
+		
+		
+		
 		
 /* =========================================================
    TODAY'S DATE
@@ -571,10 +634,6 @@ $rooms = $roomsStmt->fetchAll(PDO::FETCH_ASSOC);
 	<?php require_once "includes/sidebar.php"; ?>
 	<div class="main-wrapper">
 	
-	
-	
-	
-
 
 		<!-- =====================================================
 		 TOPBAR
@@ -1462,6 +1521,61 @@ $rooms = $roomsStmt->fetchAll(PDO::FETCH_ASSOC);
 							</div>
 						</div>
 					</div>
+					
+					
+					
+					
+					<!-- RESCHEDULE SECTION -->
+							<div
+								id="rescheduleSection"
+								class="reschedule-section"
+								style="display: none;"
+							>
+								<div class="cancel-warning" style="background: #e0f2fe; border-color: #bae6fd; color: #0369a1;">
+									<i class="bi bi-calendar-event-fill"></i>
+									<div>
+										<strong>Reschedule Surgery for <span id="reschedulePatientName" style="text-decoration: underline;">Patient</span></strong>
+										<span>Please select the new date, time, and operating room.</span>
+									</div>
+								</div>
+
+								<div class="schedule-modal-grid mb-3" style="margin-top: 15px;">
+									<div class="clinical-field-group">
+										<label class="clinical-field-label" for="newSurgeryDate">New Surgery Date</label>
+										<input type="date" id="newSurgeryDate" name="new_surgery_date" class="form-control">
+									</div>
+
+									<div class="clinical-field-group">
+										<label class="clinical-field-label" for="newOperatingRoom">New Operating Room</label>
+										<select id="newOperatingRoom" name="new_operating_room" class="form-control" required>
+											<option value="">Select available room...</option>
+											<?php 
+											if (!empty($rooms)) {
+												foreach ($rooms as $room) {
+													if (strtolower(trim($room['status'])) === 'available') {
+														$roomId = htmlspecialchars($room['room_id']);
+														$roomName = htmlspecialchars($room['room_name']);
+														echo "<option value=\"{$roomId}\">{$roomName}</option>";
+													}
+												}
+											}
+											?>
+										</select>
+									</div>
+
+									<div class="clinical-field-group">
+										<label class="clinical-field-label" for="newStartTime">New Start Time</label>
+										<input type="time" id="newStartTime" name="new_start_time" class="form-control">
+									</div>
+
+									<div class="clinical-field-group">
+										<label class="clinical-field-label" for="newEndTime">New End Time</label>
+										<input type="time" id="newEndTime" name="new_end_time" class="form-control">
+									</div>
+								</div>
+							</div>
+					
+					
 
 
 					<!-- CANCELLATION SECTION -->
@@ -1490,10 +1604,12 @@ $rooms = $roomsStmt->fetchAll(PDO::FETCH_ASSOC);
 							Please enter a cancellation reason.
 						</div>
 					</div>
+					
 
 				</div>
 
 
+	
 				<!-- FOOTER -->
 				<div class="modal-footer schedule-modal-footer">
 
@@ -1502,6 +1618,17 @@ $rooms = $roomsStmt->fetchAll(PDO::FETCH_ASSOC);
 						id="scheduleActionButtons"
 						class="schedule-action-buttons"
 					>
+						<!-- ADDED RESCHEDULE BUTTON -->
+						<button
+							type="button"
+							class="btn"
+							id="showRescheduleBtn"
+							style="background: #0284c7; color: white;"
+						>
+							<i class="bi bi-calendar-event"></i>
+							Reschedule
+						</button>
+
 						<button
 							type="button"
 							class="btn schedule-complete-btn"
@@ -1518,6 +1645,35 @@ $rooms = $roomsStmt->fetchAll(PDO::FETCH_ASSOC);
 						>
 							<i class="bi bi-x-circle-fill"></i>
 							Cancel Schedule
+						</button>
+					</div>
+					
+
+
+					<!-- RESCHEDULE ACTIONS -->
+					<div
+						id="rescheduleActionButtons"
+						class="schedule-action-buttons"
+						style="display: none;"
+					>
+						<button
+							type="button"
+							class="btn schedule-back-btn"
+							id="backFromRescheduleBtn"
+						>
+							<i class="bi bi-arrow-left"></i>
+							Back
+						</button>
+
+						<button
+							type="button"
+							class="btn"
+							id="confirmRescheduleBtn"
+							onclick="submitReschedule()"
+							style="background: #0284c7; color: white; font-weight: 600;"
+						>
+							<i class="bi bi-calendar-check-fill"></i>
+							Confirm Reschedule
 						</button>
 					</div>
 
@@ -1568,40 +1724,121 @@ document.addEventListener('DOMContentLoaded', function () {
     const hiddenCancelReason = document.getElementById('hiddenCancelReason');
 
     const scheduleDetailsSection = document.getElementById('scheduleDetailsSection');
+    const rescheduleSection = document.getElementById('rescheduleSection');
     const cancelSection = document.getElementById('cancelSection');
 
     const scheduleActionButtons = document.getElementById('scheduleActionButtons');
+    const rescheduleActionButtons = document.getElementById('rescheduleActionButtons');
     const cancelActionButtons = document.getElementById('cancelActionButtons');
 
     const cancelReason = document.getElementById('cancelReason');
     const cancelReasonError = document.getElementById('cancelReasonError');
 
     /*
-     * OPEN MODAL
+     * HELPER FUNCTION TO SWITCH MODAL VIEWS CLEANLY
      */
-    manageModal.addEventListener('show.bs.modal', function (event) {
-        const button = event.relatedTarget;
-        if (!button) return;
+    function setModalView(view) {
+        // Hide all sections & action button groups first
+        if (scheduleDetailsSection) scheduleDetailsSection.style.display = 'none';
+        if (rescheduleSection) rescheduleSection.style.display = 'none';
+        if (cancelSection) cancelSection.style.display = 'none';
 
-        scheduleId.value = button.dataset.scheduleId || '';
-        document.getElementById('modalPatient').textContent = button.dataset.patient || '—';
-        document.getElementById('modalProcedure').textContent = button.dataset.procedure || '—';
-        document.getElementById('modalRoom').textContent = button.dataset.room || '—';
-        document.getElementById('modalDate').textContent = button.dataset.date || '—';
-        document.getElementById('modalTime').textContent = formatScheduleTime(button.dataset.startTime, button.dataset.endTime);
-        document.getElementById('modalSurgeon').textContent = button.dataset.surgeon || '—';
-        document.getElementById('modalAnesthesiologist').textContent = button.dataset.anesthesiologist || '—';
-        // Status bar line removed here!
+        if (scheduleActionButtons) scheduleActionButtons.style.display = 'none';
+        if (rescheduleActionButtons) rescheduleActionButtons.style.display = 'none';
+        if (cancelActionButtons) cancelActionButtons.style.display = 'none';
 
-        // Reset sections and views
-        scheduleDetailsSection.style.display = '';
-        cancelSection.style.display = 'none';
+        // Show selected view
+        if (view === 'reschedule') {
+            if (rescheduleSection) rescheduleSection.style.display = 'block';
+            if (rescheduleActionButtons) rescheduleActionButtons.style.display = 'flex';
+            if (scheduleAction) scheduleAction.value = 'reschedule';
+        } else if (view === 'cancel') {
+            if (scheduleDetailsSection) scheduleDetailsSection.style.display = 'block'; // Keep patient info visible
+            if (cancelSection) cancelSection.style.display = 'block';
+            if (cancelActionButtons) cancelActionButtons.style.display = 'flex';
+            if (scheduleAction) scheduleAction.value = 'cancel';
+            if (cancelReason) cancelReason.focus();
+        } else {
+            // Default / Normal View
+            if (scheduleDetailsSection) scheduleDetailsSection.style.display = 'block';
+            if (scheduleActionButtons) scheduleActionButtons.style.display = 'flex';
+            if (scheduleAction) scheduleAction.value = '';
+        }
+    }
 
-        scheduleActionButtons.style.display = 'flex';
-        cancelActionButtons.style.display = 'none';
+    /*
+     * OPEN MODAL POPULATION
+     */
+    if (manageModal) {
+        manageModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            if (!button) return;
 
-        cancelReason.value = '';
-        cancelReasonError.style.display = 'none';
+            scheduleId.value = button.dataset.scheduleId || '';
+            document.getElementById('modalPatient').textContent = button.dataset.patient || '—';
+			document.getElementById('reschedulePatientName').textContent = button.dataset.patient || 'Patient';
+            document.getElementById('modalProcedure').textContent = button.dataset.procedure || '—';
+            document.getElementById('modalRoom').textContent = button.dataset.room || '—';
+            document.getElementById('modalDate').textContent = button.dataset.date || '—';
+            document.getElementById('modalTime').textContent = formatScheduleTime(button.dataset.startTime, button.dataset.endTime);
+            document.getElementById('modalSurgeon').textContent = button.dataset.surgeon || '—';
+            document.getElementById('modalAnesthesiologist').textContent = button.dataset.anesthesiologist || '—';
+
+            // Reset modal to normal view on open
+            setModalView('normal');
+            if (cancelReason) cancelReason.value = '';
+            if (cancelReasonError) cancelReasonError.style.display = 'none';
+        });
+
+        // Reset to normal view when modal closes
+        manageModal.addEventListener('hidden.bs.modal', function () {
+            setModalView('normal');
+        });
+    }
+
+    /*
+     * EVENT DELEGATION FOR ALL MODAL BUTTON CLICKS
+     */
+    document.addEventListener('click', function (e) {
+        // 1. Clicked "Reschedule" Button
+        if (e.target.closest('#showRescheduleBtn')) {
+            e.preventDefault();
+            setModalView('reschedule');
+        }
+
+        // 2. Clicked "Back" from Reschedule View
+        if (e.target.closest('#backFromRescheduleBtn')) {
+            e.preventDefault();
+            setModalView('normal');
+        }
+
+        // 3. Clicked "Cancel Schedule" Button (Show Cancel View)
+        if (e.target.closest('#showCancelBtn')) {
+            e.preventDefault();
+            setModalView('cancel');
+        }
+
+        // 4. Clicked "Back" from Cancel View
+        if (e.target.closest('#backToScheduleBtn')) {
+            e.preventDefault();
+            setModalView('normal');
+        }
+
+        // 5. Clicked "Confirm Reschedule"
+        if (e.target.closest('#confirmRescheduleBtn')) {
+            e.preventDefault();
+            const newDate = document.getElementById('newSurgeryDate')?.value;
+            const newStart = document.getElementById('newStartTime')?.value;
+            const newEnd = document.getElementById('newEndTime')?.value;
+
+            if (!newDate || !newStart || !newEnd) {
+                alert('Please select a new date, start time, and end time.');
+                return;
+            }
+
+            if (scheduleAction) scheduleAction.value = 'reschedule';
+            if (scheduleActionForm) scheduleActionForm.submit();
+        }
     });
 
     /*
@@ -1621,52 +1858,32 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    /*
-     * SHOW CANCEL FORM
-     */
-    document.getElementById('showCancelBtn').addEventListener('click', function () {
-        scheduleDetailsSection.style.display = 'none';
-        cancelSection.style.display = 'block';
-
-        scheduleActionButtons.style.display = 'none';
-        cancelActionButtons.style.display = 'flex';
-
-        cancelReason.focus();
-    });
 
     /*
-     * BACK TO SCHEDULE DETAILS FROM CANCELLATION
+     * CONFIRM CANCELLATION ACTION
      */
-    document.getElementById('backToScheduleBtn').addEventListener('click', function () {
-        scheduleDetailsSection.style.display = '';
-        cancelSection.style.display = 'none';
+	 
+    const confirmCancelBtn = document.getElementById('confirmCancelBtn');
+    if (confirmCancelBtn) {
+        confirmCancelBtn.addEventListener('click', function () {
+            const reason = cancelReason.value.trim();
 
-        scheduleActionButtons.style.display = 'flex';
-        cancelActionButtons.style.display = 'none';
-        cancelReasonError.style.display = 'none';
-    });
+            if (reason === '') {
+                cancelReasonError.style.display = 'block';
+                cancelReason.focus();
+                return;
+            }
 
-    /*
-     * CONFIRM CANCELLATION
-     */
-    document.getElementById('confirmCancelBtn').addEventListener('click', function () {
-        const reason = cancelReason.value.trim();
+            if (!scheduleId.value) return;
 
-        if (reason === '') {
-            cancelReasonError.style.display = 'block';
-            cancelReason.focus();
-            return;
-        }
-
-        if (!scheduleId.value) return;
-
-        scheduleAction.value = 'cancel';
-        hiddenCancelReason.value = reason;
-        
-        if (scheduleActionForm) {
-            scheduleActionForm.submit();
-        }
-    });
+            scheduleAction.value = 'cancel';
+            hiddenCancelReason.value = reason;
+            
+            if (scheduleActionForm) {
+                scheduleActionForm.submit();
+            }
+        });
+    }
 
     /*
      * FORMAT TIME HELPERS
@@ -1689,80 +1906,58 @@ document.addEventListener('DOMContentLoaded', function () {
         hour = hour % 12 || 12;
         return hour + ':' + minute + ' ' + period;
     }
-
 });
 
 
-
-    setInterval(function() {
-        fetch('get_status_counts.php?t=' + Date.now())
-            .then(response => response.json())
-            .then(data => {
-                console.log("?? Data updated successfully:", data);
-                document.getElementById('scheduled-count').innerText = data.scheduled;
-                document.getElementById('inprogress-count').innerText = data.inprogress;
-                document.getElementById('completed-count').innerText = data.completed;
-                document.getElementById('cancelled-count').innerText = data.cancelled;
-            })
-            .catch(error => console.error("? Fetch error:", error));
-    }, 5000);
-	
-	
-	
-	
-	
-    // Helper function to update numbers with a pop effect
-    function updateCounter(elementId, newValue) {
-        const el = document.getElementById(elementId);
-        if (el && el.innerText != newValue) {
-            el.innerText = newValue;
-            // Trigger the pop animation
-            el.classList.add('pop-animation');
-            setTimeout(() => {
-                el.classList.remove('pop-animation');
-            }, 400); // Removes class after animation finishes
-        }
+/*
+ * BACKGROUND FETCH & STATUS COUNTERS
+ */
+function updateCounter(elementId, newValue) {
+    const el = document.getElementById(elementId);
+    if (el && el.innerText != newValue) {
+        el.innerText = newValue;
+        el.classList.add('pop-animation');
+        setTimeout(() => {
+            el.classList.remove('pop-animation');
+        }, 400);
     }
+}
 
-    // Background fetch loop every 5 seconds
-    setInterval(function() {
-        fetch('get_status_counts.php?t=' + Date.now())
-            .then(response => response.json())
-            .then(data => {
-                updateCounter('scheduled-count', data.scheduled);
-                updateCounter('inprogress-count', data.inprogress);
-                updateCounter('completed-count', data.completed);
-                updateCounter('cancelled-count', data.cancelled);
-            })
-            .catch(error => console.error('Fetch error:', error));
-    }, 5000);
-
-
+setInterval(function() {
+    fetch('get_status_counts.php?t=' + Date.now())
+        .then(response => response.json())
+        .then(data => {
+            updateCounter('scheduled-count', data.scheduled);
+            updateCounter('inprogress-count', data.inprogress);
+            updateCounter('completed-count', data.completed);
+            updateCounter('cancelled-count', data.cancelled);
+        })
+        .catch(error => console.error('Fetch error:', error));
+}, 5000);
 
 
-
+/*
+ * IN-PROGRESS PULSE & GLOBAL ANIMATIONS
+ */
 document.addEventListener("DOMContentLoaded", function() {
     const inProgressRow = document.querySelector('.row-inprogress');
     if (inProgressRow) {
         let isLight = true;
         setInterval(() => {
             if (isLight) {
-                // High-visibility active pulse state (deeper amber + strong glow)
                 inProgressRow.style.backgroundColor = '#fcd34d';
                 inProgressRow.style.boxShadow = '0 6px 16px rgba(245, 158, 11, 0.5)';
             } else {
-                // Base subtle state
                 inProgressRow.style.backgroundColor = '#fffbeb';
                 inProgressRow.style.boxShadow = '0 0 0 rgba(245, 158, 11, 0)';
             }
             isLight = !isLight;
-        }, 1000); // 1-second interval
+        }, 1000);
     }
 });
 
 
 document.addEventListener("DOMContentLoaded", function () {
-    // 1. ECG Sweeping Line Animation
     const ecgPath = document.getElementById("ecg-dynamic-path");
     const length = 150;
     if (ecgPath) {
@@ -1771,7 +1966,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     let ecgOffset = length;
 
-    // 2. Elements for multi-icon pulsing
     const clockIcon = document.getElementById("js-clock-icon");
     const completedIcon = document.getElementById("js-completed-icon");
     const cancelledIcon = document.getElementById("js-cancelled-icon");
@@ -1779,7 +1973,6 @@ document.addEventListener("DOMContentLoaded", function () {
     let angle = 0;
 
     function runGlobalAnimations() {
-        // Sweep ECG path
         if (ecgPath) {
             ecgOffset -= 3;
             if (ecgOffset <= -length) {
@@ -1788,9 +1981,8 @@ document.addEventListener("DOMContentLoaded", function () {
             ecgPath.style.strokeDashoffset = ecgOffset;
         }
 
-        // Smooth sinusoidal scaling pulse for the other 3 icons using math
         angle += 0.04;
-        const scaleValue = 1 + Math.sin(angle) * 0.12; // Scales between 0.88 and 1.12
+        const scaleValue = 1 + Math.sin(angle) * 0.12;
 
         if (clockIcon) clockIcon.style.transform = `scale(${scaleValue})`;
         if (completedIcon) completedIcon.style.transform = `scale(${scaleValue})`;
@@ -1801,6 +1993,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     runGlobalAnimations();
 });
+
+
 
 </script>
 
