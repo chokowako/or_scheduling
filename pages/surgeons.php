@@ -79,70 +79,76 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     */
 
     if ($action === "add") {
-        $last_name = trim($_POST['last_name'] ?? "");
-        $first_name = trim($_POST['first_name'] ?? "");
-        $middle_name = trim($_POST['middle_name'] ?? "");
-        $suffix_name = trim($_POST['suffix_name'] ?? "");
-        $birth_date = trim($_POST['birth_date'] ?? "");
-        $nick_name = trim($_POST['nick_name'] ?? "");
-        $sex_gender = trim($_POST['sex_gender'] ?? "");
-        $service_class = trim($_POST['service_class'] ?? "");
-        $specialization = trim($_POST['specialization'] ?? "");
-        $status = $_POST['status'] ?? "Active";
+    $last_name = trim($_POST['last_name'] ?? "");
+    $first_name = trim($_POST['first_name'] ?? "");
+    $middle_name = trim($_POST['middle_name'] ?? "");
+    $suffix_name = trim($_POST['suffix_name'] ?? "");
+    $birth_date = trim($_POST['birth_date'] ?? "");
+    $nick_name = trim($_POST['nick_name'] ?? "");
+    $sex_gender = trim($_POST['sex_gender'] ?? "");
+    $email_address = trim($_POST['email_address'] ?? ""); // <--- 1. Capture email input
+    $service_class = trim($_POST['service_class'] ?? "");
+    $specialization = trim($_POST['specialization'] ?? "");
+    $status = $_POST['status'] ?? "Active";
 
-        if ($last_name === "" || $first_name === "") {
-            $message = "Last Name and First Name are required.";
+    if ($last_name === "" || $first_name === "") {
+        $message = "Last Name and First Name are required.";
+        $message_type = "danger";
+    } else {
+        try {
+            $sql = "
+                INSERT INTO doctors
+                (
+                    last_name,
+                    first_name,
+                    middle_name,
+                    suffix_name,
+                    birth_date,
+                    nick_name,
+                    sex_gender,
+                    email,
+                    service_class,
+                    specialization,
+                    status
+                )
+                VALUES
+                (
+                    :last_name,
+                    :first_name,
+                    :middle_name,
+                    :suffix_name,
+                    :birth_date,
+                    :nick_name,
+                    :sex_gender,
+                    :email_address,
+                    :service_class,
+                    :specialization,
+                    :status
+                )";
+
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                ":last_name" => $last_name,
+                ":first_name" => $first_name,
+                ":middle_name" => $middle_name !== "" ? $middle_name : null,
+                ":suffix_name" => $suffix_name !== "" ? $suffix_name : null,
+                ":birth_date" => $birth_date !== "" ? $birth_date : null,
+                ":nick_name" => $nick_name !== "" ? $nick_name : null,
+                ":sex_gender" => $sex_gender !== "" ? $sex_gender : null,
+                ":email_address" => $email_address !== "" ? $email_address : null, // <--- 2. Bind the email parameter
+                ":service_class" => $service_class !== "" ? $service_class : null,
+                ":specialization" => $specialization !== "" ? $specialization : null,
+                ":status" => $status
+            ]);
+
+            header("Location: surgeons.php?success=added");
+            exit;
+        } catch (PDOException $e) {
+            $message = "Unable to add surgeon: " . $e->getMessage();
             $message_type = "danger";
-        } else {
-            try {
-                $sql = "
-                    INSERT INTO doctors
-                    (
-                        last_name,
-                        first_name,
-                        middle_name,
-                        suffix_name,
-                        birth_date,
-                        nick_name,
-                        sex_gender,
-                        service_class,
-                        specialization,
-                        status
-                    )
-                    VALUES
-                    (
-                        :last_name,
-                        :first_name,
-                        :middle_name,
-                        :suffix_name,
-                        :birth_date,
-                        :nick_name,
-                        :sex_gender,
-                        :service_class,
-                        :specialization,
-                        :status)";
-
-                $stmt = $pdo->prepare($sql);
-                $stmt->execute([
-                    ":last_name" => $last_name,
-                    ":first_name" => $first_name,
-                    ":middle_name" => $middle_name !== "" ? $middle_name : null,
-                    ":suffix_name" => $suffix_name !== "" ? $suffix_name : null,
-                    ":birth_date" => $birth_date !== "" ? $birth_date : null,
-                    ":nick_name" => $nick_name !== "" ? $nick_name : null,
-                    ":sex_gender" => $sex_gender !== "" ? $sex_gender : null,
-                    ":service_class" => $service_class !== "" ? $service_class : null,
-                    ":specialization" => $specialization !== "" ? $specialization : null,
-                    ":status" => $status]);
-                header("Location: surgeons.php?success=added");
-                exit;
-            } catch (PDOException $e) {
-
-                $message = "Unable to add surgeon: " . $e->getMessage();
-                $message_type = "danger";
-            }
         }
     }
+}
 
 
 		/*
@@ -160,6 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			$birth_date = trim($_POST['birth_date'] ?? "");
 			$nick_name = trim($_POST['nick_name'] ?? "");
 			$sex_gender = trim($_POST['sex_gender'] ?? "");
+			$email_address = trim($_POST['email_address'] ?? "");
 			$service_class = trim($_POST['service_class'] ?? "");
 			$specialization = trim($_POST['specialization'] ?? "");
 			$status = $_POST['status'] ?? "Active";
@@ -182,6 +189,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 							birth_date = :birth_date,
 							nick_name = :nick_name,
 							sex_gender = :sex_gender,
+							email = :email_address,
 							service_class = :service_class,
 							specialization = :specialization,
 							status = :status
@@ -196,6 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 						":birth_date" => $birth_date !== "" ? $birth_date : null,
 						":nick_name" => $nick_name !== "" ? $nick_name : null,
 						":sex_gender" => $sex_gender !== "" ? $sex_gender : null,
+						":email_address" => $email_address !== "" ? $email_address : null,
 						":service_class" => $service_class !== "" ? $service_class : null,
 						":specialization" => $specialization !== "" ? $specialization : null,
 						":status" => $status,
@@ -275,7 +284,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		if ($search !== "") {
 			$sql = "SELECT
 					doctor_id, last_name, first_name, middle_name, suffix_name,
-					birth_date, nick_name, sex_gender, service_class,
+					birth_date, nick_name, sex_gender,email, service_class,
 					specialization, status, created_at
 				FROM doctors
 				WHERE
@@ -295,7 +304,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		} else {
 			$sql = "SELECT
 					doctor_id, last_name, first_name, middle_name, suffix_name,
-					birth_date, nick_name, sex_gender, service_class,
+					birth_date, nick_name, sex_gender,email, service_class,
 					specialization, status, created_at
 				FROM doctors
 				ORDER BY last_name ASC, first_name ASC
@@ -399,32 +408,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			
 			 <?php if ($can_manage_surgeons): ?>
 			
-			 <!-- FORM HEADER 
-					<div class="surgeon-form-header">
-						<div class="surgeon-form-icon">
-							<i class="bi bi-person-badge"></i>
-						</div>
-						<div>
-							<div class="surgeon-form-eyebrow">
-								SURGEON MANAGEMENT
-							</div>
-							<h1 class="surgeon-form-heading">
-								Add Surgeon
-							</h1>
-							<p class="surgeon-form-description">
-								Register a surgeon for operating room scheduling.
-							</p>
-						</div>
-					</div>
-
-					<form method="POST">
-						<input
-							type="hidden"
-							name="action"
-							value="add" > -->
-						
-						
-						
+					<form method="POST" action="">
+						<input type="hidden" name="action" value="add">
+									
 							<!-- =================================================
 							 PERSONAL INFORMATION
 							 ================================================= -->
@@ -463,8 +449,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 										placeholder="Enter first name"
 										required
 									>
-
 								</div>
+								
 								<div class="surgeon-field">
 									<label>
 										Middle Name
@@ -525,6 +511,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 											Female
 										</option>
 									</select>
+								</div>
+								
+								
+								<div class="surgeon-field">
+									<label>
+										Email Address
+									</label>
+									<input
+										type="email"
+										name="email_address"
+										placeholder="Enter email address"
+									>
 								</div>
 							</div>
 
@@ -848,6 +846,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 																	data-birth-date="<?= htmlspecialchars($surgeon['birth_date'] ?? '', ENT_QUOTES) ?>"
 																	data-nick-name="<?= htmlspecialchars($surgeon['nick_name'] ?? '', ENT_QUOTES) ?>"
 																	data-sex-gender="<?= htmlspecialchars($surgeon['sex_gender'] ?? '', ENT_QUOTES) ?>"
+																	data-email="<?= htmlspecialchars($surgeon['email'] ?? '', ENT_QUOTES) ?>"
 																	data-service-class="<?= htmlspecialchars($surgeon['service_class'] ?? '', ENT_QUOTES) ?>"
 																	data-specialization="<?= htmlspecialchars($surgeon['specialization'] ?? '', ENT_QUOTES) ?>"
 																	data-status="<?= htmlspecialchars($surgeon['status'], ENT_QUOTES) ?>"
@@ -1185,6 +1184,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </select>
 
                                 </div>
+								
+								<div class="surgeon-field">
+									<label for="edit_email_address">
+										Email Address
+									</label>
+									<input
+										type="email"
+										name="email_address"
+										id="edit_email_address"
+										class="form-control"
+										placeholder="Enter email address"
+									>
+</div>
 
 
                             </div>
@@ -1546,45 +1558,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     editButtons.forEach(function (button) {
-
-        button.addEventListener("click", function () {
-
-            document.getElementById("edit_doctor_id").value =
-                button.dataset.id;
-
-            document.getElementById("edit_last_name").value =
-                button.dataset.lastName;
-
-            document.getElementById("edit_first_name").value =
-                button.dataset.firstName;
-
-            document.getElementById("edit_middle_name").value =
-                button.dataset.middleName;
-
-            document.getElementById("edit_suffix_name").value =
-                button.dataset.suffixName;
-
-            document.getElementById("edit_birth_date").value =
-                button.dataset.birthDate;
-
-            document.getElementById("edit_nick_name").value =
-                button.dataset.nickName;
-
-            document.getElementById("edit_sex_gender").value =
-                button.dataset.sexGender;
-
-            document.getElementById("edit_service_class").value =
-                button.dataset.serviceClass;
-
-            document.getElementById("edit_specialization").value =
-                button.dataset.specialization;
-
-            document.getElementById("edit_status").value =
-                button.dataset.status;
-
-        });
-
+    button.addEventListener("click", function () {
+        document.getElementById("edit_doctor_id").value = button.dataset.id;
+        document.getElementById("edit_last_name").value = button.dataset.lastName;
+        document.getElementById("edit_first_name").value = button.dataset.firstName;
+        document.getElementById("edit_middle_name").value = button.dataset.middleName;
+        document.getElementById("edit_suffix_name").value = button.dataset.suffixName;
+        document.getElementById("edit_birth_date").value = button.dataset.birthDate;
+        document.getElementById("edit_nick_name").value = button.dataset.nickName;
+        document.getElementById("edit_sex_gender").value = button.dataset.sexGender;
+        
+        // --- ADD THIS LINE ---
+        document.getElementById("edit_email_address").value = button.dataset.email || "";
+        
+        document.getElementById("edit_service_class").value = button.dataset.serviceClass;
+        document.getElementById("edit_specialization").value = button.dataset.specialization;
+        document.getElementById("edit_status").value = button.dataset.status;
     });
+});
 
 
     /*
@@ -1622,6 +1613,24 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
+
+
+/*
+|--------------------------------------------------------------------------
+| CLEAR SURGEON FORM BUTTON
+|--------------------------------------------------------------------------
+*/
+const clearBtn = document.getElementById("clearSurgeonForm");
+if (clearBtn) {
+    clearBtn.addEventListener("click", function (e) {
+        // Optional: If type="reset" isn't clearing custom select elements, 
+        // you can manually reset them or let the native reset run:
+        const form = this.closest("form");
+        if (form) {
+            form.reset();
+        }
+    });
+}
 
 </script>
 

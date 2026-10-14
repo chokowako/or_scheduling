@@ -83,6 +83,12 @@ function formatTime($time) {
 </head>
 <body>
 
+
+
+
+
+
+
 <div class="or-dashboard">
     <!-- Header -->
     <header class="dashboard-header">
@@ -102,8 +108,15 @@ function formatTime($time) {
                 <span><?= htmlspecialchars($displayDate) ?></span>
             </div>
         </div>
+		
+	
+       <div class="header-right">
+            <!-- ADD THIS BUTTON HERE -->
+            <button type="button" id="audioToggleBtn" class="audio-toggle-btn muted" title="Enable/Disable STAT Sound Alerts">
+                <i class="bi bi-volume-mute-fill" id="audioIcon"></i>
+                <span>Sound Off</span>
+            </button>
 
-        <div class="header-right">
             <div class="sync-status" id="syncStatus">
                 <i class="bi bi-arrow-repeat spin-icon"></i>
                 <span id="lastSyncText">Syncing...</span>
@@ -114,6 +127,8 @@ function formatTime($time) {
             </div>
             <div id="currentTime" class="clock-display"><?= date('h:i:s A') ?></div>
         </div>
+		
+		
     </header>
 
     <!-- High-Priority Alert Banner (STAT Alert) -->
@@ -231,6 +246,21 @@ function renderDashboard(data) {
     const emptyState = document.getElementById('emptyState');
     const statBanner = document.getElementById('statBanner');
     const metricStatCard = document.getElementById('metricStatCard');
+	
+	
+	
+	// --- ADD THESE LINES TO CHECK FOR NEW STAT CASES ---
+    if (data.totalStat > previousStatCount && previousStatCount !== 0) {
+        playStatChime();
+    }
+    previousStatCount = data.totalStat;
+    // ---------------------------------------------------
+	
+	
+	animateCounter(document.getElementById('metricRooms'), data.totalRooms);
+    animateCounter(document.getElementById('metricOperations'), data.totalOperations);
+    animateCounter(document.getElementById('metricStat'), data.totalStat);
+	
 
     document.getElementById('metricRooms').textContent = data.totalRooms;
     document.getElementById('metricOperations').textContent = data.totalOperations;
@@ -382,6 +412,89 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(fetchScheduleData, 15000); // Refresh every 15s
     initAutoScroll();
 });
+
+
+// Smooth Number Counter Animation Function
+function animateCounter(element, newValue) {
+    const currentValue = parseInt(element.textContent, 10) || 0;
+    if (currentValue === newValue) return;
+
+    let start = currentValue;
+    let end = newValue;
+    let duration = 600; // Animation duration in milliseconds
+    let startTime = null;
+
+    function step(timestamp) {
+        if (!startTime) startTime = timestamp;
+        let progress = Math.min((timestamp - startTime) / duration, 1);
+        let current = Math.floor(progress * (end - start) + start);
+        element.textContent = current;
+        
+        if (progress < 1) {
+            window.requestAnimationFrame(step);
+        } else {
+            element.textContent = end;
+        }
+    }
+
+    window.requestAnimationFrame(step);
+}
+
+
+// --- AUDIO STAT ALERT SYSTEM ---
+let soundEnabled = false;
+let previousStatCount = 0; // Tracks previous poll to detect brand new STAT cases
+
+function playStatChime() {
+    if (!soundEnabled) return;
+    
+    try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playTone(frequency, startTime, duration) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc.type = 'sine';
+            osc.frequency.value = frequency;
+            
+            gain.gain.setValueAtTime(0.15, audioCtx.currentTime + startTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + startTime + duration);
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.start(audioCtx.currentTime + startTime);
+            osc.stop(audioCtx.currentTime + startTime + duration);
+        }
+
+      playTone(987.77, 0.0, 0.25);  // First note: B5 (987.77 Hz)
+        playTone(1318.51, 0.25, 0.4); // Second note: E6 (1318.51 Hz)
+    } catch (e) {
+        console.warn('Audio context blocked or not supported:', e);
+    }
+}
+
+// Mute button click handler
+document.getElementById('audioToggleBtn').addEventListener('click', function() {
+    soundEnabled = !soundEnabled;
+    const icon = document.getElementById('audioIcon');
+    const textSpan = this.querySelector('span');
+    
+    if (soundEnabled) {
+        this.classList.remove('muted');
+        this.classList.add('active');
+        icon.className = 'bi bi-volume-up-fill';
+        textSpan.textContent = 'Sound On';
+        playStatChime(); // Test sound immediately when turned on
+    } else {
+        this.classList.remove('active');
+        this.classList.add('muted');
+        icon.className = 'bi bi-volume-mute-fill';
+        textSpan.textContent = 'Sound Off';
+    }
+});
+
 </script>
 
 </body>
