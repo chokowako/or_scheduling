@@ -81,7 +81,6 @@ function sendScheduleEmail($pdo, $recipient_email, $recipient_name, $patient_nam
     </html>
     ";
 
-    // 4. Send via PHPMailer SMTP
     $mail = new PHPMailer(true);
 
     try {
@@ -92,6 +91,15 @@ function sendScheduleEmail($pdo, $recipient_email, $recipient_name, $patient_nam
         $mail->Password   = 'drflkxbklevikmvf';
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = 587;
+
+        // Bypass local SSL certificate check issues (fixes XAMPP/WAMP silent connection drops)
+        $mail->SMTPOptions = array(
+            'ssl' => array(
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true
+            )
+        );
 
         // Recipients
         $mail->setFrom('boomzdummy@gmail.com', 'OR Scheduling System');

@@ -6,6 +6,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 require_once "../config/database.php";
 require_once "../includes/notifications.php"; // <-- Add this line
+require_once "../includes/logger.php";
 
 
 if (!isset($_SESSION['user_id'])) {
@@ -621,9 +622,7 @@ if (
 			
 			
 			
-			/* ====================================================
-			   SEND EMAIL NOTIFICATION (IF ENABLED)
-			   ==================================================== */
+			// Send Email Notifications
 			try {
 				$details_stmt = $pdo->prepare("
 					SELECT 
@@ -658,9 +657,9 @@ if (
 				");
 
 				$details_stmt->execute([':schedule_id' => $schedule_id]);
-				$info = $details_stmt->fetch();
+				$info = $details_stmt->fetch(PDO::FETCH_ASSOC);
 
-				// Fetch assistant surgeons separately in case there are multiple
+				// Fetch assistant surgeons separately
 				$assistants_stmt = $pdo->prepare("
 					SELECT 
 						d.email AS assistant_email,
@@ -675,14 +674,14 @@ if (
 				if ($info) {
 					$patient_full_name = trim($info['p_last'] . ', ' . $info['p_first']);
 
-					// Group the core team members together
+					// Group the core surgical team
 					$core_team = [
 						['email' => $info['surgeon_email'], 'name' => $info['surgeon_name']],
 						['email' => $info['anesthesiologist_email'], 'name' => $info['anesthesiologist_name']],
 						['email' => $info['cardiologist_email'], 'name' => $info['cardiologist_name']]
 					];
 
-					// Send email to core team members if they have a valid email
+					// 1. Send email alerts to assigned core team
 					foreach ($core_team as $member) {
 						if (!empty($member['email'])) {
 							sendScheduleEmail(
@@ -702,7 +701,7 @@ if (
 						}
 					}
 
-					// Send email to all assigned assistant surgeons
+					// 2. Send email alerts to assigned assistant surgeons
 					foreach ($assistants as $assistant) {
 						if (!empty($assistant['assistant_email'])) {
 							sendScheduleEmail(
@@ -722,33 +721,26 @@ if (
 						}
 					}
 				}
+				
+				// >>> PLACE IT HERE (Right after emails are dispatched, before redirect) <<<
+				logActivity(
+					$pdo, 
+					'CREATE_SCHEDULE', 
+					"Created surgery schedule for Patient ID: {$patient_id} in Room ID: {$room_id} on {$surgery_date}"
+				);
+				
+				
 			} catch (Exception $mailEx) {
-				// Silently catch so it doesn't break redirect
+				// Log notification errors without blocking successful schedule save
+				error_log("Schedule notification error: " . $mailEx->getMessage());
 			}
 
 			header("Location: schedules.php?success=1");
 			exit;
 			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
+		
 
-
-            header(
-                "Location: schedules.php?success=1"
-            );
-
-            exit;
-
-
+ 
         } catch (Exception $e) {
 
             if ($pdo->inTransaction()) {

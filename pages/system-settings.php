@@ -27,8 +27,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $posted_settings = [
         'enable_email_alerts'     => isset($_POST['enable_email_alerts']) ? '1' : '0',
-        'enable_sms_alerts'       => isset($_POST['enable_sms_alerts']) ? '1' : '0',
-        'alert_lead_time'         => $_POST['alert_lead_time'] ?? '30',
         'enable_activity_logging' => isset($_POST['enable_activity_logging']) ? '1' : '0',
     ];
 
@@ -149,7 +147,7 @@ require_once "../includes/sidebar.php";
             <div class="settings-section">
 
                 <h3 class="settings-section-title">
-                    Expanded Notification Options
+                    Notification Options
                 </h3>
 
                 <!-- EMAIL ALERTS TOGGLE -->
@@ -163,34 +161,6 @@ require_once "../includes/sidebar.php";
                         >
                         Enable automated email alerts for status changes
                     </label>
-                </div>
-
-                <!-- SMS ALERTS TOGGLE -->
-                <div class="settings-checkbox-wrapper" style="margin-top: 15px;">
-                    <label class="settings-checkbox-label">
-                        <input
-                            type="checkbox"
-                            name="enable_sms_alerts"
-                            value="1"
-                            <?= (!empty($settings['enable_sms_alerts']) && $settings['enable_sms_alerts'] == '1') ? 'checked' : ''; ?>
-                        >
-                        Enable SMS / Phone alerts for emergency or urgent schedule updates
-                    </label>
-                </div>
-
-                <!-- LEAD TIME -->
-                <div class="row" style="margin-top: 20px;">
-                    <div class="col-md-6">
-                        <label class="form-label font-weight-semibold" style="font-size: 14px; color: #334155; margin-bottom: 8px; display: block;">
-                            Lead Time for Alerts
-                        </label>
-                        <select name="alert_lead_time" class="form-select">
-                            <option value="15" <?= (($settings['alert_lead_time'] ?? '') == '15') ? 'selected' : ''; ?>>15 minutes before procedure</option>
-                            <option value="30" <?= (($settings['alert_lead_time'] ?? '') == '30') ? 'selected' : ''; ?>>30 minutes before procedure</option>
-                            <option value="60" <?= (($settings['alert_lead_time'] ?? '') == '60') ? 'selected' : ''; ?>>1 hour before procedure</option>
-                            <option value="120" <?= (($settings['alert_lead_time'] ?? '') == '120') ? 'selected' : ''; ?>>2 hours before procedure</option>
-                        </select>
-                    </div>
                 </div>
 
             </div>
