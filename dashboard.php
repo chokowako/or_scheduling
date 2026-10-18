@@ -10,6 +10,8 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 require_once "config/database.php";
+require_once "includes/logger.php";
+
 
    /* =========================================================
    SCHEDULE ACTIONS
@@ -98,7 +100,7 @@ require_once "config/database.php";
                     $room_id
                 ]);
             
-                /* Update Patient Record to Complete */
+              /* Update Patient Record to Complete */
                 if ($patient_id) {
                     $stmt = $pdo->prepare("
                         UPDATE patients SET status = 'Completed'
@@ -107,6 +109,13 @@ require_once "config/database.php";
                         $patient_id
                     ]);
                 }
+
+                // >>> ADD IT HERE (Logs the completion) <<<
+                logActivity(
+                    $pdo, 
+                    'COMPLETE_SCHEDULE', 
+                    "Completed surgery schedule ID: {$schedule_id} for Patient ID: {$patient_id}"
+                );
             }
 
 
@@ -138,7 +147,7 @@ require_once "config/database.php";
                 ]);
 
 
-                /* Make operating room available */
+             /* Make operating room available */
                 $stmt = $pdo->prepare("
                     UPDATE operating_rooms SET
                     status = 'Available'
@@ -148,7 +157,16 @@ require_once "config/database.php";
                 $stmt->execute([
                     $room_id
                 ]);
+
+                // >>> ADD IT HERE (Logs the cancellation) <<<
+                logActivity(
+                    $pdo, 
+                    'CANCEL_SCHEDULE', 
+                    "Cancelled surgery schedule ID: {$schedule_id}. Reason: {$cancel_reason}"
+                );
             }
+			
+			
                     
             /* -------------------------------------------------
                RESCHEDULE SCHEDULE
@@ -184,7 +202,7 @@ require_once "config/database.php";
                     $schedule_id
                 ]);
 
-                // 2. If the room has changed, update room statuses accordingly
+               // 2. If the room has changed, update room statuses accordingly
                 if ($room_id !== $new_room) {
                     // Free up the old room
                     $stmt = $pdo->prepare("
@@ -202,8 +220,16 @@ require_once "config/database.php";
                     ");
                     $stmt->execute([$new_room]);
                 }
+
+                // >>> ADD IT HERE (Logs the reschedule action) <<<
+                logActivity(
+                    $pdo, 
+                    'RESCHEDULE_SCHEDULE', 
+                    "Rescheduled surgery schedule ID: {$schedule_id} to Date: {$new_date} in Room ID: {$new_room}"
+                );
             }
 
+			
 
            /* -------------------------------------------------
                EDIT SCHEDULE DETAILS
@@ -298,17 +324,24 @@ require_once "config/database.php";
 				
 				
 
-                // 3. If the operating room changed, update room statuses safely
-                if ($room_id !==$new_room_id) {
+               // 3. If the operating room changed, update room statuses safely
+                if ($room_id !== $new_room_id) {
                     if ($room_id) {
-                        $freeStmt =$pdo->prepare("UPDATE operating_rooms SET status = 'Available' WHERE room_id = ?");
+                        $freeStmt = $pdo->prepare("UPDATE operating_rooms SET status = 'Available' WHERE room_id = ?");
                         $freeStmt->execute([$room_id]);
                     }
                     if ($new_room_id) {
-                        $occupyStmt =$pdo->prepare("UPDATE operating_rooms SET status = 'Occupied' WHERE room_id = ?");
+                        $occupyStmt = $pdo->prepare("UPDATE operating_rooms SET status = 'Occupied' WHERE room_id = ?");
                         $occupyStmt->execute([$new_room_id]);
                     }
                 }
+
+                // >>> ADD IT HERE (Logs the edit before committing transaction) <<<
+                logActivity(
+                    $pdo, 
+                    'EDIT_SCHEDULE', 
+                    "Updated surgery schedule ID: {$schedule_id} in Room ID: {$new_room_id} on {$surgery_date}"
+                );
             }
             
             /* Save and commit all changes successfully */
@@ -322,6 +355,9 @@ require_once "config/database.php";
             // die("Error: " . $e->getMessage());
         }
     }
+	
+	
+	
 
     /* Prevent form resubmission */
     header("Location: dashboard.php");

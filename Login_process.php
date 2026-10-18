@@ -3,6 +3,7 @@
 session_start();
 
 require_once "config/database.php";
+require_once "includes/logger.php";
 
 $username = trim($_POST['username'] ?? '');
 $password = $_POST['password'] ?? '';
@@ -32,6 +33,13 @@ try {
         $_SESSION['username'] = $user['username'];
         $_SESSION['full_name'] = $user['full_name'];
         $_SESSION['role'] = $user['role'];
+
+        // >>> 2. ADD ACTIVITY LOG FOR SUCCESSFUL LOGIN <<<
+        logActivity(
+            $pdo, 
+            'USER_LOGIN', 
+            "User '{$_SESSION['username']}' successfully logged into the system."
+        );
 
         header("Location: dashboard.php");
         exit;
