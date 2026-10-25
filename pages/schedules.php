@@ -1750,7 +1750,7 @@ require_once "../includes/sidebar.php";
                         <select
                             name="anesthesiologist_doctor_id"
                             id="anesthesiologist_doctor_id"
-                            class="form-select"
+                            class="form-select" required
                         >
                             <option value="">
                                 Select anesthesiologist
@@ -2724,735 +2724,324 @@ document.addEventListener(
        PATIENT AUTO-FILL
        ======================================================== */
 
-    const patientSelect =
-        document.getElementById(
-            "patient_id"
-        );
+    const patientSelect =document.getElementById("patient_id");
+    const patientRegistryNo =document.getElementById("patient_registry_no");
+    const registryDate =document.getElementById("registry_date");
+    const registryType = document.getElementById("registry_type");
+    const birthDate =document.getElementById("birth_date");
+    const patientRoomNo =document.getElementById("patient_room_no");
+    const bedNo =document.getElementById("bed_no");
+    const patientRegistryDisplay =document.getElementById("patientRegistryDisplay");
+    const patientRegistryTypeDisplay =document.getElementById("patientRegistryTypeDisplay");
+    const patientBirthDisplay =document.getElementById("patientBirthDisplay");
+    const patientLocationDisplay =document.getElementById("patientLocationDisplay");
 
 
-    const patientRegistryNo =
-        document.getElementById(
-            "patient_registry_no"
-        );
-
-
-    const registryDate =
-        document.getElementById(
-            "registry_date"
-        );
-
-
-    const registryType =
-        document.getElementById(
-            "registry_type"
-        );
-
-
-    const birthDate =
-        document.getElementById(
-            "birth_date"
-        );
-
-
-    const patientRoomNo =
-        document.getElementById(
-            "patient_room_no"
-        );
-
-
-    const bedNo =
-        document.getElementById(
-            "bed_no"
-        );
-
-
-    const patientRegistryDisplay =
-        document.getElementById(
-            "patientRegistryDisplay"
-        );
-
-
-    const patientRegistryTypeDisplay =
-        document.getElementById(
-            "patientRegistryTypeDisplay"
-        );
-
-
-    const patientBirthDisplay =
-        document.getElementById(
-            "patientBirthDisplay"
-        );
-
-
-    const patientLocationDisplay =
-        document.getElementById(
-            "patientLocationDisplay"
-        );
-
-
-    function formatPatientDate(
-        dateString
-    ) {
-
-        if (!dateString) {
-            return "—";
+    function formatPatientDate(dateString) {
+        if (!dateString) {return "—";
         }
 
+        const date =new Date(dateString +"T00:00:00");
 
-        const date =
-            new Date(
-                dateString +
-                "T00:00:00"
-            );
-
-
-        if (
-            isNaN(
-                date.getTime()
-            )
-        ) {
-
+        if (isNaN(date.getTime())) {
             return dateString;
         }
 
 
-        return date.toLocaleDateString(
-            "en-US",
-            {
-                month: "short",
-                day: "2-digit",
-                year: "numeric"
+        return date.toLocaleDateString("en-US",
+            { month: "short",day: "2-digit",year: "numeric"
             }
         );
     }
 
 
     function updatePatientInformation() {
+        const selected =patientSelect.options[patientSelect.selectedIndex];
 
-        const selected =
-            patientSelect.options[
-                patientSelect.selectedIndex
-            ];
+        if (!selected ||!selected.value) {
 
-
-        if (
-            !selected ||
-            !selected.value
-        ) {
-
-            patientRegistryNo.value =
-                "";
-
-            registryDate.value =
-                "";
-
-            registryType.value =
-                "";
-
-            birthDate.value =
-                "";
-
-            patientRoomNo.value =
-                "";
-
-            bedNo.value =
-                "";
-
-
-            patientRegistryDisplay.textContent =
-                "—";
-
-            patientRegistryTypeDisplay.textContent =
-                "—";
-
-            patientBirthDisplay.textContent =
-                "—";
-
-            patientLocationDisplay.textContent =
-                "—";
-
-
+            patientRegistryNo.value = "";
+            registryDate.value ="";
+            registryType.value ="";
+            birthDate.value ="";
+            patientRoomNo.value ="";
+            bedNo.value ="";
+            patientRegistryDisplay.textContent ="—";
+            patientRegistryTypeDisplay.textContent ="—";
+            patientBirthDisplay.textContent ="—";
+            patientLocationDisplay.textContent ="—";
             return;
         }
 
 
-        const registryNo =
-            selected.dataset.patientNumber ||
-            "";
+        const registryNo =selected.dataset.patientNumber ||"";
+        const regDate =selected.dataset.registryDate || "";
+        const regType =selected.dataset.registryType ||"";
+        const birth =selected.dataset.birthDate ||"";
+        const room =selected.dataset.room ||"";
+        const bed =selected.dataset.bed ||"";
 
+        patientRegistryNo.value =registryNo;
+        registryDate.value =regDate;
+        registryType.value =regType;
+        birthDate.value =birth;
+        patientRoomNo.value =room;
+        bedNo.value =bed;
+        patientRegistryDisplay.textContent =registryNo ||"—";
+        patientRegistryTypeDisplay.textContent =regType ||"—";
+        patientBirthDisplay.textContent =formatPatientDate(birth);
 
-        const regDate =
-            selected.dataset.registryDate ||
-            "";
-
-
-        const regType =
-            selected.dataset.registryType ||
-            "";
-
-
-        const birth =
-            selected.dataset.birthDate ||
-            "";
-
-
-        const room =
-            selected.dataset.room ||
-            "";
-
-
-        const bed =
-            selected.dataset.bed ||
-            "";
-
-
-        patientRegistryNo.value =
-            registryNo;
-
-
-        registryDate.value =
-            regDate;
-
-
-        registryType.value =
-            regType;
-
-
-        birthDate.value =
-            birth;
-
-
-        patientRoomNo.value =
-            room;
-
-
-        bedNo.value =
-            bed;
-
-
-        patientRegistryDisplay.textContent =
-            registryNo ||
-            "—";
-
-
-        patientRegistryTypeDisplay.textContent =
-            regType ||
-            "—";
-
-
-        patientBirthDisplay.textContent =
-            formatPatientDate(
-                birth
-            );
-
-
-        if (
-            room ||
-            bed
-        ) {
-
+        if (room ||bed) {
             let location = "";
 
+            if (room) {location += room;}
 
-            if (room) {
-                location += room;
+            if (bed) {if (location) {location += " / ";}
+                location +="Bed " + bed;
             }
 
-
-            if (bed) {
-
-                if (location) {
-                    location += " / ";
-                }
-
-
-                location +=
-                    "Bed " +
-                    bed;
-            }
-
-
-            patientLocationDisplay.textContent =
-                location ||
-                "—";
-
+            patientLocationDisplay.textContent =location ||"—";
         }
 
         else {
-
-            patientLocationDisplay.textContent =
-                "Not assigned";
+            patientLocationDisplay.textContent = "Not assigned";
         }
     }
 
 
-    if (patientSelect) {
-
-        patientSelect.addEventListener(
-            "change",
+    if (patientSelect) { patientSelect.addEventListener("change",
             updatePatientInformation
         );
-
     }
+
 
 
     /* ========================================================
        SURGICAL TYPE AUTO-FILL
        ======================================================== */
 
-    const procedureSelect =
-        document.getElementById(
-            "procedure_id"
-        );
-
-
-    const surgicalTypeInput =
-        document.getElementById(
-            "surgical_type"
-        );
-
+    const procedureSelect =document.getElementById("procedure_id");
+    const surgicalTypeInput =document.getElementById("surgical_type");
 
     function updateSurgicalType() {
 
-        if (
-            !procedureSelect ||
-            !surgicalTypeInput
-        ) {
-
+        if ( !procedureSelect ||!surgicalTypeInput) {
             return;
         }
 
+        const selected =procedureSelect.options[procedureSelect.selectedIndex];
 
-        const selected =
-            procedureSelect.options[
-                procedureSelect.selectedIndex
-            ];
-
-
-        if (
-            !selected ||
-            !selected.value
-        ) {
-
-            surgicalTypeInput.value =
-                "";
-
+        if (!selected ||!selected.value) {
+            surgicalTypeInput.value ="";
             return;
         }
 
-
-        surgicalTypeInput.value =
-            selected.dataset.surgicalType ||
-            "";
+        surgicalTypeInput.value =selected.dataset.surgicalType ||"";
     }
 
 
-    if (procedureSelect) {
-
-        procedureSelect.addEventListener(
-            "change",
-            updateSurgicalType
-        );
 
 
+    if (procedureSelect) {procedureSelect.addEventListener( "change",updateSurgicalType);
         updateSurgicalType();
     }
+
 
 
     /* ========================================================
        ASSISTANT SURGEONS
        ======================================================== */
 
-    const addAssistantBtn =
-        document.getElementById(
-            "addAssistantBtn"
-        );
+    const addAssistantBtn =document.getElementById("addAssistantBtn");
+    const assistantsContainer =document.getElementById("assistantsContainer");
 
 
-    const assistantsContainer =
-        document.getElementById(
-            "assistantsContainer"
-        );
-
-
-    /*
-     * Update assistant numbers.
-     */
+    
+    /* Update assistant numbers.*/
+     
     function updateAssistantNumbers() {
 
         if (!assistantsContainer) {
             return;
         }
 
-
-        const rows =
-            assistantsContainer.querySelectorAll(
-                ".assistant-row"
-            );
-
+        const rows =assistantsContainer.querySelectorAll(".assistant-row");
 
         rows.forEach(
-            function (
-                row,
-                index
-            ) {
+            function (row, index) {
 
-                const number =
-                    row.querySelector(
-                        ".assistant-number"
-                    );
-
+                const number =row.querySelector(".assistant-number");
 
                 if (number) {
 
-                    number.textContent =
-                        String(
-                            index + 1
-                        ).padStart(
-                            2,
-                            "0"
-                        );
+                    number.textContent =String(index + 1).padStart(2,"0");
                 }
-
             }
         );
     }
 
 
-    /*
-     * Attach remove button.
-     */
-    function attachAssistantRemove(
-        row
-    ) {
+    
+     /* Attach remove button */
+    
+    function attachAssistantRemove(row) {
 
         if (!row) {
             return;
         }
 
+        const removeBtn =row.querySelector(".btn-remove-assistant");
 
-        const removeBtn =
-            row.querySelector(
-                ".btn-remove-assistant"
-            );
-
-
-        if (!removeBtn) {
+        if (!removeBtn){
             return;
         }
 
-
-        removeBtn.addEventListener(
-            "click",
+        removeBtn.addEventListener( "click",
             function () {
 
-                const rows =
-                    assistantsContainer.querySelectorAll(
-                        ".assistant-row"
-                    );
+                const rows =assistantsContainer.querySelectorAll(".assistant-row");
+  
+                 /* Always keep one row.*/            
+                if (rows.length <= 1) {
 
+                    const select =row.querySelector(".assistant-select");
 
-                /*
-                 * Always keep one row.
-                 */
-                if (
-                    rows.length <= 1
-                ) {
-
-                    const select =
-                        row.querySelector(
-                            ".assistant-select"
-                        );
-
-
-                    if (select) {
-                        select.value = "";
-                    }
-
-
+                    if (select) {select.value = "";}
                     return;
                 }
 
 
                 row.remove();
-
                 updateAssistantNumbers();
-
             }
         );
     }
 
 
-    /*
-     * Add Assistant.
-     *
-     * IMPORTANT:
-     * We create a completely new select instead
-     * of cloning the existing select.
-     */
-    if (
-        addAssistantBtn &&
-        assistantsContainer
-    ) {
+    
+     /* Add Assistant */
+     
+    if (addAssistantBtn &&assistantsContainer) {
 
-        addAssistantBtn.addEventListener(
-            "click",
+        addAssistantBtn.addEventListener("click",
+		
             function () {
 
-                /*
-                 * Create new assistant row.
-                 */
-                const newRow =
-                    document.createElement(
-                        "div"
-                    );
+                
+                 /* Create new assistant row */       
+                const newRow =document.createElement("div");
+                newRow.className ="assistant-row";
+
+ 
+                 /* Number.*/            
+                const number =document.createElement("div");
+
+                number.className ="assistant-number";
+                number.textContent ="01";
+
+     
+                 /* Icon.*/          
+                const icon =document.createElement("div");
+
+                icon.className ="assistant-role-icon";
+                icon.innerHTML ='<i class="bi bi-person"></i>';
 
 
-                newRow.className =
-                    "assistant-row";
+                
+                 /* Select wrapper.*/      
+                const selectWrapper =document.createElement("div");
+                selectWrapper.className ="assistant-select-wrapper";
 
+   
+                 /* Select.*/        
+                const select =document.createElement("select");
+                select.name ="assistant_doctor_ids[]";
+                select.className ="form-select assistant-select";
 
-                /*
-                 * Number.
-                 */
-                const number =
-                    document.createElement(
-                        "div"
-                    );
+ 
+                 /* Empty option. */
+                
+                const emptyOption =document.createElement("option");
+                emptyOption.value ="";
+                emptyOption.textContent ="Select assistant surgeon";
+                select.appendChild(emptyOption);
 
-
-                number.className =
-                    "assistant-number";
-
-                number.textContent =
-                    "01";
-
-
-                /*
-                 * Icon.
-                 */
-                const icon =
-                    document.createElement(
-                        "div"
-                    );
-
-
-                icon.className =
-                    "assistant-role-icon";
-
-                icon.innerHTML =
-                    '<i class="bi bi-person"></i>';
-
-
-                /*
-                 * Select wrapper.
-                 */
-                const selectWrapper =
-                    document.createElement(
-                        "div"
-                    );
-
-
-                selectWrapper.className =
-                    "assistant-select-wrapper";
-
-
-                /*
-                 * Select.
-                 */
-                const select =
-                    document.createElement(
-                        "select"
-                    );
-
-
-                select.name =
-                    "assistant_doctor_ids[]";
-
-
-                select.className =
-                    "form-select assistant-select";
-
-
-                /*
-                 * Empty option.
-                 */
-                const emptyOption =
-                    document.createElement(
-                        "option"
-                    );
-
-
-                emptyOption.value =
-                    "";
-
-
-                emptyOption.textContent =
-                    "Select assistant surgeon";
-
-
-                select.appendChild(
-                    emptyOption
-                );
-
-
-                /*
-                 * Get surgeon options from
-                 * the existing assistant select.
-                 */
-                const originalSelect =
-                    assistantsContainer.querySelector(
-                        ".assistant-select"
-                    );
-
+                
+                /* Get surgeon options from
+                 * the existing assistant select.*/
+                 
+                const originalSelect =assistantsContainer.querySelector(".assistant-select");
 
                 if (originalSelect) {
 
-                    Array.from(
-                        originalSelect.options
-                    ).forEach(
+                    Array.from(originalSelect.options).forEach(
+					
                         function (option) {
-
-                            /*
-                             * Skip empty option because
-                             * we already created it.
-                             */
+   
+                             /* Skip empty option because
+                             * we already created it. */
+                             
                             if (!option.value) {
                                 return;
                             }
 
-
-                            const newOption =
-                                document.createElement(
-                                    "option"
-                                );
-
-
-                            newOption.value =
-                                option.value;
-
-
-                            newOption.textContent =
-                                option.textContent.trim();
-
-
-                            select.appendChild(
-                                newOption
-                            );
-
+                            const newOption =document.createElement("option");
+                            newOption.value =option.value;
+                            newOption.textContent =option.textContent.trim();
+                            select.appendChild(newOption);
                         }
                     );
                 }
 
 
-                /*
-                 * Put select inside wrapper.
-                 */
-                selectWrapper.appendChild(
-                    select
-                );
+                 /* Put select inside wrapper.*/     
+                selectWrapper.appendChild(select);
 
+                 /* Remove button.*/      
+                const removeButton =document.createElement("button");
+                removeButton.type = "button";
+                removeButton.className ="btn-remove-assistant";
+                removeButton.title ="Remove assistant";
+                removeButton.innerHTML ='<i class="bi bi-x-lg"></i>';
 
-                /*
-                 * Remove button.
-                 */
-                const removeButton =
-                    document.createElement(
-                        "button"
-                    );
+       
+                 /* Build row.*/
+                 
+                newRow.appendChild(number);
+                newRow.appendChild(icon);
+                newRow.appendChild(selectWrapper);
+                newRow.appendChild(removeButton);
 
-
-                removeButton.type =
-                    "button";
-
-
-                removeButton.className =
-                    "btn-remove-assistant";
-
-
-                removeButton.title =
-                    "Remove assistant";
-
-
-                removeButton.innerHTML =
-                    '<i class="bi bi-x-lg"></i>';
-
-
-                /*
-                 * Build row.
-                 */
-                newRow.appendChild(
-                    number
-                );
-
-
-                newRow.appendChild(
-                    icon
-                );
-
-
-                newRow.appendChild(
-                    selectWrapper
-                );
-
-
-                newRow.appendChild(
-                    removeButton
-                );
-
-
-                /*
-                 * Add row to page.
-                 */
-                assistantsContainer.appendChild(
-                    newRow
-                );
-
-
-                /*
-                 * Attach remove function.
-                 */
-                attachAssistantRemove(
-                    newRow
-                );
-
-
-                /*
-                 * Update numbers.
-                 */
+    
+                 /* Add row to page.*/   
+                assistantsContainer.appendChild(newRow);
+      
+                 /* Attach remove function.*/               
+                attachAssistantRemove(newRow);
+      
+                 /* Update numbers.*/       
                 updateAssistantNumbers();
-
-
-                /*
-                 * Focus new select.
-                 */
+          
+                 /* Focus new select.*/  
                 select.focus();
-
             }
         );
     }
 
 
-    /*
-     * Attach remove button to
-     * the original first row.
-     */
+
+    
+     /* Attach remove button to
+     * the original first row.*/
+     
     if (assistantsContainer) {
 
-        assistantsContainer
-            .querySelectorAll(
-                ".assistant-row"
-            )
+        assistantsContainer.querySelectorAll(".assistant-row")
             .forEach(
                 function (row) {
-
-                    attachAssistantRemove(
-                        row
-                    );
-
+                    attachAssistantRemove(row);
                 }
             );
-
     }
 
 
@@ -3460,53 +3049,28 @@ document.addEventListener(
        STAT TOGGLE
        ======================================================== */
 
-    const statCheckbox =
-        document.getElementById(
-            "is_stat"
-        );
-
-
-    const statLabel =
-        document.getElementById(
-            "statLabel"
-        );
-
+    const statCheckbox =document.getElementById("is_stat");
+    const statLabel = document.getElementById("statLabel");
 
     function updateStatLabel() {
 
-        if (
-            !statCheckbox ||
-            !statLabel
-        ) {
-
+        if (!statCheckbox ||!statLabel) {
             return;
         }
 
 
-        if (
-            statCheckbox.checked
-        ) {
-
-            statLabel.textContent =
-                "Yes";
-
+        if (statCheckbox.checked) {
+            statLabel.textContent ="Yes";
         }
 
         else {
-
-            statLabel.textContent =
-                "No";
+            statLabel.textContent = "No";
         }
     }
 
 
     if (statCheckbox) {
-
-        statCheckbox.addEventListener(
-            "change",
-            updateStatLabel
-        );
-
+        statCheckbox.addEventListener("change",updateStatLabel);
     }
 
 
@@ -3514,73 +3078,83 @@ document.addEventListener(
        RESET FORM
        ======================================================== */
 
-    const scheduleForm =
-        document.querySelector(
-            ".schedule-workspace"
-        );
-
+    const scheduleForm =document.querySelector(".schedule-workspace");
 
     if (scheduleForm) {
 
-        scheduleForm.addEventListener(
-            "reset",
+        scheduleForm.addEventListener("reset",
             function () {
 
-                setTimeout(
-                    function () {
+                setTimeout(function () {
 
-                        if (
-                            assistantsContainer
-                        ) {
-
-                            const rows =
-                                assistantsContainer.querySelectorAll(
-                                    ".assistant-row"
-                                );
-
-
+                        if (assistantsContainer) {
+                            const rows =assistantsContainer.querySelectorAll(".assistant-row");
                             rows.forEach(
-                                function (
-                                    row,
-                                    index
-                                ) {
+                                function (row,index) {
 
-                                    if (
-                                        index > 0
-                                    ) {
-
+                                    if (index > 0) {
                                         row.remove();
                                     }
-
                                 }
                             );
-
-
                             updateAssistantNumbers();
-
                         }
 
 
                         if (statLabel) {
-
-                            statLabel.textContent =
-                                "No";
+                            statLabel.textContent ="No";
                         }
 
-
                         updatePatientInformation();
-
                         updateSurgicalType();
-
                     },
                     0
                 );
-
             }
         );
-
     }
+	
+	
+	// ========================================================
+    // PASTE THE VALIDATION CODE RIGHT HERE 👇
+    // ========================================================
+    const workspaceForm = document.querySelector("form.schedule-workspace");
 
+    if (workspaceForm) {
+        workspaceForm.addEventListener("submit", function (e) {
+            const patientId = document.getElementById("patient_id").value;
+            const surgeryDate = document.getElementById("surgery_date").value;
+            const startTime = document.getElementById("start_time").value;
+            const endTime = document.getElementById("end_time").value;
+            const roomId = document.getElementById("room_id").value;
+            const surgeonId = document.getElementById("surgeon_doctor_id").value;
+            const procedureId = document.getElementById("procedure_id").value;
+			const anesthesiologistId = document.getElementById("anesthesiologist_doctor_id").value;
+			
+			
+			
+
+            // Check if required fields are blank
+            if (!patientId || !surgeryDate || !startTime || !endTime || !roomId || !surgeonId || !procedureId) {
+                e.preventDefault(); // Stop form submission
+                alert("⚠️ Please fill out all required fields before saving the schedule.");
+                return false;
+            }
+
+            // Check if end time is earlier or equal to start time
+            const dateEnd = document.getElementById("date_end").value;
+            if (endTime <= startTime && (!dateEnd || dateEnd === surgeryDate)) {
+                e.preventDefault(); // Stop form submission
+                alert("⚠️ Invalid Operating Time: End time must be later than start time.");
+                document.getElementById("end_time").focus();
+                return false;
+            }
+        });
+    }
+	
+	
+	
+	
 
 });
 

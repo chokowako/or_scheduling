@@ -15,8 +15,9 @@ function logActivity($pdo, $action_type, $description) {
         }
 
         if ($enabled !== '1') {
-            echo "<div style='background: red; color: white; padding: 10px;'>Debug: Activity logging is disabled in settings!</div>";
-            exit;
+            //echo "<div style='background: red; color: white; padding: 10px;'>Debug: Activity logging is disabled in settings!</div>";
+           // exit;
+			return; // Fails silently without showing text on screen
         }
 
         $user_id   = $_SESSION['user_id'] ?? null;

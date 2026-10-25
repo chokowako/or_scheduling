@@ -395,6 +395,79 @@
 .badge-scheduled { background-color: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
 .status-cancelled { background-color: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
 
+
+
+/* ========================================================
+   SURGEON REPORT - TABLE CUSTOM STYLING
+   ======================================================== */
+
+/* Total cases text accent */
+.table-total-cases {
+    font-weight: 600;
+    color: #0284c7;
+}
+
+/* Schedule dates font size and color */
+.table-schedule-dates {
+    font-size: 12px;
+    color: #475569;
+}
+
+/* Action column vertical alignment */
+.action-column {
+    vertical-align: middle;
+}
+
+/* View drill-down action button */
+.btn-action-view {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border: 1px solid #0d4732;
+    color: #0d4732;
+    background-color: transparent;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-action-view:hover {
+    background-color: #0d4732;
+    color: #ffffff;
+    box-shadow: 0 2px 4px rgba(13, 71, 50, 0.2);
+}
+
+/* Empty state styling container */
+.empty-report-state {
+    padding: 40px 20px;
+    text-align: center;
+    color: #64748b;
+}
+
+.empty-report-state i {
+    font-size: 32px;
+    color: #cbd5e1;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.empty-report-state strong {
+    font-size: 15px;
+    color: #475569;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.empty-report-state span {
+    font-size: 13px;
+}
+
+
+
 /* =========================================================
    PAGINATION FOOTER STYLING
    ========================================================= */

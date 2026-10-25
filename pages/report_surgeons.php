@@ -177,7 +177,7 @@ $spec_filter_label = !empty($specialization_filter) ? "Specialization: " . htmls
 								<span class="eyebrow-dot"></span> Surgeon Performance Report
 							</div>
 							<h2>
-								Patient Reporting </span>
+								Surgeon Report </span>
 							</h2>
 							<p class="header-subtitle">
 								Analyze surgical workload, assigned procedures, case statuses, and individual surgeon schedules.
@@ -297,50 +297,57 @@ $spec_filter_label = !empty($specialization_filter) ? "Specialization: " . htmls
             </div>
         </div>
 
-        <div class="table-responsive">
-            <table class="report-table" id="surgeonReportTable">
-                <thead>
-                    <tr>
-                        <th>Surgeon Name</th>
-                        <th>Specialization</th>
-                        <th>Assigned Procedures</th>
-                        <th>Total Cases</th>
-                        <th>Completed</th>
-                        <th>Scheduled</th>
-                        <th>Cancelled</th>
-                        <th>Schedule Dates</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (empty($surgeons_report_data)): ?>
-                        <tr>
-                            <td colspan="8">
-                                <div style="padding: 40px 20px; text-align: center; color: #64748b;">
-                                    <i class="bi bi-person-x" style="font-size: 32px; color: #cbd5e1; display: block; margin-bottom: 8px;"></i>
-                                    <strong style="font-size: 15px; color: #475569; display: block; margin-bottom: 4px;">No Surgeon Data Found</strong>
-                                    <span style="font-size: 13px;">No records match your filter parameters.</span>
-                                </div>
-                            </td>
-                        </tr>
-                    <?php else: ?>
-                        <?php foreach ($surgeons_report_data as $row): 
-                            $surgeonFullName = formatDoctorName($row['surgeon_first_name'], $row['surgeon_middle_name'], $row['surgeon_last_name'], $row['surgeon_suffix_name']);
-                        ?>
-                            <tr>
-                                <td><strong><?= htmlspecialchars($surgeonFullName) ?></strong></td>
-                                <td><?= htmlspecialchars($row['specialization'] ?: 'N/A') ?></td>
-                                <td><?= htmlspecialchars($row['assigned_procedures'] ?: 'None Assigned') ?></td>
-                                <td><span style="font-weight: 600; color: #0284c7;"><?= (int)$row['total_cases'] ?></span></td>
-                                <td><span class="badge badge-completed"><?= (int)$row['completed_cases'] ?></span></td>
-                                <td><span class="badge badge-scheduled"><?= (int)$row['scheduled_cases'] ?></span></td>
-                                <td><span class="badge status-cancelled"><?= (int)$row['cancelled_cases'] ?></span></td>
-                                <td style="font-size: 12px; color: #475569;"><?= htmlspecialchars($row['schedule_dates'] ?: 'No Schedules') ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
+			<div class="table-responsive">
+				<table class="report-table" id="surgeonReportTable">
+					<thead>
+						<tr>
+							<th>Surgeon Name</th>
+							<th>Specialization</th>
+							<th>Assigned Procedures</th>
+							<th>Total Cases</th>
+							<th>Completed</th>
+							<th>Scheduled</th>
+							<th>Cancelled</th>
+							<th>Schedule Dates</th>
+							<th class="text-center">Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php if (empty($surgeons_report_data)): ?>
+							<tr>
+								<td colspan="9">
+									<div class="empty-report-state">
+										<i class="bi bi-person-x"></i>
+										<strong>No Surgeon Data Found</strong>
+										<span>No records match your filter parameters.</span>
+									</div>
+								</td>
+							</tr>
+						<?php else: ?>
+							<?php foreach ($surgeons_report_data as $row): 
+								$surgeonFullName = formatDoctorName($row['surgeon_first_name'], $row['surgeon_middle_name'], $row['surgeon_last_name'], $row['surgeon_suffix_name']);
+							?>
+								<tr>
+									<td><strong><?= htmlspecialchars($surgeonFullName) ?></strong></td>
+									<td><?= htmlspecialchars($row['specialization'] ?: 'N/A') ?></td>
+									<td><?= htmlspecialchars($row['assigned_procedures'] ?: 'None Assigned') ?></td>
+									<td><span class="table-total-cases"><?= (int)$row['total_cases'] ?></span></td>
+									<td><span class="badge badge-completed"><?= (int)$row['completed_cases'] ?></span></td>
+									<td><span class="badge badge-scheduled"><?= (int)$row['scheduled_cases'] ?></span></td>
+									<td><span class="badge status-cancelled"><?= (int)$row['cancelled_cases'] ?></span></td>
+									<td class="table-schedule-dates"><?= htmlspecialchars($row['schedule_dates'] ?: 'No Schedules') ?></td>
+									
+									<td class="text-center action-column">
+										<a href="surgeon_details.php?doctor_id=<?= (int)$row['doctor_id'] ?>" class="btn-action-view" title="View Patient Cases">
+											<i class="bi bi-eye"></i> View
+										</a>
+									</td>
+								</tr>
+							<?php endforeach; ?>
+						<?php endif; ?>
+					</tbody>
+				</table>
+			</div>
 
         <!-- PAGINATION CONTROLS -->
         <?php if ($total_pages > 1): ?>
