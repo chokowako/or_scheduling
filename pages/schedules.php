@@ -3162,3 +3162,4 @@ document.addEventListener(
 
 
 <?php require_once "../includes/footer.php"; ?>
+ // Check if end time is earlier or equal to start time
